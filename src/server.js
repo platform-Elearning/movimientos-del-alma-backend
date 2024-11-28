@@ -5,7 +5,7 @@ import session from "express-session";
 import cors from "cors";
 import morgan from "morgan";
 import { settings } from "./settings/settings.js";
-import { createUsersTable, createStudentsTable } from "./tables/tables.js";
+import { createUsersTable, createStudentsTable } from "./db/tables/tables.js";
 
 const app = express();
 const port = settings.server.serverPort || 8080;
