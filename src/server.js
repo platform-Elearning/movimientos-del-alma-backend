@@ -5,7 +5,21 @@ import session from "express-session";
 import cors from "cors";
 import morgan from "morgan";
 import { settings } from "./settings/settings.js";
-import { createUsersTable, createStudentsTable } from "./db/tables/tables.js";
+import { 
+  createUserRoleType, 
+  createEnrollmentStatusType, 
+  createUsersTable, 
+  createStudentsTable, 
+  createCoursesTable, 
+  createTeachersTable, 
+  createEnrollmentsTable, 
+  createPaymentMethodsTable, 
+  createPaymentsTable, 
+  createTeacherCoursesTable, 
+  createCourseModulesTable, 
+  createModuleVideosTable, 
+  createLessonsTable 
+} from "./db/tables/tables.js";
 
 const app = express();
 const port = settings.server.serverPort || 8080;
@@ -29,16 +43,29 @@ app.use(
 app.use("/users", routerUsers);
 app.use("/test", routerTest);
 
-async function startServer() {
+const initializeTables = async () => {
   try {
+    await createUserRoleType();
+    await createEnrollmentStatusType();
     await createUsersTable();
     await createStudentsTable();
-    app.listen(port, () => {
-      console.log(`Servidor escuchando en el puerto ${port}`);
-    });
+    await createCoursesTable();
+    await createTeachersTable();
+    await createEnrollmentsTable();
+    await createPaymentMethodsTable();
+    await createPaymentsTable();
+    await createTeacherCoursesTable();
+    await createCourseModulesTable();
+    await createModuleVideosTable();
+    await createLessonsTable();
+    console.log("All tables initialized successfully.");
   } catch (error) {
-    console.error("Error al iniciar el servidor:", error);
+    console.error("Error initializing tables:", error);
   }
-}
+};
 
-startServer();
+initializeTables();
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
