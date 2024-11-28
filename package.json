@@ -1,7 +1,7 @@
 {
-  "name": "movimientos-del-alma",
+  "name": "backend-tuwebi",
   "version": "1.0.0",
-  "description": "backend for enterprise",
+  "description": "backend for enterprise \"TuWebi\"",
   "main": "main.js",
   "type": "module",
   "scripts": {
@@ -22,7 +22,6 @@
     "express-session": "^1.18.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.3.2",
-    "morgan": "^1.10.0",
     "nodemon": "^3.1.0",
     "passport-local": "^1.0.0",
     "pg": "^8.13.1"
