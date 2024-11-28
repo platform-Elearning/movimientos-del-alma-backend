@@ -3,10 +3,13 @@ import routerUsers from "./routes/routesUsers.js";
 import routerTest from "./routes/routeTest.js";
 import session from "express-session";
 import cors from "cors";
+import morgan from "morgan";
 import { settings } from "./settings/settings.js";
+import { createUsersTable, createStudentsTable } from "./db/tables/tables.js";
 
 const app = express();
 const port = settings.server.serverPort || 8080;
+app.use(morgan('combined'));
 
 app.use(cors());
 app.use(json());
@@ -28,6 +31,8 @@ app.use("/test", routerTest);
 
 async function startServer() {
   try {
+    await createUsersTable();
+    await createStudentsTable();
     app.listen(port, () => {
       console.log(`Servidor escuchando en el puerto ${port}`);
     });
