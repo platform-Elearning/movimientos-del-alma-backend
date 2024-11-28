@@ -4,6 +4,7 @@ import routerTest from "./routes/routeTest.js";
 import session from "express-session";
 import cors from "cors";
 import { settings } from "./settings/settings.js";
+import { createUsersTable, createStudentsTable } from "./tables/tables.js";
 
 const app = express();
 const port = settings.server.serverPort || 8080;
@@ -28,6 +29,8 @@ app.use("/test", routerTest);
 
 async function startServer() {
   try {
+    await createUsersTable();
+    await createStudentsTable();
     app.listen(port, () => {
       console.log(`Servidor escuchando en el puerto ${port}`);
     });
