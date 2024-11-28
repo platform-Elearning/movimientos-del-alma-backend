@@ -2,9 +2,9 @@ import { pool } from "../db/configPG.js";
 
 // CRUD FOR USER
 
-export const createUser = async (id, username, password, role) => {
+export const createUser = async (id, email, password, role) => {
   try {
-    if (!id || !username || !password || !role) {
+    if (!id || !email || !password || !role) {
       throw new Error("All fields are required");
     }
 
@@ -14,11 +14,11 @@ export const createUser = async (id, username, password, role) => {
     }
 
     const query = `
-      INSERT INTO users (id, username, password, role)
+      INSERT INTO users (id, email, password, role)
       VALUES ($1, $2, $3, $4)
     `;
 
-    const resultdb = await pool.query(query, [id, username, password, role]);
+    const resultdb = await pool.query(query, [id, email, password, role]);
 
     return resultdb.rowCount;
   } catch (error) {
@@ -27,26 +27,55 @@ export const createUser = async (id, username, password, role) => {
   }
 };
 
-export const getUserAndPassword = async (username) => {
-  try {
-    const query = 'SELECT username, password, role FROM users WHERE username = $1';
-    const res = await pool.query(query, [username]);
-   if (res.rows.length > 0) {
-      return res.rows[0]; 
-    } else {
-      throw new Error('User not found');
-    }
-  } catch (err) {
-    console.error('Error to get user and password:', err);
-    throw err;
-  }
-};
-
+export const readUser = async () => {};
 
 export const updateUser = () => {};
 
 export const deleteUser = () => {};
 
+export const getUserAndPassword = async (email) => {
+  try {
+    const query = "SELECT email, password, role FROM users WHERE email = $1";
+    const res = await pool.query(query, [email]);
+    if (res.rows.length > 0) {
+      return res.rows[0];
+    } else {
+      throw new Error("User not found");
+    }
+  } catch (err) {
+    console.error("Error to get user and password:", err);
+    throw err;
+  }
+};
+
+export const checkUserExist = async (email) => {
+  try {
+    const query = "SELECT email FROM users WHERE email = $1 ";
+    const res = await pool.query(query, [email]);
+
+    return res.rows[0];
+  } catch (error) {
+    console.log("checkUserExist not found", error);
+    throw new Error("Check user exist not found");
+  }
+};
+
+export const changePassword = async (password, email) => {
+  try {
+    const query = `
+      UPDATE users
+      SET password = $1
+      WHERE email = $2
+      RETURNING id, email;
+    `;
+
+    const res = await pool.query(query, [password, email]);
+
+    return res.command
+  } catch (error) {
+    throw new Error("Change password cannot be completed");
+  }
+};
 // CRUD FOR TEACHERS
 
 // CRUD FOR STUDENTS
