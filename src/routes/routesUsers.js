@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { loginController, studentCreateController } from "../controllers/userController.js";
+import { changePasswordController, loginController, studentCreateController } from "../controllers/userController.js";
 
 const routerUsers = Router();
 
@@ -8,6 +8,9 @@ routerUsers.route("/createCompleteStudent").post(studentCreateController);
 
 // ROUTE FOR LOGIN
 routerUsers.route("/login").post(loginController);
+
+// ROUTE FOR CHANGE PASSWORD
+routerUsers.route("/changePassword").post(changePasswordController);
 
 
 export default routerUsers;
