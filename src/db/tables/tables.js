@@ -1,4 +1,4 @@
-import { pool } from "../db/configPG.js";
+import { pool } from "../configPG.js";
 
 export const createUsersTable = async () => {
   const query = `
