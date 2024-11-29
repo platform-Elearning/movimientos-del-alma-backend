@@ -14,3 +14,4 @@ export const randomPassword = (length = 6) => {
   }
   return password;
 };
+
