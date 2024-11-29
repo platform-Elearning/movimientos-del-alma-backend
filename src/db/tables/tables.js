@@ -1,26 +1,52 @@
 import { pool } from "../configPG.js";
 
 export const createUserRoleType = async () => {
-  const query = `
+  const checkQuery = `
+    SELECT EXISTS (
+      SELECT 1 FROM pg_type WHERE typname = 'user_role'
+    );
+  `;
+
+  const createQuery = `
     CREATE TYPE user_role AS ENUM ('admin', 'teacher', 'student');
   `;
 
   try {
-    await pool.query(query);
-    console.log("Type 'user_role' created or already exists.");
+    const checkResult = await pool.query(checkQuery);
+    const typeExists = checkResult.rows[0].exists;
+
+    if (typeExists) {
+      console.log("Type 'user_role' already exists.");
+    } else {
+      await pool.query(createQuery);
+      console.log("Type 'user_role' created.");
+    }
   } catch (error) {
     console.error("Error creating type 'user_role':", error);
   }
 };
 
 export const createEnrollmentStatusType = async () => {
-  const query = `
+  const checkQuery = `
+    SELECT EXISTS (
+      SELECT 1 FROM pg_type WHERE typname = 'enrollment_status'
+    );
+  `;
+
+  const createQuery = `
     CREATE TYPE enrollment_status AS ENUM ('active', 'cancelled', 'completed');
   `;
 
   try {
-    await pool.query(query);
-    console.log("Type 'enrollment_status' created or already exists.");
+    const checkResult = await pool.query(checkQuery);
+    const typeExists = checkResult.rows[0].exists;
+
+    if (typeExists) {
+      console.log("Type 'enrollment_status' already exists.");
+    } else {
+      await pool.query(createQuery);
+      console.log("Type 'enrollment_status' created.");
+    }
   } catch (error) {
     console.error("Error creating type 'enrollment_status':", error);
   }
