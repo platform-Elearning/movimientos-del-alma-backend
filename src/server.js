@@ -25,7 +25,12 @@ const app = express();
 const port = settings.server.serverPort || 8080;
 app.use(morgan('combined'));
 
-app.use(cors());
+// Configuración de CORS
+const corsOptions = {
+  origin: process.env.ORIGIN,
+  credentials: true, // Permitir el envío de credenciales
+};
+app.use(cors(corsOptions));
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
