@@ -5,38 +5,23 @@ import session from "express-session";
 import cors from "cors";
 import morgan from "morgan";
 import { settings } from "./settings/settings.js";
-import { 
-  createUserRoleType, 
-  createEnrollmentStatusType, 
-  createUsersTable, 
-  createStudentsTable, 
-  createCoursesTable, 
-  createTeachersTable, 
-  createEnrollmentsTable, 
-  createPaymentMethodsTable, 
-  createPaymentsTable, 
-  createTeacherCoursesTable, 
-  createCourseModulesTable, 
-  createModuleVideosTable, 
-  createLessonsTable 
-} from "./db/tables/tables.js";
+import { createTablesDbPostgres } from "./db/tables/tables.js";
 
 const app = express();
 const port = settings.server.serverPort || 8080;
-app.use(morgan('combined'));
 
-// Configuración de CORS
 const corsOptions = {
   origin: process.env.ORIGIN,
-  credentials: true, // Permitir el envío de credenciales
+  credentials: true, 
 };
 app.use(cors(corsOptions));
+app.use(morgan('combined'));
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
 app.use(
   session({
-    secret: "KJKSZPJ1", // CHANGE FOR ENV
+    secret: "KJKSZPJ1",
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -48,28 +33,15 @@ app.use(
 app.use("/users", routerUsers);
 app.use("/test", routerTest);
 
-const initializeTables = async () => {
+(async () => {
   try {
-    await createUserRoleType();
-    await createEnrollmentStatusType();
-    await createUsersTable();
-    await createStudentsTable();
-    await createCoursesTable();
-    await createTeachersTable();
-    await createEnrollmentsTable();
-    await createPaymentMethodsTable();
-    await createPaymentsTable();
-    await createTeacherCoursesTable();
-    await createCourseModulesTable();
-    await createModuleVideosTable();
-    await createLessonsTable();
-    console.log("All tables initialized successfully.");
+    await createTablesDbPostgres();
+    console.log("Database initialized successfully.");
   } catch (error) {
-    console.error("Error initializing tables:", error);
+    console.error("Error initializing the database:", error);
+    console.warn("The server will start, but some features may not work without the database.");
   }
-};
-
-initializeTables();
+})();
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
