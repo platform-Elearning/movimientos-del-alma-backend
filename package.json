@@ -25,7 +25,8 @@
     "morgan": "^1.10.0",
     "nodemon": "^3.1.0",
     "passport-local": "^1.0.0",
-    "pg": "^8.13.1"
+    "pg": "^8.13.1",
+    "twilio": "^5.3.6"
   },
   "devDependencies": {
     "globals": "^15.1.0"

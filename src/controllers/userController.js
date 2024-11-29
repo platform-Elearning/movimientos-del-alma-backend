@@ -1,3 +1,4 @@
+import sendWelcomeSms from "../contact/twilio.js";
 import {
   checkUserExist,
   createStudent,
@@ -126,3 +127,56 @@ export const teacherCreateController = async (req, res) => {
     });
   }
 };
+
+export const adminCreateController = async(req, res) => {
+
+  const {id, email, password} = req.body;
+
+  if ((!id, !email, !password)) {
+    return res
+      .status(400)
+      .json({ success: false, error: "Mandatory data missing" });
+  }
+
+  const role = 'admin';
+  const hashedPassword = authFunc.hashPassword(password);
+
+  try {
+    const check = await checkUserExist(email);
+
+    if (check) {
+      throw new Error("User already exist")
+    }
+
+    await pool.query("BEGIN");
+
+    const userCreated = await createUser(id, email, hashedPassword, role);
+
+    if (!userCreated) {
+      throw new Error("Failed to create ADMIN");
+    }
+
+    await pool.query("COMMIT");
+
+    console.log("ADMIN create correctly");
+    console.log(password)
+
+    //await sendWelcomeSms(email, password); TWILIO
+
+    return res.status(201).json({
+      success: true,
+      message: "ADMIN created successfully",
+      adminID: id,
+    });
+
+  } catch (error) {
+    await pool.query("ROLLBACK");
+    console.error("Error in adminCreateController:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error,
+    });
+  }
+
+}
