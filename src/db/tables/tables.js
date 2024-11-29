@@ -1,6 +1,6 @@
 import { pool } from "../configPG.js";
 
-export const createUserRoleType = async () => {
+const createUserRoleType = async () => {
   const checkQuery = `
     SELECT EXISTS (
       SELECT 1 FROM pg_type WHERE typname = 'user_role'
@@ -13,11 +13,7 @@ export const createUserRoleType = async () => {
 
   try {
     const checkResult = await pool.query(checkQuery);
-    const typeExists = checkResult.rows[0].exists;
-
-    if (typeExists) {
-      console.log("Type 'user_role' already exists.");
-    } else {
+    if (!checkResult.rows[0].exists) {
       await pool.query(createQuery);
       console.log("Type 'user_role' created.");
     }
@@ -26,7 +22,7 @@ export const createUserRoleType = async () => {
   }
 };
 
-export const createEnrollmentStatusType = async () => {
+const createEnrollmentStatusType = async () => {
   const checkQuery = `
     SELECT EXISTS (
       SELECT 1 FROM pg_type WHERE typname = 'enrollment_status'
@@ -41,18 +37,18 @@ export const createEnrollmentStatusType = async () => {
     const checkResult = await pool.query(checkQuery);
     const typeExists = checkResult.rows[0].exists;
 
-    if (typeExists) {
-      console.log("Type 'enrollment_status' already exists.");
-    } else {
+    if (!typeExists) {
       await pool.query(createQuery);
       console.log("Type 'enrollment_status' created.");
+    } else {
+      console.log("Type 'enrollment_status' already exists.");
     }
   } catch (error) {
     console.error("Error creating type 'enrollment_status':", error);
   }
 };
 
-export const createUsersTable = async () => {
+const createUsersTable = async () => {
   const checkQuery = `
     SELECT EXISTS (
       SELECT FROM information_schema.tables 
@@ -62,21 +58,17 @@ export const createUsersTable = async () => {
   `;
 
   const createQuery = `
-    CREATE TABLE IF NOT EXISTS users (
-      id VARCHAR PRIMARY KEY,
-      email VARCHAR UNIQUE,
-      password VARCHAR,
-      role user_role
+    CREATE TABLE "users" (
+      "id" VARCHAR PRIMARY KEY,
+      "email" VARCHAR UNIQUE,
+      "password" VARCHAR,
+      "role" user_role
     );
   `;
 
   try {
     const checkResult = await pool.query(checkQuery);
-    const tableExists = checkResult.rows[0].exists;
-
-    if (tableExists) {
-      console.log("Table 'users' already exists.");
-    } else {
+    if (!checkResult.rows[0].exists) {
       await pool.query(createQuery);
       console.log("Table 'users' created.");
     }
@@ -85,7 +77,7 @@ export const createUsersTable = async () => {
   }
 };
 
-export const createCoursesTable = async () => {
+const createCoursesTable = async () => {
   const checkQuery = `
     SELECT EXISTS (
       SELECT FROM information_schema.tables 
@@ -95,16 +87,16 @@ export const createCoursesTable = async () => {
   `;
 
   const createQuery = `
-    CREATE TABLE IF NOT EXISTS courses (
-      id SERIAL PRIMARY KEY,
-      user_id VARCHAR,
-      name VARCHAR,
-      duration_months INTEGER,
-      quantity_lessons INTEGER,
-      quantity_videos INTEGER,
-      enrollment_fee INTEGER,
-      monthly_fee INTEGER,
-      FOREIGN KEY (user_id) REFERENCES users(id)
+    CREATE TABLE "courses" (
+      "id" SERIAL PRIMARY KEY,
+      "user_id" VARCHAR,
+      "name" VARCHAR,
+      "duration_months" INTEGER,
+      "quantity_lessons" INTEGER,
+      "quantity_videos" INTEGER,
+      "enrollment_fee" INTEGER,
+      "monthly_fee" INTEGER,
+      FOREIGN KEY ("user_id") REFERENCES "users" ("id")
     );
   `;
 
@@ -112,18 +104,18 @@ export const createCoursesTable = async () => {
     const checkResult = await pool.query(checkQuery);
     const tableExists = checkResult.rows[0].exists;
 
-    if (tableExists) {
-      console.log("Table 'courses' already exists.");
-    } else {
+    if (!tableExists) {
       await pool.query(createQuery);
       console.log("Table 'courses' created.");
+    } else {
+      console.log("Table 'courses' already exists.");
     }
   } catch (error) {
     console.error("Error creating table 'courses':", error);
   }
 };
 
-export const createTeachersTable = async () => {
+const createTeacherTable = async () => {
   const checkQuery = `
     SELECT EXISTS (
       SELECT FROM information_schema.tables 
@@ -133,11 +125,11 @@ export const createTeachersTable = async () => {
   `;
 
   const createQuery = `
-    CREATE TABLE IF NOT EXISTS teacher (
-      id VARCHAR PRIMARY KEY,
-      name VARCHAR,
-      lastname VARCHAR,
-      email VARCHAR
+    CREATE TABLE "teacher" (
+      "id" VARCHAR PRIMARY KEY,
+      "name" VARCHAR,
+      "lastname" VARCHAR,
+      "email" VARCHAR
     );
   `;
 
@@ -145,18 +137,18 @@ export const createTeachersTable = async () => {
     const checkResult = await pool.query(checkQuery);
     const tableExists = checkResult.rows[0].exists;
 
-    if (tableExists) {
-      console.log("Table 'teacher' already exists.");
-    } else {
+    if (!tableExists) {
       await pool.query(createQuery);
       console.log("Table 'teacher' created.");
+    } else {
+      console.log("Table 'teacher' already exists.");
     }
   } catch (error) {
     console.error("Error creating table 'teacher':", error);
   }
 };
 
-export const createEnrollmentsTable = async () => {
+const createEnrollmentsTable = async () => {
   const checkQuery = `
     SELECT EXISTS (
       SELECT FROM information_schema.tables 
@@ -166,16 +158,16 @@ export const createEnrollmentsTable = async () => {
   `;
 
   const createQuery = `
-    CREATE TABLE IF NOT EXISTS enrollments (
-      id SERIAL PRIMARY KEY,
-      student_id VARCHAR,
-      course_id INTEGER,
-      enrollment_date TIMESTAMP,
-      enrollment_status enrollment_status,
-      payment_status VARCHAR,
-      notes VARCHAR,
-      FOREIGN KEY (student_id) REFERENCES users(id),
-      FOREIGN KEY (course_id) REFERENCES courses(id)
+    CREATE TABLE "enrollments" (
+      "id" SERIAL PRIMARY KEY,
+      "student_id" VARCHAR,
+      "course_id" INTEGER,
+      "enrollment_date" TIMESTAMP,
+      "enrollment_status" VARCHAR, 
+      "payment_status" VARCHAR,
+      "notes" VARCHAR,
+      FOREIGN KEY ("student_id") REFERENCES "users" ("id"),
+      FOREIGN KEY ("course_id") REFERENCES "courses" ("id")
     );
   `;
 
@@ -183,18 +175,18 @@ export const createEnrollmentsTable = async () => {
     const checkResult = await pool.query(checkQuery);
     const tableExists = checkResult.rows[0].exists;
 
-    if (tableExists) {
-      console.log("Table 'enrollments' already exists.");
-    } else {
+    if (!tableExists) {
       await pool.query(createQuery);
       console.log("Table 'enrollments' created.");
+    } else {
+      console.log("Table 'enrollments' already exists.");
     }
   } catch (error) {
     console.error("Error creating table 'enrollments':", error);
   }
 };
 
-export const createPaymentMethodsTable = async () => {
+const createPaymentMethodsTable = async () => {
   const checkQuery = `
     SELECT EXISTS (
       SELECT FROM information_schema.tables 
@@ -204,10 +196,10 @@ export const createPaymentMethodsTable = async () => {
   `;
 
   const createQuery = `
-    CREATE TABLE IF NOT EXISTS payment_methods (
-      id INTEGER PRIMARY KEY,
-      name VARCHAR,
-      description VARCHAR
+    CREATE TABLE "payment_methods" (
+      "id" INTEGER PRIMARY KEY,
+      "name" VARCHAR,
+      "description" VARCHAR
     );
   `;
 
@@ -215,18 +207,18 @@ export const createPaymentMethodsTable = async () => {
     const checkResult = await pool.query(checkQuery);
     const tableExists = checkResult.rows[0].exists;
 
-    if (tableExists) {
-      console.log("Table 'payment_methods' already exists.");
-    } else {
+    if (!tableExists) {
       await pool.query(createQuery);
       console.log("Table 'payment_methods' created.");
+    } else {
+      console.log("Table 'payment_methods' already exists.");
     }
   } catch (error) {
     console.error("Error creating table 'payment_methods':", error);
   }
 };
 
-export const createPaymentsTable = async () => {
+const createPaymentsTable = async () => {
   const checkQuery = `
     SELECT EXISTS (
       SELECT FROM information_schema.tables 
@@ -236,17 +228,17 @@ export const createPaymentsTable = async () => {
   `;
 
   const createQuery = `
-    CREATE TABLE IF NOT EXISTS payments (
-      id INTEGER PRIMARY KEY,
-      enrollment_id INTEGER,
-      amount INTEGER,
-      payment_method_id INTEGER,
-      months_covered INTEGER,
-      payment_date TIMESTAMP,
-      currency VARCHAR,
-      payment_reference VARCHAR,
-      FOREIGN KEY (enrollment_id) REFERENCES enrollments(id),
-      FOREIGN KEY (payment_method_id) REFERENCES payment_methods(id)
+    CREATE TABLE "payments" (
+      "id" INTEGER PRIMARY KEY,
+      "enrollment_id" INTEGER,
+      "amount" INTEGER,
+      "payment_method_id" INTEGER,
+      "months_covered" INTEGER,
+      "payment_date" TIMESTAMP,
+      "currency" VARCHAR,
+      "payment_reference" VARCHAR,
+      FOREIGN KEY ("enrollment_id") REFERENCES "enrollments" ("id"),
+      FOREIGN KEY ("payment_method_id") REFERENCES "payment_methods" ("id")
     );
   `;
 
@@ -254,54 +246,51 @@ export const createPaymentsTable = async () => {
     const checkResult = await pool.query(checkQuery);
     const tableExists = checkResult.rows[0].exists;
 
-    if (tableExists) {
-      console.log("Table 'payments' already exists.");
-    } else {
+    if (!tableExists) {
       await pool.query(createQuery);
       console.log("Table 'payments' created.");
+    } else {
+      console.log("Table 'payments' already exists.");
     }
   } catch (error) {
     console.error("Error creating table 'payments':", error);
   }
 };
 
-export const createStudentsTable = async () => {
+const createStudentTable = async () => {
   const checkQuery = `
     SELECT EXISTS (
       SELECT FROM information_schema.tables 
       WHERE table_schema = 'public' 
-      AND table_name = 'students'
+      AND table_name = 'student'
     );
   `;
 
   const createQuery = `
-    CREATE TABLE IF NOT EXISTS students (
-      id VARCHAR PRIMARY KEY,
-      identificationNumber VARCHAR,
-      name VARCHAR,
-      lastname VARCHAR,
-      email VARCHAR UNIQUE,
-      nationality VARCHAR,
-      FOREIGN KEY (id) REFERENCES users(id)
+    CREATE TABLE "student" (
+      "id" VARCHAR PRIMARY KEY,
+      "identificationNumber" VARCHAR,
+      "name" VARCHAR,
+      "lastname" VARCHAR,
+      "email" VARCHAR UNIQUE,
+      "nationality" VARCHAR,
+      FOREIGN KEY ("id") REFERENCES "users" ("id")
     );
   `;
 
   try {
     const checkResult = await pool.query(checkQuery);
-    const tableExists = checkResult.rows[0].exists;
-
-    if (tableExists) {
-      console.log("Table 'students' already exists.");
-    } else {
+    if (!checkResult.rows[0].exists) {
       await pool.query(createQuery);
-      console.log("Table 'students' created.");
+      console.log("Table 'student' created.");
     }
   } catch (error) {
-    console.error("Error creating table 'students':", error);
+    console.error("Error creating table 'student':", error);
   }
 };
 
-export const createTeacherCoursesTable = async () => {
+
+const createTeacherCoursesTable = async () => {
   const checkQuery = `
     SELECT EXISTS (
       SELECT FROM information_schema.tables 
@@ -311,12 +300,12 @@ export const createTeacherCoursesTable = async () => {
   `;
 
   const createQuery = `
-    CREATE TABLE IF NOT EXISTS teacher_courses (
-      id INTEGER PRIMARY KEY,
-      teacher_id VARCHAR,
-      course_id INTEGER,
-      FOREIGN KEY (teacher_id) REFERENCES teacher(id),
-      FOREIGN KEY (course_id) REFERENCES courses(id)
+    CREATE TABLE "teacher_courses" (
+      "id" INTEGER PRIMARY KEY,
+      "teacher_id" VARCHAR,
+      "course_id" INTEGER,
+      FOREIGN KEY ("teacher_id") REFERENCES "teacher" ("id"),
+      FOREIGN KEY ("course_id") REFERENCES "courses" ("id")
     );
   `;
 
@@ -324,18 +313,18 @@ export const createTeacherCoursesTable = async () => {
     const checkResult = await pool.query(checkQuery);
     const tableExists = checkResult.rows[0].exists;
 
-    if (tableExists) {
-      console.log("Table 'teacher_courses' already exists.");
-    } else {
+    if (!tableExists) {
       await pool.query(createQuery);
       console.log("Table 'teacher_courses' created.");
+    } else {
+      console.log("Table 'teacher_courses' already exists.");
     }
   } catch (error) {
     console.error("Error creating table 'teacher_courses':", error);
   }
 };
 
-export const createCourseModulesTable = async () => {
+const createCourseModulesTable = async () => {
   const checkQuery = `
     SELECT EXISTS (
       SELECT FROM information_schema.tables 
@@ -345,14 +334,14 @@ export const createCourseModulesTable = async () => {
   `;
 
   const createQuery = `
-    CREATE TABLE IF NOT EXISTS course_modules (
-      id SERIAL PRIMARY KEY,
-      course_id INTEGER,
-      module_number INTEGER,
-      name VARCHAR,
-      description TEXT,
-      duration INTEGER,
-      FOREIGN KEY (course_id) REFERENCES courses(id)
+    CREATE TABLE "course_modules" (
+      "id" SERIAL PRIMARY KEY,
+      "course_id" INTEGER,
+      "module_number" INTEGER,
+      "name" VARCHAR,
+      "description" TEXT,
+      "duration" INTEGER,
+      FOREIGN KEY ("course_id") REFERENCES "courses" ("id")
     );
   `;
 
@@ -360,18 +349,18 @@ export const createCourseModulesTable = async () => {
     const checkResult = await pool.query(checkQuery);
     const tableExists = checkResult.rows[0].exists;
 
-    if (tableExists) {
-      console.log("Table 'course_modules' already exists.");
-    } else {
+    if (!tableExists) {
       await pool.query(createQuery);
       console.log("Table 'course_modules' created.");
+    } else {
+      console.log("Table 'course_modules' already exists.");
     }
   } catch (error) {
     console.error("Error creating table 'course_modules':", error);
   }
 };
 
-export const createModuleVideosTable = async () => {
+const createModuleVideosTable = async () => {
   const checkQuery = `
     SELECT EXISTS (
       SELECT FROM information_schema.tables 
@@ -381,14 +370,14 @@ export const createModuleVideosTable = async () => {
   `;
 
   const createQuery = `
-    CREATE TABLE IF NOT EXISTS module_videos (
-      id SERIAL PRIMARY KEY,
-      module_id INTEGER,
-      title VARCHAR,
-      url VARCHAR,
-      description TEXT,
-      duration INTEGER,
-      FOREIGN KEY (module_id) REFERENCES course_modules(id)
+    CREATE TABLE "module_videos" (
+      "id" SERIAL PRIMARY KEY,
+      "module_id" INTEGER,
+      "title" VARCHAR,
+      "url" VARCHAR,
+      "description" TEXT,
+      "duration" INTEGER,
+      FOREIGN KEY ("module_id") REFERENCES "course_modules" ("id")
     );
   `;
 
@@ -396,18 +385,18 @@ export const createModuleVideosTable = async () => {
     const checkResult = await pool.query(checkQuery);
     const tableExists = checkResult.rows[0].exists;
 
-    if (tableExists) {
-      console.log("Table 'module_videos' already exists.");
-    } else {
+    if (!tableExists) {
       await pool.query(createQuery);
       console.log("Table 'module_videos' created.");
+    } else {
+      console.log("Table 'module_videos' already exists.");
     }
   } catch (error) {
     console.error("Error creating table 'module_videos':", error);
   }
 };
 
-export const createLessonsTable = async () => {
+const createLessonsTable = async () => {
   const checkQuery = `
     SELECT EXISTS (
       SELECT FROM information_schema.tables 
@@ -417,14 +406,14 @@ export const createLessonsTable = async () => {
   `;
 
   const createQuery = `
-    CREATE TABLE IF NOT EXISTS lessons (
-      id SERIAL PRIMARY KEY,
-      module_id INTEGER,
-      title VARCHAR,
-      content TEXT,
-      lesson_number INTEGER,
-      estimated_time INTEGER,
-      FOREIGN KEY (module_id) REFERENCES course_modules(id)
+    CREATE TABLE "lessons" (
+      "id" SERIAL PRIMARY KEY,
+      "module_id" INTEGER,
+      "title" VARCHAR,
+      "content" TEXT,
+      "lesson_number" INTEGER,
+      "estimated_time" INTEGER,
+      FOREIGN KEY ("module_id") REFERENCES "course_modules" ("id")
     );
   `;
 
@@ -432,13 +421,39 @@ export const createLessonsTable = async () => {
     const checkResult = await pool.query(checkQuery);
     const tableExists = checkResult.rows[0].exists;
 
-    if (tableExists) {
-      console.log("Table 'lessons' already exists.");
-    } else {
+    if (!tableExists) {
       await pool.query(createQuery);
       console.log("Table 'lessons' created.");
+    } else {
+      console.log("Table 'lessons' already exists.");
     }
   } catch (error) {
     console.error("Error creating table 'lessons':", error);
   }
 };
+
+export const createTablesDbPostgres = async () => {
+  await pool.query("BEGIN");
+  try {
+    await createUserRoleType();
+    await createEnrollmentStatusType();
+    await createUsersTable();
+    await createCoursesTable();
+    await createTeacherTable();
+    await createEnrollmentsTable();
+    await createPaymentMethodsTable();
+    await createPaymentsTable();
+    await createStudentTable();
+    await createTeacherCoursesTable();
+    await createCourseModulesTable();
+    await createModuleVideosTable();
+    await createLessonsTable();
+    await pool.query("COMMIT");
+    console.log("All tables and types were successfully initialized.");
+  } catch (error) {
+    await pool.query("ROLLBACK");
+    console.error("Error initializing tables:", error);
+    throw new Error("Failed to initialize tables.");
+  }
+};
+
