@@ -10,14 +10,14 @@ CREATE TABLE "users" (
 
 CREATE TABLE "courses" (
   "id" SERIAL PRIMARY KEY,
-  "user_id" VARCHAR,
   "name" VARCHAR,
   "duration_months" INTEGER,
   "quantity_lessons" INTEGER,
   "quantity_videos" INTEGER,
   "enrollment_fee" INTEGER,
+  "enrollment_fee_USD" INTEGER,
   "monthly_fee" INTEGER,
-  FOREIGN KEY ("user_id") REFERENCES "users" ("id")
+  "monthly_fee_USD" INTEGER
 );
 
 CREATE TABLE "teacher" (
@@ -32,7 +32,7 @@ CREATE TABLE "enrollments" (
   "student_id" VARCHAR,
   "course_id" INTEGER,
   "enrollment_date" TIMESTAMP,
-  "enrollment_status" VARCHAR, -- Or 'enrollment_status' if it's an ENUM
+  "enrollment_status" VARCHAR, 
   "payment_status" VARCHAR,
   "notes" VARCHAR,
   FOREIGN KEY ("student_id") REFERENCES "users" ("id"),

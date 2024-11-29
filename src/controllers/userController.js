@@ -1,4 +1,4 @@
-import sendWelcomeSms from "../contact/twilio.js";
+//import sendWelcomeSms from "../contact/twilio.js";
 import {
   checkUserExist,
   createStudent,
@@ -7,14 +7,10 @@ import {
 } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
 import { authFunc } from "../passwordStrategy/passwordStrategy.js";
-import { generateUserId, randomPassword } from "../utils/utils.js";
+import { generateRandomId, randomPassword } from "../utils/utils.js";
 
 export const studentCreateController = async (req, res) => {
-  const id = generateUserId();
-  const randomPW = randomPassword();
-  const role = "student";
-  const hashedPassword = authFunc.hashPassword(randomPW);
-
+ 
   const { identificationNumber, name, lastname, nationality, email } = req.body;
 
   if ((!identificationNumber || !name || !lastname || !nationality, !email)) {
@@ -22,6 +18,11 @@ export const studentCreateController = async (req, res) => {
       .status(400)
       .json({ success: false, error: "Mandatory data missing" });
   }
+
+  const id = generateRandomId();
+  const randomPW = randomPassword();
+  const role = "student";
+  const hashedPassword = authFunc.hashPassword(randomPW);
 
   try {
     const check = await checkUserExist(email);
@@ -73,7 +74,7 @@ export const studentCreateController = async (req, res) => {
 };
 
 export const teacherCreateController = async (req, res) => {
-  const id = generateUserId();
+  const id = generateRandomId();
   const randomPW = randomPassword();
   const role = "teacher";
   const hashedPassword = authFunc.hashPassword(randomPW);

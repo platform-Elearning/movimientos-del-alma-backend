@@ -88,16 +88,16 @@ const createCoursesTable = async () => {
 
   const createQuery = `
     CREATE TABLE "courses" (
-      "id" SERIAL PRIMARY KEY,
-      "user_id" VARCHAR,
-      "name" VARCHAR,
-      "duration_months" INTEGER,
-      "quantity_lessons" INTEGER,
-      "quantity_videos" INTEGER,
-      "enrollment_fee" INTEGER,
-      "monthly_fee" INTEGER,
-      FOREIGN KEY ("user_id") REFERENCES "users" ("id")
-    );
+  "id" SERIAL PRIMARY KEY,
+  "name" VARCHAR,
+  "duration_months" INTEGER,
+  "quantity_lessons" INTEGER,
+  "quantity_videos" INTEGER,
+  "enrollment_fee" INTEGER,
+  "enrollment_fee_USD" INTEGER,
+  "monthly_fee" INTEGER,
+  "monthly_fee_USD" INTEGER
+);
   `;
 
   try {
