@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
 
-export const generateUserId = () => {
+export const generateRandomId = () => {
   return randomBytes(3).toString("hex");
 };
 

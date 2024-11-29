@@ -6,6 +6,9 @@ import cors from "cors";
 import morgan from "morgan";
 import { settings } from "./settings/settings.js";
 import { createTablesDbPostgres } from "./db/tables/tables.js";
+import routerCourses from "./routes/routesCourses.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 const port = settings.server.serverPort || 8080;
@@ -21,7 +24,7 @@ app.use(urlencoded({ extended: true }));
 
 app.use(
   session({
-    secret: "KJKSZPJ1",
+    secret: process.env.SECRETKEY,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -32,6 +35,7 @@ app.use(
 
 app.use("/users", routerUsers);
 app.use("/test", routerTest);
+app.use("/courses", routerCourses);
 
 (async () => {
   try {
