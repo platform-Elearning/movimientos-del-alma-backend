@@ -36,7 +36,7 @@ app.use("/test", routerTest);
 (async () => {
   try {
     await createTablesDbPostgres();
-    console.log("Database initialized successfully.");
+    console.log("Database initialized successfully.\n <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>");
   } catch (error) {
     console.error("Error initializing the database:", error);
     console.warn("The server will start, but some features may not work without the database.");

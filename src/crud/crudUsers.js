@@ -71,12 +71,26 @@ export const changePassword = async (password, email) => {
 
     const res = await pool.query(query, [password, email]);
 
-    return res.command
+    return res.command;
   } catch (error) {
     throw new Error("Change password cannot be completed");
   }
 };
 // CRUD FOR TEACHERS
+
+export const createTeacher = async (id, name, lastname, email, dni) => {
+  try {
+    if ((!id, !name, !lastname, !email, !dni)) {
+      throw new Error("All fields are required");
+    }
+
+    const query = `INSERT INTO teacher (id, name, lastname, email, dni) VALUES ($1,$2,$3,$4, $5)`;
+    
+    const resultdb = await pool.query(query, [id, name, lastname, email, dni]);
+    
+    return resultdb.rowCount;
+  } catch (error) {}
+};
 
 // CRUD FOR STUDENTS
 
@@ -101,7 +115,7 @@ export const createStudent = async (
     }
 
     const query = `
-  INSERT INTO students (id,
+  INSERT INTO student (id,
   identificationNumber,
   name,
   lastname,
