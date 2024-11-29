@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { authenticateToken } from "../auth/auth.js";
-import { checkUserExist } from "../crud/crudUsers.js";
-import { changePasswordController } from "../controllers/userController.js";
+import { changePasswordController } from "../controllers/authController.js";
 
 const routerTest = Router();
 
