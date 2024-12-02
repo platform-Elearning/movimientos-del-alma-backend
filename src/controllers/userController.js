@@ -37,13 +37,13 @@ export const studentCreateController = async (req, res) => {
   const role = "student";
   const hashedPassword = authFunc.hashPassword(randomPW);
 
-  const check = await checkUserExist(email);
-
-  if (check) {
-    throw new Error("User already exist");
-  }
-
   try {
+    const check = await checkUserExist(email);
+
+    if (check) {
+      throw new Error("User already exist");
+    }
+
     await pool.query("BEGIN");
 
     const userCreated = await createUser(id, email, hashedPassword, role);

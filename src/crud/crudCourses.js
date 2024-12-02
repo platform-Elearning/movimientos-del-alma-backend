@@ -64,7 +64,7 @@ export const registerToCourse = async (
   }
 
   const enrollment_date = getDate();
-  
+
   try {
     const query = `INSERT INTO enrollments (student_id, course_id, enrollment_date, enrollment_status, notes) VALUES ($1, $2, $3, $4, $5)`;
     const resultdb = await pool.query(query, [
@@ -82,13 +82,13 @@ export const registerToCourse = async (
   }
 };
 
-export const readCourse = () => {};
+export const readCourseById = () => {};
 
 export const updateCourse = () => {};
 
 export const deleteCourse = () => {};
 
-export const checkEnrollment = async (student_id, course_id) => {
+export const getEnrollment = async (student_id, course_id) => {
   try {
     const query = `
   SELECT * 
@@ -102,5 +102,48 @@ export const checkEnrollment = async (student_id, course_id) => {
   } catch (error) {
     console.log("cehckEnrollment not found", error);
     throw new Error("Check enrollment not found", error);
+  }
+};
+
+export const getAllEnrollments = async (student_id) => {
+  try {
+    const query = `
+    SELECT
+      c.id AS course_id,
+      c.name AS course_name,
+      c.duration_months,
+      c.quantity_lessons,
+      c.quantity_videos,
+      c.enrollment_fee,
+      c.enrollment_fee_usd,
+      c.monthly_fee,
+      c.monthly_fee_usd
+    FROM
+      enrollments e
+    INNER JOIN
+      courses c ON e.course_id = c.id
+    WHERE
+      e.student_id = $1;
+  `;
+
+    const result = await pool.query(query, [student_id]);
+
+    if (result.rows.length === 0) {
+      return {
+        success: false,
+        message: "No courses found for the student",
+        courses: [],
+      };
+    }
+
+    return result.rows;
+  } catch (error) {
+    console.error("Error in getAllEnrollments:", error);
+
+    return {
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    };
   }
 };

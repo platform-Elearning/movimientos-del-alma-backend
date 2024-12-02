@@ -1,6 +1,7 @@
 import {
   addCourse,
-  checkEnrollment,
+  getAllEnrollments,
+  getEnrollment,
   registerToCourse,
 } from "../crud/crudCourses.js";
 
@@ -65,14 +66,12 @@ export const courseCreateController = async (req, res) => {
 export const enrollmentToCourseController = async (req, res) => {
   const { student_id, course_id, enrollment_status, notes } = req.body;
 
-  
-  const check = await checkEnrollment(student_id, course_id);
-
-  if (check) {
-    throw new Error("This user is already enrollment to this course");
-  }
-
   try {
+    const check = await getEnrollment(student_id, course_id);
+
+    if (check) {
+      throw new Error("This user is already enrollment to this course");
+    }
     const register = await registerToCourse(
       student_id,
       course_id,
@@ -97,6 +96,26 @@ export const enrollmentToCourseController = async (req, res) => {
       success: false,
       errorMessage: "Internal server error",
       error: error,
+    });
+  }
+};
+
+export const getAllCoursesController = async (req, res) => {
+  const { student_id } = req.body;
+  try {
+    const enrollments = await getAllEnrollments(student_id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Courses fetched successfully",
+      data: enrollments,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching courses",
+      error: error.message || "Unknown error",
     });
   }
 };
