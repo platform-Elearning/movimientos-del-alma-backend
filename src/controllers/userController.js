@@ -10,10 +10,23 @@ import { authFunc } from "../passwordStrategy/passwordStrategy.js";
 import { generateRandomId, randomPassword } from "../utils/utils.js";
 
 export const studentCreateController = async (req, res) => {
- 
-  const { identificationNumber, name, lastname, identification_number, nationality, email } = req.body;
+  const {
+    identificationNumber,
+    name,
+    lastname,
+    identification_number,
+    nationality,
+    email,
+  } = req.body;
 
-  if ((!identificationNumber || !name || !lastname || !identification_number || !nationality, !email)) {
+  if (
+    (!identificationNumber ||
+      !name ||
+      !lastname ||
+      !identification_number ||
+      !nationality,
+    !email)
+  ) {
     return res
       .status(400)
       .json({ success: false, error: "Mandatory data missing" });
@@ -24,13 +37,13 @@ export const studentCreateController = async (req, res) => {
   const role = "student";
   const hashedPassword = authFunc.hashPassword(randomPW);
 
+  const check = await checkUserExist(email);
+
+  if (check) {
+    throw new Error("User already exist");
+  }
+
   try {
-    const check = await checkUserExist(email);
-
-    if (check) {
-      throw new Error("User already exist");
-    }
-
     await pool.query("BEGIN");
 
     const userCreated = await createUser(id, email, hashedPassword, role);
@@ -81,7 +94,7 @@ export const teacherCreateController = async (req, res) => {
 
   const { name, lastname, identification_number, email, dni } = req.body;
 
-  if ((!name || !lastname || !identification_number|| !email || !dni)) {
+  if (!name || !lastname || !identification_number || !email || !dni) {
     return res
       .status(400)
       .json({ success: false, error: "Mandatory data missing" });
@@ -102,7 +115,14 @@ export const teacherCreateController = async (req, res) => {
       throw new Error("Failed to create user");
     }
 
-    const teacherCreated = await createTeacher(id, name, lastname, identification_number, email, dni);
+    const teacherCreated = await createTeacher(
+      id,
+      name,
+      lastname,
+      identification_number,
+      email,
+      dni
+    );
 
     if (!teacherCreated) {
       throw new Error("Failed to create teacher");
@@ -129,9 +149,8 @@ export const teacherCreateController = async (req, res) => {
   }
 };
 
-export const adminCreateController = async(req, res) => {
-
-  const {id, email, password} = req.body;
+export const adminCreateController = async (req, res) => {
+  const { id, email, password } = req.body;
 
   if ((!id, !email, !password)) {
     return res
@@ -139,14 +158,14 @@ export const adminCreateController = async(req, res) => {
       .json({ success: false, error: "Mandatory data missing" });
   }
 
-  const role = 'admin';
+  const role = "admin";
   const hashedPassword = authFunc.hashPassword(password);
 
   try {
     const check = await checkUserExist(email);
 
     if (check) {
-      throw new Error("User already exist")
+      throw new Error("User already exist");
     }
 
     await pool.query("BEGIN");
@@ -160,7 +179,7 @@ export const adminCreateController = async(req, res) => {
     await pool.query("COMMIT");
 
     console.log("ADMIN create correctly");
-    console.log(password)
+    console.log(password);
 
     //await sendWelcomeSms(email, password); TWILIO
 
@@ -169,7 +188,6 @@ export const adminCreateController = async(req, res) => {
       message: "ADMIN created successfully",
       adminID: id,
     });
-
   } catch (error) {
     await pool.query("ROLLBACK");
     console.error("Error in adminCreateController:", error);
@@ -179,5 +197,4 @@ export const adminCreateController = async(req, res) => {
       error: error,
     });
   }
-
-}
+};

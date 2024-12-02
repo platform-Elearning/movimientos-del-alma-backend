@@ -30,7 +30,7 @@ const createEnrollmentStatusType = async () => {
   `;
 
   const createQuery = `
-    CREATE TYPE enrollment_status AS ENUM ('active', 'cancelled', 'completed');
+    CREATE TYPE enrollment_status AS ENUM ('active', 'cancelled', 'completed', 'incompleted');
   `;
 
   try {
@@ -94,9 +94,9 @@ const createCoursesTable = async () => {
   "quantity_lessons" INTEGER,
   "quantity_videos" INTEGER,
   "enrollment_fee" INTEGER,
-  "enrollment_fee_USD" INTEGER,
+  "enrollment_fee_usd" INTEGER,
   "monthly_fee" INTEGER,
-  "monthly_fee_USD" INTEGER
+  "monthly_fee_usd" INTEGER
 );
   `;
 
@@ -165,7 +165,6 @@ const createEnrollmentsTable = async () => {
       "course_id" INTEGER,
       "enrollment_date" TIMESTAMP,
       "enrollment_status" VARCHAR, 
-      "payment_status" VARCHAR,
       "notes" VARCHAR,
       FOREIGN KEY ("student_id") REFERENCES "users" ("id"),
       FOREIGN KEY ("course_id") REFERENCES "courses" ("id")
