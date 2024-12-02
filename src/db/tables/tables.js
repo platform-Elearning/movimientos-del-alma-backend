@@ -127,6 +127,7 @@ const createTeacherTable = async () => {
   const createQuery = `
     CREATE TABLE "teacher" (
       "id" VARCHAR PRIMARY KEY,
+      "identification_number" VARCHAR,
       "name" VARCHAR,
       "lastname" VARCHAR,
       "email" VARCHAR
@@ -269,7 +270,7 @@ const createStudentTable = async () => {
   const createQuery = `
     CREATE TABLE "student" (
       "id" VARCHAR PRIMARY KEY,
-      "identificationNumber" VARCHAR,
+      "identification_number" VARCHAR,
       "name" VARCHAR,
       "lastname" VARCHAR,
       "email" VARCHAR UNIQUE,
