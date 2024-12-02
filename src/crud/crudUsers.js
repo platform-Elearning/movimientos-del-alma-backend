@@ -3,16 +3,15 @@ import { pool } from "../db/configPG.js";
 // CRUD FOR USER
 
 export const createUser = async (id, email, password, role) => {
+  if (!id || !email || !password || !role) {
+    throw new Error("All fields are required");
+  }
+
+  const validRoles = ["teacher", "student", "admin"];
+  if (!validRoles.includes(role)) {
+    throw new Error("Rol must be 'teacher', 'student' o 'admin'");
+  }
   try {
-    if (!id || !email || !password || !role) {
-      throw new Error("All fields are required");
-    }
-
-    const validRoles = ["teacher", "student", "admin"];
-    if (!validRoles.includes(role)) {
-      throw new Error("Rol must be 'teacher', 'student' o 'admin'");
-    }
-
     const query = `
       INSERT INTO users (id, email, password, role)
       VALUES ($1, $2, $3, $4)
@@ -23,19 +22,18 @@ export const createUser = async (id, email, password, role) => {
     return resultdb.rowCount;
   } catch (error) {
     console.error("Error in createUser:", error.message);
-    throw new Error("Failed to create Student");
+    throw new Error("Failed to create Student", error);
   }
 };
-
-export const readUser = async () => {};
 
 export const updateUser = () => {};
 
 export const deleteUser = () => {};
 
-export const getUserAndPassword = async (email) => {
+export const readUserData = async (email) => {
   try {
-    const query = "SELECT email, password, role FROM users WHERE email = $1";
+    const query =
+      "SELECT id, email, password, role FROM users WHERE email = $1";
     const res = await pool.query(query, [email]);
     if (res.rows.length > 0) {
       return res.rows[0];
@@ -44,7 +42,7 @@ export const getUserAndPassword = async (email) => {
     }
   } catch (err) {
     console.error("Error to get user and password:", err);
-    throw err;
+    throw new Error('Failed to readUserData', err)
   }
 };
 
@@ -78,16 +76,30 @@ export const changePassword = async (password, email) => {
 };
 // CRUD FOR TEACHERS
 
-export const createTeacher = async (id, name, lastname, identification_number, email, dni) => {
+export const createTeacher = async (
+  id,
+  name,
+  lastname,
+  identification_number,
+  email,
+  dni
+) => {
   try {
-    if ((!id || !name || !lastname || !identification_number || !email || !dni) ) {
+    if (!id || !name || !lastname || !identification_number || !email || !dni) {
       throw new Error("All fields are required");
     }
 
     const query = `INSERT INTO teacher (id, name, lastname, identification_number, email, dni) VALUES ($1,$2,$3,$4, $5, $6)`;
-    
-    const resultdb = await pool.query(query, [id, name, lastname, identification_number, email, dni]);
-    
+
+    const resultdb = await pool.query(query, [
+      id,
+      name,
+      lastname,
+      identification_number,
+      email,
+      dni,
+    ]);
+
     return resultdb.rowCount;
   } catch (error) {}
 };
@@ -139,5 +151,3 @@ export const createStudent = async (
     throw new Error("Failed to create Student");
   }
 };
-
-
