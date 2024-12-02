@@ -22,6 +22,7 @@ CREATE TABLE "courses" (
 
 CREATE TABLE "teacher" (
   "id" VARCHAR PRIMARY KEY,
+  "identification_number" VARCHAR,
   "name" VARCHAR,
   "lastname" VARCHAR,
   "email" VARCHAR
@@ -60,7 +61,7 @@ CREATE TABLE "payments" (
 
 CREATE TABLE "student" (
   "id" VARCHAR PRIMARY KEY,
-  "identificationNumber" VARCHAR,
+  "identification_number" VARCHAR,
   "name" VARCHAR,
   "lastname" VARCHAR,
   "email" VARCHAR UNIQUE,

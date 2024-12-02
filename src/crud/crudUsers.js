@@ -78,15 +78,15 @@ export const changePassword = async (password, email) => {
 };
 // CRUD FOR TEACHERS
 
-export const createTeacher = async (id, name, lastname, email, dni) => {
+export const createTeacher = async (id, name, lastname, identification_number, email, dni) => {
   try {
-    if ((!id, !name, !lastname, !email, !dni)) {
+    if ((!id || !name || !lastname || !identification_number || !email || !dni) ) {
       throw new Error("All fields are required");
     }
 
-    const query = `INSERT INTO teacher (id, name, lastname, email, dni) VALUES ($1,$2,$3,$4, $5)`;
+    const query = `INSERT INTO teacher (id, name, lastname, identification_number, email, dni) VALUES ($1,$2,$3,$4, $5, $6)`;
     
-    const resultdb = await pool.query(query, [id, name, lastname, email, dni]);
+    const resultdb = await pool.query(query, [id, name, lastname, identification_number, email, dni]);
     
     return resultdb.rowCount;
   } catch (error) {}
@@ -96,7 +96,7 @@ export const createTeacher = async (id, name, lastname, email, dni) => {
 
 export const createStudent = async (
   id,
-  identificationNumber,
+  identification_number,
   name,
   lastname,
   nationality,
@@ -105,7 +105,7 @@ export const createStudent = async (
   try {
     if (
       !id ||
-      !identificationNumber ||
+      !identification_number ||
       !name ||
       !lastname ||
       !nationality ||
@@ -116,7 +116,7 @@ export const createStudent = async (
 
     const query = `
   INSERT INTO student (id,
-  identificationNumber,
+  identification_number,
   name,
   lastname,
   nationality,
@@ -126,7 +126,7 @@ export const createStudent = async (
 
     const resultdb = await pool.query(query, [
       id,
-      identificationNumber,
+      identification_number,
       name,
       lastname,
       nationality,

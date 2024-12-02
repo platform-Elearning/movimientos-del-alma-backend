@@ -11,9 +11,9 @@ import { generateRandomId, randomPassword } from "../utils/utils.js";
 
 export const studentCreateController = async (req, res) => {
  
-  const { identificationNumber, name, lastname, nationality, email } = req.body;
+  const { identificationNumber, name, lastname, identification_number, nationality, email } = req.body;
 
-  if ((!identificationNumber || !name || !lastname || !nationality, !email)) {
+  if ((!identificationNumber || !name || !lastname || !identification_number || !nationality, !email)) {
     return res
       .status(400)
       .json({ success: false, error: "Mandatory data missing" });
@@ -41,7 +41,7 @@ export const studentCreateController = async (req, res) => {
 
     const studentCreated = await createStudent(
       id,
-      identificationNumber,
+      identification_number,
       name,
       lastname,
       nationality,
@@ -79,9 +79,9 @@ export const teacherCreateController = async (req, res) => {
   const role = "teacher";
   const hashedPassword = authFunc.hashPassword(randomPW);
 
-  const { name, lastname, email, dni } = req.body;
+  const { name, lastname, identification_number, email, dni } = req.body;
 
-  if ((!name, !lastname, !email, !dni)) {
+  if ((!name || !lastname || !identification_number|| !email || !dni)) {
     return res
       .status(400)
       .json({ success: false, error: "Mandatory data missing" });
@@ -102,7 +102,7 @@ export const teacherCreateController = async (req, res) => {
       throw new Error("Failed to create user");
     }
 
-    const teacherCreated = await createTeacher(id, name, lastname, email, dni);
+    const teacherCreated = await createTeacher(id, name, lastname, identification_number, email, dni);
 
     if (!teacherCreated) {
       throw new Error("Failed to create teacher");
