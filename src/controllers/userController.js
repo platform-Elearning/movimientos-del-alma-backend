@@ -11,16 +11,15 @@ import { generateRandomId, randomPassword } from "../utils/utils.js";
 
 export const studentCreateController = async (req, res) => {
   const {
-    identificationNumber,
+    identification_number,
     name,
     lastname,
-    identification_number,
     nationality,
     email,
   } = req.body;
 
   if (
-    (!identificationNumber ||
+    (
       !name ||
       !lastname ||
       !identification_number ||
@@ -92,9 +91,9 @@ export const teacherCreateController = async (req, res) => {
   const role = "teacher";
   const hashedPassword = authFunc.hashPassword(randomPW);
 
-  const { name, lastname, identification_number, email, dni } = req.body;
+  const { name, lastname, identification_number, email} = req.body;
 
-  if (!name || !lastname || !identification_number || !email || !dni) {
+  if (!name || !lastname || !identification_number || !email) {
     return res
       .status(400)
       .json({ success: false, error: "Mandatory data missing" });
