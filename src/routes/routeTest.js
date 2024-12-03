@@ -16,9 +16,6 @@ routerTest
     res.status(201).send("POST request successful");
   });
 
-// FUNCTION TEST
-routerTest.route("/function").post(changePasswordController);
-
 // TEST PROTECTED ROUTE
 routerTest.route("/protected").get(authenticateToken, async (res) => {
   console.log("Route protected ok");

@@ -17,7 +17,11 @@ export const pool = new Pool({
 pool
   .connect()
   .then((client) => {
-    console.log("Connection successfully to PostgreSQL");
+    console.log(`
+      ╔════════════════════════════════════════╗
+      ║  Connection successfully to PostgreSQL ║
+      ╚════════════════════════════════════════╝
+      `);
     client.release();
   })
   .catch((err) => {
