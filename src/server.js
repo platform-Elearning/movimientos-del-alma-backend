@@ -15,10 +15,10 @@ const port = settings.server.serverPort || 8080;
 
 const corsOptions = {
   origin: process.env.ORIGIN,
-  credentials: true, 
+  credentials: true,
 };
 app.use(cors(corsOptions));
-app.use(morgan('combined'));
+app.use(morgan("combined"));
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
@@ -40,10 +40,16 @@ app.use("/courses", routerCourses);
 (async () => {
   try {
     await createTablesDbPostgres();
-    console.log("Database initialized successfully.\n <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>");
+    console.log(`
+      ╔════════════════════════════════════════╗
+      ║   Database initialized successfully    ║
+      ╚════════════════════════════════════════╝
+      `);
   } catch (error) {
     console.error("Error initializing the database:", error);
-    console.warn("The server will start, but some features may not work without the database.");
+    console.warn(
+      "The server will start, but some features may not work without the database."
+    );
   }
 })();
 

@@ -433,8 +433,15 @@ const createLessonsTable = async () => {
 };
 
 export const createTablesDbPostgres = async () => {
-  await pool.query("BEGIN");
+  
   try {
+    await pool.query("BEGIN");
+    console.log(`
+      ╔════════════════════════════════════════╗
+      ║ Starting to create/initialize database ║
+      ╚════════════════════════════════════════╝
+      `);
+
     await createUserRoleType();
     await createEnrollmentStatusType();
     await createUsersTable();
