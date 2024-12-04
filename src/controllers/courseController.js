@@ -18,19 +18,18 @@ export const courseCreateController = async (req, res) => {
   } = req.body;
 
   if (
-    (!name,
-    !duration_months,
-    !quantity_lessons,
-    !quantity_videos,
-    !enrollment_fee,
-    !enrollment_fee_usd,
-    !monthly_fee,
-    !monthly_fee_usd)
+    !name ||
+    !duration_months ||
+    !quantity_lessons ||
+    !quantity_videos ||
+    !enrollment_fee ||
+    !enrollment_fee_usd ||
+    !monthly_fee ||
+    !monthly_fee_usd
   ) {
-    return res
-      .status(400)
-      .json({ success: false, error: "Mandatory data missing" });
+    return res.status(400).json({ success: false, error: "Mandatory data missing" });
   }
+  
 
   try {
     const courseCreated = await addCourse(

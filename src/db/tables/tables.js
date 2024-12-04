@@ -283,6 +283,8 @@ const createStudentTable = async () => {
     if (!checkResult.rows[0].exists) {
       await pool.query(createQuery);
       console.log("Table 'student' created.");
+    }else {
+      console.log("Table 'student_table' already exists.");
     }
   } catch (error) {
     console.error("Error creating table 'student':", error);
@@ -372,12 +374,12 @@ const createModuleVideosTable = async () => {
   const createQuery = `
     CREATE TABLE "module_videos" (
       "id" SERIAL PRIMARY KEY,
-      "module_id" INTEGER,
+      "lesson_id" INTEGER,
       "title" VARCHAR,
       "url" VARCHAR,
       "description" TEXT,
       "duration" INTEGER,
-      FOREIGN KEY ("module_id") REFERENCES "course_modules" ("id")
+      FOREIGN KEY ("lesson_id") REFERENCES "lessons" ("id")
     );
   `;
 

@@ -80,7 +80,7 @@ export const studentCreateController = async (req, res) => {
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
-      error: error,
+      error: error.mesage || error,
     });
   }
 };

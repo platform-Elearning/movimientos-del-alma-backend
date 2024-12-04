@@ -31,6 +31,7 @@ export const loginController = async (req, res) => {
   } catch (error) {
     console.log("ERROR request - /login", error);
     res.status(401).send("Error in login controller");
+    return error.message
   }
 };
 

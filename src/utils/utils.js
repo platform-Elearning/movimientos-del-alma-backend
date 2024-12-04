@@ -22,3 +22,11 @@ export const getDate = () => {
   ).padStart(2, "0")}/${today.getFullYear()}`;
   return formattedDate;
 };
+
+const normalizeInput = (name) => {
+  return name
+    .toLowerCase()
+    .replace(/\s+/g, "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+};
