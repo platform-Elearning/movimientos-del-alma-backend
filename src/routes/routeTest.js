@@ -20,6 +20,7 @@ routerTest
 routerTest.route("/protected").get(authenticateToken, async (res) => {
   console.log("Route protected ok");
   res.send("PROTECTED ROUTE IS OK");
+  return true
 });
 
 export default routerTest;
