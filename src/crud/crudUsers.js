@@ -33,7 +33,10 @@ export const deleteUser = () => {};
 export const readUserData = async (email) => {
   try {
     const query =
-      "SELECT id, email, password, role FROM users WHERE email = $1";
+      "SELECT users.id, users.email, users.password, users.role, student.name " +
+      "FROM users " +
+      "LEFT JOIN student ON users.id = student.id " +
+      "WHERE users.email = $1";
     const res = await pool.query(query, [email]);
     if (res.rows.length > 0) {
       return res.rows[0];
