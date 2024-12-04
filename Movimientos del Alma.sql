@@ -89,12 +89,12 @@ CREATE TABLE "course_modules" (
 
 CREATE TABLE "module_videos" (
   "id" SERIAL PRIMARY KEY,
-  "module_id" INTEGER,
+  "lesson_number" INTEGER,
   "title" VARCHAR,
   "url" VARCHAR,
   "description" TEXT,
   "duration" INTEGER,
-  FOREIGN KEY ("module_id") REFERENCES "course_modules" ("id")
+  FOREIGN KEY ("lesson_id") REFERENCES "lessons" ("id")
 );
 
 CREATE TABLE "lessons" (
