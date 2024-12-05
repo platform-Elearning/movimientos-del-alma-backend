@@ -1,11 +1,14 @@
 import { Router } from "express";
-import { adminCreateController, studentCreateController, teacherCreateController } from "../controllers/userController.js";
+import { adminCreateController, getUserController, studentCreateController, teacherCreateController } from "../controllers/userController.js";
 import { loginController, changePasswordController } from "../controllers/authController.js";
 
 const routerUsers = Router();
 
 // ROUTE FOR CREATE STUDENT AND USERSTUDENT
 routerUsers.route("/createCompleteStudent").post(studentCreateController);
+
+//ROUTE FOR GET STUDENT
+routerUsers.route("/getStudentById").get(getUserController);
 
 // ROUTE FOR CREATE TEACHER AND USERTEACHER
 routerUsers.route("/createCompleteTeacher").post(teacherCreateController);

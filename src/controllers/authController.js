@@ -1,4 +1,4 @@
-import { readUserData } from "../crud/crudUsers.js";
+import { readLoginData } from "../crud/crudUsers.js";
 import { authFunc } from "../passwordStrategy/passwordStrategy.js";
 import { settings } from "../settings/settings.js";
 import jwt from "jsonwebtoken";
@@ -7,7 +7,7 @@ export const loginController = async (req, res) => {
   const secretKey = settings.jwt.secretKey;
   const { email, password } = req.body;
   try {
-    const userData = await readUserData(email);
+    const userData = await readLoginData(email);
 
     const isValidated = await authFunc.authLogin(password, userData.password);
     if (!isValidated) {
@@ -49,7 +49,7 @@ export const changePasswordController = async (req, res) => {
   const hashedPassword = authFunc.hashPassword(newPassword1);
 
   try {
-    const userData = await readUserData(email);
+    const userData = await readLoginData(email);
     const isValidated = await authFunc.authLogin(password, userData.password);
     if (!isValidated) {
       console.log("Invalid current password, please try again.");

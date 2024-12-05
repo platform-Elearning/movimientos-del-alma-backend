@@ -4,6 +4,7 @@ import {
   createStudent,
   createTeacher,
   createUser,
+  getStudentData,
 } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
 import { authFunc } from "../passwordStrategy/passwordStrategy.js";
@@ -197,3 +198,31 @@ export const adminCreateController = async (req, res) => {
     });
   }
 };
+
+export const getUserController = async (req, res) => {
+
+  const {id} = req.body;
+
+  try {
+    const response = await getStudentData(id);
+
+    if(!response){
+      throw new Error("Student not found")
+    }
+
+    return res.status(500).json({
+      identification_number: response.identification_number,
+      name: response.name,
+      lastname: response.lastname,
+      email: response.email,
+    });
+  } catch (error) {
+    console.error("Error in getUsercontroller:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error,
+    });
+  }
+
+}

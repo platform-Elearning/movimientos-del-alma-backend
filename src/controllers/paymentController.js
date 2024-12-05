@@ -1,4 +1,4 @@
-import { pool } from "../db/configPG";
+/*import { pool } from "../db/configPG";
 
 export const createMethodPaymentController = async (req, res) => {
   const { name, description } = req.body;
@@ -38,3 +38,4 @@ export const createMethodPaymentController = async (req, res) => {
     });
   }
 };
+*/
