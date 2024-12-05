@@ -1,3 +1,4 @@
+import { response } from "express";
 import { pool } from "../db/configPG.js";
 
 // CRUD FOR USER
@@ -30,7 +31,7 @@ export const updateUser = () => {};
 
 export const deleteUser = () => {};
 
-export const readUserData = async (email) => {
+export const readLoginData = async (email) => {
   try {
     const query =
       "SELECT users.id, users.email, users.password, users.role, student.name " +
@@ -154,3 +155,17 @@ export const createStudent = async (
     throw new Error("Failed to create Student");
   }
 };
+
+export const getStudentData = async (id) => {
+
+  try {
+    const query = `SELECT identification_number, name, lastname, email FROM student WHERE id = $1`;
+
+    const responsedb = await pool.query(query, [id]);
+    return responsedb.rows[0];
+  } catch (error) {
+    console.log("getStudentData error", error);
+    throw new Error("getStudentData error");
+  }
+
+}

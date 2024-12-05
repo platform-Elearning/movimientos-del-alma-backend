@@ -1,4 +1,4 @@
-export const checkMethodPaymentExist = async (name) => {
+/*export const checkMethodPaymentExist = async (name) => {
 
     const nameNormalize = await normalizeInput(name);
 
@@ -15,4 +15,4 @@ export const createMethodPayment = (name, description) => {
     INSERT INTO payment_methods (name, description)
     VALUES ($1, $2)
   `;
-}
+}*/
