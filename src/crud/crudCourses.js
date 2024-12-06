@@ -1,5 +1,5 @@
 import { pool } from "../db/configPG.js";
-import { generateRandomId, getDate } from "../utils/utils.js";
+import {  getDate } from "../utils/utils.js";
 
 export const addCourse = async (
   name,
@@ -105,7 +105,7 @@ export const getEnrollment = async (student_id, course_id) => {
   }
 };
 
-export const getAllEnrollments = async (student_id) => {
+export const getAllEnrollmentsById = async (student_id) => {
   try {
     const query = `
     SELECT

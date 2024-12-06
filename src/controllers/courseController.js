@@ -1,6 +1,6 @@
 import {
   addCourse,
-  getAllEnrollments,
+  getAllEnrollmentsById,
   getEnrollment,
   registerToCourse,
 } from "../crud/crudCourses.js";
@@ -99,10 +99,10 @@ export const enrollmentToCourseController = async (req, res) => {
   }
 };
 
-export const getAllCoursesController = async (req, res) => {
+export const getCoursesWithStudentIdController = async (req, res) => {
   const { student_id } = req.body;
   try {
-    const enrollments = await getAllEnrollments(student_id);
+    const enrollments = await getAllEnrollmentsById(student_id);
 
     return res.status(200).json({
       success: true,
