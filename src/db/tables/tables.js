@@ -362,42 +362,6 @@ const createCourseModulesTable = async () => {
   }
 };
 
-const createModuleVideosTable = async () => {
-  const checkQuery = `
-    SELECT EXISTS (
-      SELECT FROM information_schema.tables 
-      WHERE table_schema = 'public' 
-      AND table_name = 'module_videos'
-    );
-  `;
-
-  const createQuery = `
-    CREATE TABLE "module_videos" (
-      "id" SERIAL PRIMARY KEY,
-      "lesson_id" INTEGER,
-      "title" VARCHAR,
-      "url" VARCHAR,
-      "description" TEXT,
-      "duration" INTEGER,
-      FOREIGN KEY ("lesson_id") REFERENCES "lessons" ("id")
-    );
-  `;
-
-  try {
-    const checkResult = await pool.query(checkQuery);
-    const tableExists = checkResult.rows[0].exists;
-
-    if (!tableExists) {
-      await pool.query(createQuery);
-      console.log("Table 'module_videos' created.");
-    } else {
-      console.log("Table 'module_videos' already exists.");
-    }
-  } catch (error) {
-    console.error("Error creating table 'module_videos':", error);
-  }
-};
-
 const createLessonsTable = async () => {
   const checkQuery = `
     SELECT EXISTS (
@@ -434,6 +398,44 @@ const createLessonsTable = async () => {
   }
 };
 
+const createModuleVideosTable = async () => {
+  const checkQuery = `
+    SELECT EXISTS (
+      SELECT FROM information_schema.tables 
+      WHERE table_schema = 'public' 
+      AND table_name = 'module_videos'
+    );
+  `;
+
+  const createQuery = `
+    CREATE TABLE "module_videos" (
+      "id" SERIAL PRIMARY KEY,
+      "lesson_id" INTEGER,
+      "title" VARCHAR,
+      "url" VARCHAR,
+      "description" TEXT,
+      "duration" INTEGER,
+      FOREIGN KEY ("lesson_id") REFERENCES "lessons" ("id")
+    );
+  `;
+
+  try {
+    const checkResult = await pool.query(checkQuery);
+    const tableExists = checkResult.rows[0].exists;
+
+    if (!tableExists) {
+      await pool.query(createQuery);
+      console.log("Table 'module_videos' created.");
+    } else {
+      console.log("Table 'module_videos' already exists.");
+    }
+  } catch (error) {
+    console.error("Error creating table 'module_videos':", error);
+  }
+};
+
+
+
 export const createTablesDbPostgres = async () => {
   
   try {
@@ -449,8 +451,9 @@ export const createTablesDbPostgres = async () => {
     await createStudentTable();
     await createTeacherCoursesTable();
     await createCourseModulesTable();
-    await createModuleVideosTable();
     await createLessonsTable();
+    await createModuleVideosTable();
+    
     await pool.query("COMMIT");
     console.log("All tables and types were successfully initialized.");
   } catch (error) {
