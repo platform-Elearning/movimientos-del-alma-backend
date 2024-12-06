@@ -220,7 +220,7 @@ export const getAllStudentsController = async (req, res) => {
   try {
     const response = await getAllStudents();
 
-    return res.status(500).json({
+    return res.status(200).json({
       response,
     });
   } catch (error) {
