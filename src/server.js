@@ -40,6 +40,7 @@ app.use("/courses", routerCourses);
 (async () => {
   try {
     await createTablesDbPostgres();
+    await createAdminUser();
     console.log(`
       ╔════════════════════════════════════════╗
       ║   Database initialized successfully    ║
@@ -56,3 +57,42 @@ app.use("/courses", routerCourses);
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+
+// ------------------- funtion admin creation  -----------------------------
+
+const createAdminUser = async () => {
+  // Función de sleep
+  const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  };
+  try {
+    await sleep(5000);
+    const response = await fetch('http://localhost:8080/users/createAdmin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: "1",
+        email: "admin@admin.com",
+        password: "admin"
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      if (errorData.errorMessage === "User already exist") {
+        console.log("Admin user already exists.");
+      } else {
+        throw new Error("Failed to create admin user");
+      }
+    } else {
+      const data = await response.json();
+      console.log("Admin user created:", data);
+    }
+  } catch (error) {
+    console.error("Error creating admin user:", error);
+  }
+};
+
