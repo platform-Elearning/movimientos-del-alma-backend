@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { adminCreateController, getUserController, studentCreateController, teacherCreateController } from "../controllers/userController.js";
+import { adminCreateController, getAllStudentsController, getAllUsersWithCoursesController, getUserController, studentCreateController, teacherCreateController } from "../controllers/userController.js";
 import { loginController, changePasswordController } from "../controllers/authController.js";
 
 const routerUsers = Router();
@@ -9,6 +9,9 @@ routerUsers.route("/createCompleteStudent").post(studentCreateController);
 
 //ROUTE FOR GET STUDENT
 routerUsers.route("/getStudentById").get(getUserController);
+
+// ROUTE FOR GET ALL STUDENTS
+routerUsers.route("/getAllStudents").get(getAllStudentsController);
 
 // ROUTE FOR CREATE TEACHER AND USERTEACHER
 routerUsers.route("/createCompleteTeacher").post(teacherCreateController);
@@ -22,6 +25,7 @@ routerUsers.route("/changePassword").post(changePasswordController);
 // ROUTE FOR CREATE ADMIN
 routerUsers.route("/createAdmin").post(adminCreateController);
 
-
+// ROUTER FOR GET STUDENT WITH COURSES ASIGNED"
+routerUsers.route("/getStudentsWithCourses").get(getAllUsersWithCoursesController);
 
 export default routerUsers;

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { courseCreateController, enrollmentToCourseController, getAllCoursesController } from "../controllers/courseController.js";
+import { courseCreateController, enrollmentToCourseController, getCoursesWithStudentIdController } from "../controllers/courseController.js";
 
 const routerCourses = Router();
 
@@ -10,6 +10,6 @@ routerCourses.route("/createCourse").post(courseCreateController);
 routerCourses.route("/registerToCourse").post(enrollmentToCourseController);
 
 // ROUTER FOR GET ALL COURSES WITH STUDENT_ID
-routerCourses.route("/getCoursesById").get(getAllCoursesController);
+routerCourses.route("/getCoursesById").get(getCoursesWithStudentIdController);
 
 export default routerCourses;

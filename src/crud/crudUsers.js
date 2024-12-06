@@ -1,5 +1,5 @@
-import { response } from "express";
 import { pool } from "../db/configPG.js";
+import { getAllEnrollmentsById } from "./crudCourses.js";
 
 // CRUD FOR USER
 
@@ -46,7 +46,7 @@ export const readLoginData = async (email) => {
     }
   } catch (err) {
     console.error("Error to get user and password:", err);
-    throw new Error('Failed to readUserData', err)
+    throw new Error("Failed to readUserData", err);
   }
 };
 
@@ -157,9 +157,8 @@ export const createStudent = async (
 };
 
 export const getStudentData = async (id) => {
-
   try {
-    const query = `SELECT identification_number, name, lastname, email FROM student WHERE id = $1`;
+    const query = `SELECT identification_number, name, lastname, email, nationality FROM student WHERE id = $1`;
 
     const responsedb = await pool.query(query, [id]);
     return responsedb.rows[0];
@@ -167,5 +166,45 @@ export const getStudentData = async (id) => {
     console.log("getStudentData error", error);
     throw new Error("getStudentData error");
   }
+};
 
-}
+export const getAllStudents = async () => {
+  try {
+    const query = `SELECT * FROM student`;
+
+    const response = await pool.query(query);
+
+    return response.rows;
+  } catch (error) {
+    console.log("getStudentData error", error);
+    throw new Error("getStudentData error");
+  }
+};
+
+export const getStudentsWithCourses = async () => {
+  try {
+    const allStudents = await getAllStudents();
+
+    const studentsWithCourses = [];
+    for (const student of allStudents) {
+      const enrollments = await getAllEnrollmentsById(student.id);
+
+      studentsWithCourses.push({
+        user_id: student.id,
+        email: student.email,
+        name: student.name,
+        last_name: student.lastname,
+        nationality: student.nationality,
+        courses: enrollments.map((enrollment) => ({
+          courses: enrollment.course_name,
+          modules: enrollment.quantity_lessons,
+        })),
+      });
+    }
+
+    return studentsWithCourses;
+  } catch (error) {
+    console.log("getStudentsWithCourses error", error);
+    throw new Error("getStudentsWithCourses error");
+  }
+};

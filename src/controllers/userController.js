@@ -4,29 +4,19 @@ import {
   createStudent,
   createTeacher,
   createUser,
+  getAllStudents,
   getStudentData,
+  getStudentsWithCourses,
 } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
 import { authFunc } from "../passwordStrategy/passwordStrategy.js";
 import { generateRandomId, randomPassword } from "../utils/utils.js";
 
 export const studentCreateController = async (req, res) => {
-  const {
-    identification_number,
-    name,
-    lastname,
-    nationality,
-    email,
-  } = req.body;
+  const { identification_number, name, lastname, nationality, email } =
+    req.body;
 
-  if (
-    (
-      !name ||
-      !lastname ||
-      !identification_number ||
-      !nationality,
-    !email)
-  ) {
+  if ((!name || !lastname || !identification_number || !nationality, !email)) {
     return res
       .status(400)
       .json({ success: false, error: "Mandatory data missing" });
@@ -92,7 +82,7 @@ export const teacherCreateController = async (req, res) => {
   const role = "teacher";
   const hashedPassword = authFunc.hashPassword(randomPW);
 
-  const { name, lastname, identification_number, email} = req.body;
+  const { name, lastname, identification_number, email } = req.body;
 
   if (!name || !lastname || !identification_number || !email) {
     return res
@@ -200,21 +190,21 @@ export const adminCreateController = async (req, res) => {
 };
 
 export const getUserController = async (req, res) => {
-
-  const {id} = req.body;
+  const { id } = req.body;
 
   try {
     const response = await getStudentData(id);
 
-    if(!response){
-      throw new Error("Student not found")
+    if (!response) {
+      throw new Error("Student not found");
     }
 
     return res.status(500).json({
-      identification_number: response.identification_number,
       name: response.name,
       lastname: response.lastname,
       email: response.email,
+      nationality: response.nationality,
+      identification_number: response.identification_number,
     });
   } catch (error) {
     console.error("Error in getUsercontroller:", error);
@@ -224,5 +214,38 @@ export const getUserController = async (req, res) => {
       error: error,
     });
   }
+};
 
-}
+export const getAllStudentsController = async (req, res) => {
+  try {
+    const response = await getAllStudents();
+
+    return res.status(500).json({
+      response,
+    });
+  } catch (error) {
+    console.error("Error in getAllStudentsController:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error,
+    });
+  }
+};
+
+export const getAllUsersWithCoursesController = async (req, res) => {
+  try {
+
+    const response = await getStudentsWithCourses()
+    return res.status(500).json({
+      response,
+    });
+  } catch (error) {
+    console.error("Error in getUserWithCoursesController:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error,
+    });
+  }
+};
