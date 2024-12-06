@@ -1,7 +1,10 @@
 import { Router } from "express";
-import { courseCreateController, enrollmentToCourseController, getCoursesWithStudentIdController } from "../controllers/courseController.js";
+import { courseCreateController, enrollmentToCourseController, getCoursesWithStudentIdController, getAllCoursesController } from "../controllers/courseController.js";
 
 const routerCourses = Router();
+
+// ROUTE FOR GET ALL COURSES
+routerCourses.route("/getAllCourses").get(getAllCoursesController);
 
 // ROUTE FOR CREATE COURSE
 routerCourses.route("/createCourse").post(courseCreateController);
