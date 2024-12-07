@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/server.js",
-    "start-dev": "cp .dev .env && cp ./src/settings/.env-settings-dev ./src/settings/.env && node src/server.js",
+    "start-dev": "cp .dev .env && node src/server.js",
     "start-local": "cp .local .env && cp ./src/settings/.env-settings-local ./src/settings/.env && node src/server.js"
   },
   "keywords": [
