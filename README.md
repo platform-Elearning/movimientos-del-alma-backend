@@ -235,7 +235,7 @@ http://your-api-domain.com/
 - **Request Example:**
   ```json
   {
-    "student_id": 123,
+    "student_id": "49nrzt",
     "course_id": 456,
     "enrollment_status": "active",
     "notes": "Needs assistance with course materials"
