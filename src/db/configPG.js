@@ -8,7 +8,7 @@ export const pool = new Pool({
   password: settings.database.password,
   database: settings.database.database,
   host: settings.database.host,
-  port: settings.database.port,
+  port: 5432,
   max: 10,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,

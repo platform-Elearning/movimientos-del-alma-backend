@@ -1,12 +1,15 @@
 {
-  "name": "backend-tuwebi",
+  "name": "backend-mda",
   "version": "1.0.0",
-  "description": "backend for enterprise \"TuWebi\"",
+  "description": "backend for enterprise \"Movimientos del Alma\"",
   "main": "main.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "start-dev": "cp .dev .env && node src/server.js",
+    "start-prod": "cp .prod .env && node src/server.js",
+    "start-local": "cp .local .env && node src/server.js"
   },
   "keywords": [
     "nodejs"

@@ -3,7 +3,25 @@ import {
   getAllEnrollmentsById,
   getEnrollment,
   registerToCourse,
+  getAllCourses
 } from "../crud/crudCourses.js";
+
+export const getAllCoursesController = async (req, res) => {
+  try {
+    const courses = await getAllCourses();
+    return res.status(200).json({
+      success: true,
+      data: courses,
+    });
+  } catch (error) {
+    console.error("Error in getAllCoursesController:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error,
+    });
+  }
+};
 
 export const courseCreateController = async (req, res) => {
   const {

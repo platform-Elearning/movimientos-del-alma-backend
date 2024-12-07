@@ -1,6 +1,20 @@
 import { pool } from "../db/configPG.js";
 import {  getDate } from "../utils/utils.js";
 
+export const getAllCourses = async () => {
+  const query = `
+    SELECT * FROM courses;
+  `;
+
+  try {
+    const result = await pool.query(query);
+    return result.rows;
+  } catch (error) {
+    console.error("Error in getAllCourses:", error);
+    throw new Error("Failed to get courses");
+  }
+};
+
 export const addCourse = async (
   name,
   duration_months,

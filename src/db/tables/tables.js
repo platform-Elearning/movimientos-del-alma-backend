@@ -434,8 +434,6 @@ const createModuleVideosTable = async () => {
   }
 };
 
-
-
 export const createTablesDbPostgres = async () => {
   
   try {
