@@ -5,8 +5,8 @@ const { Pool } = pkg;
 
 export const pool = new Pool({
   user: settings.database.user,
-  password: "EdRPykJaVAUoZATgDQJCrwykvRdJVmfp",
-  database: "railway",
+  password: settings.database.password,
+  database: settings.database.PG_DBNAME,
   host: "postgres.railway.internal",
   port: 5432,
   max: 10,
