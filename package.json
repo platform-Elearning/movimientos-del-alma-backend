@@ -8,6 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/server.js",
     "start-dev": "cp .dev .env && node src/server.js",
+    "start-prod": "cp .prod .env && node src/server.js",
     "start-local": "cp .local .env && node src/server.js"
   },
   "keywords": [
