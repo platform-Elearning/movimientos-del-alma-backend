@@ -1,4 +1,4 @@
-import { readLoginData } from "../crud/crudUsers.js";
+import { readLoginData, changePassword } from "../crud/crudUsers.js";
 import { authFunc } from "../passwordStrategy/passwordStrategy.js";
 import { settings } from "../settings/settings.js";
 import jwt from "jsonwebtoken";

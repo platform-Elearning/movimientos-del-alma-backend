@@ -8,6 +8,7 @@ import { settings } from "./settings/settings.js";
 import { createTablesDbPostgres } from "./db/tables/tables.js";
 import routerCourses from "./routes/routesCourses.js";
 import dotenv from "dotenv";
+
 dotenv.config();
 
 const app = express();
