@@ -1,5 +1,5 @@
 import { pool } from "../db/configPG.js";
-import { getAllEnrollmentsById } from "./crudCourses.js";
+import { getAllEnrollmentsByStudentId } from "./crudCourses.js";
 
 // CRUD FOR USER
 
@@ -188,7 +188,7 @@ export const getStudentsWithCourses = async () => {
     const studentsWithCourses = [];
     
     for (const student of allStudents) {
-      const enrollments = (await getAllEnrollmentsById(student.id)) || [];
+      const enrollments = (await getAllEnrollmentsByStudentId(student.id)) || [];
 
       studentsWithCourses.push({
         user_id: student.id,
