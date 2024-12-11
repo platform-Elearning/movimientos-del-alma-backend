@@ -190,7 +190,14 @@ export const adminCreateController = async (req, res) => {
 };
 
 export const getUserController = async (req, res) => {
-  const { id } = req.body;
+  const { id } = req.headers;
+
+  if (!id) {
+    return res.status(400).json({
+      success: false,
+      errorMessage: "ID is required in the headers",
+    });
+  }
 
   try {
     const response = await getStudentData(id);
@@ -200,6 +207,7 @@ export const getUserController = async (req, res) => {
     }
 
     return res.status(500).json({
+      dni: response.identification_number,
       name: response.name,
       lastname: response.lastname,
       email: response.email,
@@ -235,9 +243,8 @@ export const getAllStudentsController = async (req, res) => {
 
 export const getAllUsersWithCoursesController = async (req, res) => {
   try {
-
     const response = await getStudentsWithCourses()
-    return res.status(500).json({
+    return res.status(200).json({
       response,
     });
   } catch (error) {
