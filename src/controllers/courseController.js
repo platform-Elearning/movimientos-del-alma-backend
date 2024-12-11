@@ -127,7 +127,7 @@ export const getCoursesWithStudentIdController = async (req, res) => {
     });
   }
   try {
-    const enrollments = await getAllEnrollmentsById(student_id);
+    const enrollments = await getAllEnrollmentsById(id);
 
     return res.status(200).json({
       success: true,
