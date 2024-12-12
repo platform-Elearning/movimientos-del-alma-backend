@@ -119,7 +119,7 @@ export const getEnrollment = async (student_id, course_id) => {
   }
 };
 
-export const getAllEnrollmentsById = async (student_id) => {
+export const getAllEnrollmentsByStudentId = async (student_id) => {
   try {
     const query = `
     SELECT
@@ -143,16 +143,13 @@ export const getAllEnrollmentsById = async (student_id) => {
     const result = await pool.query(query, [student_id]);
 
     if (result.rows.length === 0) {
-      return {
-        success: false,
-        message: "No courses found for the student",
-        courses: [],
-      };
+      return [];
     }
 
     return result.rows;
+
   } catch (error) {
-    console.error("Error in getAllEnrollments:", error);
+    console.error("Error in getAllEnrollmentsByStudentId:", error);
 
     return {
       success: false,

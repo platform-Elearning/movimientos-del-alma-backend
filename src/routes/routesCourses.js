@@ -13,6 +13,6 @@ routerCourses.route("/createCourse").post(courseCreateController);
 routerCourses.route("/registerToCourse").post(enrollmentToCourseController);
 
 // ROUTER FOR GET ALL COURSES WITH STUDENT_ID
-routerCourses.route("/getCoursesById").get(getCoursesWithStudentIdController);
+routerCourses.route("/getCoursesByStudentId").get(getCoursesWithStudentIdController);
 
 export default routerCourses;

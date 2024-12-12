@@ -1,6 +1,6 @@
 import {
   addCourse,
-  getAllEnrollmentsById,
+  getAllEnrollmentsByStudentId,
   getEnrollment,
   registerToCourse,
   getAllCourses
@@ -118,9 +118,16 @@ export const enrollmentToCourseController = async (req, res) => {
 };
 
 export const getCoursesWithStudentIdController = async (req, res) => {
-  const { student_id } = req.body;
+  const { id } = req.headers;
+
+  if (!id) {
+    return res.status(400).json({
+      success: false,
+      errorMessage: "ID is required in the headers",
+    });
+  }
   try {
-    const enrollments = await getAllEnrollmentsById(student_id);
+    const enrollments = await getAllEnrollmentsByStudentId(id);
 
     return res.status(200).json({
       success: true,
