@@ -30,7 +30,7 @@ jobs:
           mv backup_users_${TIMESTAMP}.sql backup/
           
       - name: Subir el backup como artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: api-database-backup-${{ env.TIMESTAMP }}
           path: backup/
