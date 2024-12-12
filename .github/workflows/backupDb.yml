@@ -1,0 +1,39 @@
+name: Daily API Backup on DB
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 1 * * *'  # Todos los días a la 1:00 AM (UTC)
+    
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configurar TIMESTAMP en UTC-3
+        run: echo "TIMESTAMP=$(date -u --date='3 hours ago' +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_ENV
+
+      - name: Verificar TIMESTAMP
+        run: echo "El timestamp es ${TIMESTAMP}"
+
+      - name: Instalar PostgreSQL Client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Generar volcado de la base de datos
+        env:
+          PGHOST: your-database-host.railway.app
+          PGDATABASE: your_database_name
+          PGUSER: your_user
+          PGPASSWORD: your_password
+          PGPORT: 5432
+        run: |
+          pg_dump -Fc -h ${{ secrets.PGHOST }} -U ${{ secrets.PGUSER }} -d ${{ secrets.PGDATABASE -p ${{ secrets.PGPORT }} > backup_${TIMESTAMP}.dump
+
+      - name: Crear carpeta para el backup
+        run: mkdir -p backup && mv backup_${TIMESTAMP}.dump backup/
+
+      - name: Subir el backup como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: database-backup-${{ env.TIMESTAMP }}
+          path: backup/
