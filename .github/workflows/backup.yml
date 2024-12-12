@@ -9,21 +9,25 @@ jobs:
   backup:
     runs-on: ubuntu-latest
 
+    env:
+      TIMESTAMP: $(date +%Y%m%d%H%M%S)  # Definir una marca de tiempo única para el job
+
     steps:
       - name: Obtener datos de la API con curl
-        run: curl -X GET https://movimientos-del-alma-backend-develop.up.railway.app/users/getAllStudents -o backup_users$(date +%Y%m%d%H%M%S).json
+        run: curl -X GET https://movimientos-del-alma-backend-develop.up.railway.app/users/getAllStudents -o backup_users_${TIMESTAMP}.json
 
       - name: Convertir JSON a SQL
         run: |
-          jq -r '.response[] | "INSERT INTO students (id, identification_number, name, lastname, email, nationality) VALUES (''\(.id)'', ''\(.identification_number)'', ''\(.name)'', ''\(.lastname)'', ''\(.email)'', ''\(.nationality)'');"' backup_users$(date +%Y%m%d%H%M%S).json > backup_users_$(date +%Y%m%d%H%M%S).sql
+          jq -r '.response[] | "INSERT INTO students (id, identification_number, name, lastname, email, nationality) VALUES (''\(.id)'', ''\(.identification_number)'', ''\(.name)'', ''\(.lastname)'', ''\(.email)'', ''\(.nationality)'');"' backup_users_${TIMESTAMP}.json > backup_users_${TIMESTAMP}.sql
      
       - name: Crear carpeta para el backup
         run: |
           mkdir -p backup
-          mv backup_users_*.sql backup/
+          mv backup_users_${TIMESTAMP}.json backup/
+          mv backup_users_${TIMESTAMP}.sql backup/
           
       - name: Subir el backup como artifact
         uses: actions/upload-artifact@v3
         with:
-          name: api-database-backup
+          name: api-database-backup-${{ env.TIMESTAMP }}
           path: backup/
