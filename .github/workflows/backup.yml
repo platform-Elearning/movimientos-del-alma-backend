@@ -9,10 +9,13 @@ jobs:
   backup:
     runs-on: ubuntu-latest
 
-    env:
-      TIMESTAMP: $(date +%Y%m%d%H%M%S)  # Definir una marca de tiempo única para el job
-
     steps:
+      - name: Definir TIMESTAMP
+        run: echo "TIMESTAMP=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+
+      - name: Verificar TIMESTAMP
+        run: echo "El timestamp es ${TIMESTAMP}"
+
       - name: Obtener datos de la API con curl
         run: curl -X GET https://movimientos-del-alma-backend-develop.up.railway.app/users/getAllStudents -o backup_users_${TIMESTAMP}.json
 
