@@ -20,7 +20,7 @@ jobs:
       - name: Crear carpeta para el backup
         run: |
           mkdir -p backup
-          mv * backup/
+          mv backup/* backup/
 
       - name: Subir el backup como artifact
         uses: actions/upload-artifact@v4
