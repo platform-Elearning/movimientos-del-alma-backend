@@ -21,13 +21,15 @@ jobs:
 
       - name: Generar volcado de la base de datos
         env:
-          PGHOST: your-database-host.railway.app
-          PGDATABASE: your_database_name
-          PGUSER: your_user
-          PGPASSWORD: your_password
-          PGPORT: 5432
+          PGHOST: ${{ secrets.PGHOST }}
+          PGDATABASE: ${{ secrets.PGDATABASE }}
+          PGUSER: ${{ secrets.PGUSER }}
+          PGPASSWORD: ${{ secrets.PGPASSWORD }}
+          PGPORT: ${{ secrets.PGPORT }}
         run: |
-          pg_dump -Fc -h ${{ secrets.PGHOST }} -U ${{ secrets.PGUSER }} -d ${{ secrets.PGDATABASE -p ${{ secrets.PGPORT }} > backup_${TIMESTAMP}.dump
+          TIMESTAMP=$(date +%Y-%m-%d_%H-%M-%S)
+          pg_dump -Fc -h "$PGHOST" -U "$PGUSER" -d "$PGDATABASE" -p "$PGPORT" > backup_${TIMESTAMP}.dump
+
 
       - name: Crear carpeta para el backup
         run: mkdir -p backup && mv backup_${TIMESTAMP}.dump backup/
