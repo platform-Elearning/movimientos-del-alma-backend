@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 1 * * *'  # Todos los días a la 1:00 AM (UTC)
-    
+
 jobs:
   backup:
     runs-on: ubuntu-latest
@@ -33,9 +33,7 @@ jobs:
           PGPASSWORD: ${{ secrets.PGPASSWORD }}
           PGPORT: ${{ secrets.PGPORT }}
         run: |
-          TIMESTAMP=$(date +%Y-%m-%d_%H-%M-%S)
           pg_dump -Fc -h "$PGHOST" -U "$PGUSER" -d "$PGDATABASE" -p "$PGPORT" > backup_${TIMESTAMP}.dump
-
 
       - name: Crear carpeta para el backup
         run: mkdir -p backup && mv backup_${TIMESTAMP}.dump backup/
