@@ -15,7 +15,7 @@ jobs:
 
       - name: Convertir JSON a SQL
         run: |
-          jq -r '.response[] | "INSERT INTO students (id, identification_number, name, lastname, email, nationality) VALUES (\'\(.id)\', \'\(.identification_number)\', \'\(.name)\', \'\(.lastname)\', \'\(.email)\', \'\(.nationality)\');"' users.json > backup_users_$(date +%Y%m%d%H%M%S).sql
+          jq -r '.response[] | "INSERT INTO students (id, identification_number, name, lastname, email, nationality) VALUES (''\(.id)'', ''\(.identification_number)'', ''\(.name)'', ''\(.lastname)'', ''\(.email)'', ''\(.nationality)'');"' users.json > backup_users_$(date +%Y%m%d%H%M%S).sql
 
       - name: Crear carpeta para el backup
         run: |
