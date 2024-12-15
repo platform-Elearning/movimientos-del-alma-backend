@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { courseCreateController, enrollmentToCourseController, getCoursesWithStudentIdController, getAllCoursesController } from "../controllers/courseController.js";
+import { courseCreateController, enrollmentToCourseController, getCoursesWithStudentIdController, getAllCoursesController, modulesOfStudentController } from "../controllers/courseController.js";
 
 const routerCourses = Router();
 
@@ -14,5 +14,8 @@ routerCourses.route("/registerToCourse").post(enrollmentToCourseController);
 
 // ROUTER FOR GET ALL COURSES WITH STUDENT_ID
 routerCourses.route("/getCoursesByStudentId").get(getCoursesWithStudentIdController);
+
+// router to get a student's modules
+routerCourses.route("/getModulesOfStudent").get(modulesOfStudentController);
 
 export default routerCourses;

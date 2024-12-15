@@ -4,6 +4,7 @@ import {
   getEnrollment,
   registerToCourse,
   getAllCourses,
+  getCoveredModulesOfCourse,
 } from "../crud/crudCourses.js";
 import { getStudentWithDni } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
@@ -14,6 +15,29 @@ export const getAllCoursesController = async (req, res) => {
     return res.status(200).json({
       success: true,
       data: courses,
+    });
+  } catch (error) {
+    console.error("Error in getAllCoursesController:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error,
+    });
+  }
+};
+
+export const modulesOfStudentController = async (req, res) => {
+  const { student_id, course_id } = req.body;
+
+  try {
+    const modulesOfStudent = await getCoveredModulesOfCourse(
+      student_id,
+      course_id
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: modulesOfStudent,
     });
   } catch (error) {
     console.error("Error in getAllCoursesController:", error);
