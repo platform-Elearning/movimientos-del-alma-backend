@@ -62,30 +62,22 @@ export const addCourse = async (
 export const registerToCourse = async (
   student_id,
   course_id,
-  enrollment_status,
-  notes = "No se dejan notas"
+  modules_covered,
+  notes 
 ) => {
-  if (!student_id || !course_id || !enrollment_status) {
+  if (!student_id || !course_id || !modules_covered) {
     throw new Error("All field are required");
-  }
-
-  const validStatuses = ["active", "cancelled", "completed", "incompleted"];
-
-  if (!validStatuses.includes(enrollment_status)) {
-    throw new Error(
-      "Invalid enrollment status. Allowed values are: active, cancelled, completed, incompleted."
-    );
   }
 
   const enrollment_date = getDate();
 
   try {
-    const query = `INSERT INTO enrollments (student_id, course_id, enrollment_date, enrollment_status, notes) VALUES ($1, $2, $3, $4, $5)`;
+    const query = `INSERT INTO enrollments (student_id, course_id, enrollment_date, modules_covered, notes) VALUES ($1, $2, $3, $4, $5)`;
     const resultdb = await pool.query(query, [
       student_id,
       course_id,
       enrollment_date,
-      enrollment_status,
+      modules_covered,
       notes,
     ]);
 

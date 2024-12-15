@@ -210,3 +210,21 @@ export const getStudentsWithCourses = async () => {
     throw new Error("getStudentsWithCourses error");
   }
 };
+
+export const getStudentWithDni = async (dni) => {
+  try {
+    const query = `SELECT * FROM student WHERE identification_number = $1`;
+    const { rows } = await pool.query(query, [dni]); 
+
+    if (rows.length === 0) {
+
+      throw new Error(`No student found with DNI: ${dni}`);
+    }
+
+    return rows[0].id;  
+    
+  } catch (error) {
+    console.error("getStudentWithDni error:", error.message || error);  // Imprimir el error con más detalles
+    throw new Error(`Error while fetching student with DNI ${dni}: ${error.message || error}`);
+  }
+};

@@ -22,31 +22,6 @@ const createUserRoleType = async () => {
   }
 };
 
-const createEnrollmentStatusType = async () => {
-  const checkQuery = `
-    SELECT EXISTS (
-      SELECT 1 FROM pg_type WHERE typname = 'enrollment_status'
-    );
-  `;
-
-  const createQuery = `
-    CREATE TYPE enrollment_status AS ENUM ('active', 'cancelled', 'completed', 'incompleted');
-  `;
-
-  try {
-    const checkResult = await pool.query(checkQuery);
-    const typeExists = checkResult.rows[0].exists;
-
-    if (!typeExists) {
-      await pool.query(createQuery);
-      console.log("Type 'enrollment_status' created.");
-    } else {
-      console.log("Type 'enrollment_status' already exists.");
-    }
-  } catch (error) {
-    console.error("Error creating type 'enrollment_status':", error);
-  }
-};
 
 const createUsersTable = async () => {
   const checkQuery = `
@@ -164,7 +139,7 @@ const createEnrollmentsTable = async () => {
       "student_id" VARCHAR,
       "course_id" INTEGER,
       "enrollment_date" TIMESTAMP,
-      "enrollment_status" VARCHAR, 
+      "modules_covered" INTEGER, 
       "notes" VARCHAR,
       FOREIGN KEY ("student_id") REFERENCES "users" ("id"),
       FOREIGN KEY ("course_id") REFERENCES "courses" ("id")
@@ -439,7 +414,6 @@ export const createTablesDbPostgres = async () => {
   try {
     await pool.query("BEGIN");
     await createUserRoleType();
-    await createEnrollmentStatusType();
     await createUsersTable();
     await createCoursesTable();
     await createTeacherTable();
