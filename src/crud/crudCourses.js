@@ -1,5 +1,5 @@
 import { pool } from "../db/configPG.js";
-import {  getDate } from "../utils/utils.js";
+import { getDate } from "../utils/utils.js";
 
 export const getAllCourses = async () => {
   const query = `
@@ -12,6 +12,41 @@ export const getAllCourses = async () => {
   } catch (error) {
     console.error("Error in getAllCourses:", error);
     throw new Error("Failed to get courses");
+  }
+};
+
+export const getCoveredModulesOfCourse = async (student_id, course_id) => {
+  const queryModules = "SELECT * FROM course_modules WHERE course_id = $1";
+  const queryCovered =
+    "SELECT modules_covered FROM enrollments WHERE student_id = $1 AND course_id = $2";
+
+  try {
+
+    const modulesResult = await pool.query(queryModules, [course_id]);
+    if (modulesResult.rows.length === 0) {
+      throw new Error("No modules found for this course");
+    }
+
+    const modules = modulesResult.rows;
+
+    const modulesCoveredResult = await pool.query(queryCovered, [
+      student_id,
+      course_id,
+    ]);
+  
+    if (modulesCoveredResult.rows[0].modules_covered.length === 0) {
+      throw new Error("No enrollment found for this student in this course");
+    }
+
+    return modules.slice(0, modulesCoveredResult.rows[0].modules_covered)
+  
+
+  } catch (error) {
+    console.error(
+      `Error retrieving covered modules for student ${student_id} in course ${course_id}:`,
+      error.message
+    );
+    throw new Error("Error retrieving covered modules");
   }
 };
 
@@ -63,7 +98,7 @@ export const registerToCourse = async (
   student_id,
   course_id,
   modules_covered,
-  notes 
+  notes
 ) => {
   if (!student_id || !course_id || !modules_covered) {
     throw new Error("All field are required");
@@ -139,7 +174,6 @@ export const getAllEnrollmentsByStudentId = async (student_id) => {
     }
 
     return result.rows;
-
   } catch (error) {
     console.error("Error in getAllEnrollmentsByStudentId:", error);
 
