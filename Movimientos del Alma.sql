@@ -33,7 +33,7 @@ CREATE TABLE "enrollments" (
   "student_id" VARCHAR,
   "course_id" INTEGER,
   "enrollment_date" TIMESTAMP,
-  "enrollment_status" VARCHAR, 
+  "modules_covered" INTEGER, 
   "notes" VARCHAR,
   FOREIGN KEY ("student_id") REFERENCES "users" ("id"),
   FOREIGN KEY ("course_id") REFERENCES "courses" ("id")
