@@ -6,6 +6,7 @@ import {
   getCourses,
   getModulesForStudent,
   createCourseModule,
+  createLesson
 } from "../crud/crudCourses.js";
 import { getStudentWithDni } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
@@ -265,3 +266,44 @@ export const createEnrollmentToCourseController = async (req, res) => {
     });
   }
 };
+
+// LESSONS
+
+export const createLessonController = async (req, res) => {
+  const { module_id, title, content, lesson_number, estimated_time } = req.body;
+  console.log("el controller entra")
+  if (
+    !module_id ||
+    !title ||
+    !content ||
+    !lesson_number ||
+    !estimated_time 
+  ) {
+    return res
+      .status(400)
+      .json({ success: false, error: "Mandatory data missing" });
+  }
+
+  try {
+
+    console.log("el try si entra")
+    const lessonCreated = await createLesson(module_id, title, content, lesson_number, estimated_time);
+
+    if (!lessonCreated) {
+      throw new Error("Failed to create module");
+    }
+
+    console.log("Lesson create correctly");
+    return res.status(201).json({
+      success: true,
+      message: "Lesson create correctly successfully",
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error,
+    });
+  }
+}
