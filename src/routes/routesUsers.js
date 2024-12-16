@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { adminCreateController, getAllStudentsController, getAllUsersWithCoursesController, getUserController, studentCreateController, teacherCreateController } from "../controllers/userController.js";
+import { createAdminController, createStudentController, createTeacherController, getAllStudentsController, getAllUsersWithCoursesController, getUserController } from "../controllers/userController.js";
 import { loginController, changePasswordController } from "../controllers/authController.js";
 
 const routerUsers = Router();
 
 // ROUTE FOR CREATE STUDENT AND USERSTUDENT
-routerUsers.route("/createCompleteStudent").post(studentCreateController);
+routerUsers.route("/createCompleteStudent").post(createStudentController);
 
 //ROUTE FOR GET STUDENT
 routerUsers.route("/getStudentById").get(getUserController);
@@ -14,7 +14,7 @@ routerUsers.route("/getStudentById").get(getUserController);
 routerUsers.route("/getAllStudents").get(getAllStudentsController);
 
 // ROUTE FOR CREATE TEACHER AND USERTEACHER
-routerUsers.route("/createCompleteTeacher").post(teacherCreateController);
+routerUsers.route("/createCompleteTeacher").post(createTeacherController);
 
 // ROUTE FOR LOGIN
 routerUsers.route("/login").post(loginController);
@@ -23,7 +23,7 @@ routerUsers.route("/login").post(loginController);
 routerUsers.route("/changePassword").post(changePasswordController);
 
 // ROUTE FOR CREATE ADMIN
-routerUsers.route("/createAdmin").post(adminCreateController);
+routerUsers.route("/createAdmin").post(createAdminController);
 
 // ROUTER FOR GET STUDENT WITH COURSES ASIGNED"
 routerUsers.route("/getStudentsWithCourses").get(getAllUsersWithCoursesController);
