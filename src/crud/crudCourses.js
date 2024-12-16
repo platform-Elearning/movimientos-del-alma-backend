@@ -1,106 +1,7 @@
 import { pool } from "../db/configPG.js";
-import {  getDate } from "../utils/utils.js";
+import { getDate } from "../utils/utils.js";
 
-export const getAllCourses = async () => {
-  const query = `
-    SELECT * FROM courses;
-  `;
-
-  try {
-    const result = await pool.query(query);
-    return result.rows;
-  } catch (error) {
-    console.error("Error in getAllCourses:", error);
-    throw new Error("Failed to get courses");
-  }
-};
-
-export const addCourse = async (
-  name,
-  duration_months,
-  quantity_lessons,
-  quantity_videos,
-  enrollment_fee,
-  enrollment_fee_USD,
-  monthly_fee,
-  monthly_fee_USD
-) => {
-  if (
-    !name ||
-    !duration_months ||
-    !quantity_lessons ||
-    !quantity_videos ||
-    !enrollment_fee ||
-    !enrollment_fee_USD ||
-    !monthly_fee ||
-    !monthly_fee_USD
-  ) {
-    throw new Error("All fields are required");
-  }
-
-  const query = `
-      INSERT INTO courses (name, duration_months, quantity_lessons, quantity_videos, enrollment_fee,
-      enrollment_fee_USD,
-      monthly_fee,
-      monthly_fee_USD)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-    `;
-
-  const resultdb = await pool.query(query, [
-    name,
-    duration_months,
-    quantity_lessons,
-    quantity_videos,
-    enrollment_fee,
-    enrollment_fee_USD,
-    monthly_fee,
-    monthly_fee_USD,
-  ]);
-  return resultdb;
-};
-
-export const registerToCourse = async (
-  student_id,
-  course_id,
-  enrollment_status,
-  notes = "No se dejan notas"
-) => {
-  if (!student_id || !course_id || !enrollment_status) {
-    throw new Error("All field are required");
-  }
-
-  const validStatuses = ["active", "cancelled", "completed", "incompleted"];
-
-  if (!validStatuses.includes(enrollment_status)) {
-    throw new Error(
-      "Invalid enrollment status. Allowed values are: active, cancelled, completed, incompleted."
-    );
-  }
-
-  const enrollment_date = getDate();
-
-  try {
-    const query = `INSERT INTO enrollments (student_id, course_id, enrollment_date, enrollment_status, notes) VALUES ($1, $2, $3, $4, $5)`;
-    const resultdb = await pool.query(query, [
-      student_id,
-      course_id,
-      enrollment_date,
-      enrollment_status,
-      notes,
-    ]);
-
-    return resultdb.rowCount;
-  } catch (error) {
-    console.error("Error in registerToCourse:", error.message);
-    throw new Error("Failed to register to course", error);
-  }
-};
-
-export const readCourseById = () => {};
-
-export const updateCourse = () => {};
-
-export const deleteCourse = () => {};
+// ENROLLMENTS
 
 export const getEnrollment = async (student_id, course_id) => {
   try {
@@ -147,7 +48,6 @@ export const getAllEnrollmentsByStudentId = async (student_id) => {
     }
 
     return result.rows;
-
   } catch (error) {
     console.error("Error in getAllEnrollmentsByStudentId:", error);
 
@@ -158,3 +58,164 @@ export const getAllEnrollmentsByStudentId = async (student_id) => {
     };
   }
 };
+
+// COURSES
+
+export const createCourse = async (
+  name,
+  duration_months,
+  quantity_lessons,
+  quantity_videos,
+  enrollment_fee,
+  enrollment_fee_USD,
+  monthly_fee,
+  monthly_fee_USD
+) => {
+  if (
+    !name ||
+    !duration_months ||
+    !quantity_lessons ||
+    !quantity_videos ||
+    !enrollment_fee ||
+    !enrollment_fee_USD ||
+    !monthly_fee ||
+    !monthly_fee_USD
+  ) {
+    throw new Error("All fields are required");
+  }
+
+  const query = `
+      INSERT INTO courses (name, duration_months, quantity_lessons, quantity_videos, enrollment_fee,
+      enrollment_fee_USD,
+      monthly_fee,
+      monthly_fee_USD)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    `;
+
+  const resultdb = await pool.query(query, [
+    name,
+    duration_months,
+    quantity_lessons,
+    quantity_videos,
+    enrollment_fee,
+    enrollment_fee_USD,
+    monthly_fee,
+    monthly_fee_USD,
+  ]);
+  return resultdb;
+};
+
+export const getCourses = async () => {
+  const query = `
+    SELECT * FROM courses;
+  `;
+
+  try {
+    const result = await pool.query(query);
+    return result.rows;
+  } catch (error) {
+    console.error("Error in getAllCourses:", error);
+    throw new Error("Failed to get courses");
+  }
+};
+
+export const getCourseById = () => {};
+
+export const updateCourse = () => {};
+
+export const deleteCourse = () => {};
+
+
+export const registerToCourse = async (
+  student_id,
+  course_id,
+  modules_covered,
+  notes
+) => {
+  if (!student_id || !course_id || !modules_covered) {
+    throw new Error("All field are required");
+  }
+
+  const enrollment_date = getDate();
+
+  try {
+    const query = `INSERT INTO enrollments (student_id, course_id, enrollment_date, modules_covered, notes) VALUES ($1, $2, $3, $4, $5)`;
+    const resultdb = await pool.query(query, [
+      student_id,
+      course_id,
+      enrollment_date,
+      modules_covered,
+      notes,
+    ]);
+
+    return resultdb.rowCount;
+  } catch (error) {
+    console.error("Error in registerToCourse:", error.message);
+    throw new Error("Failed to register to course", error);
+  }
+};
+
+// MODULES
+
+export const createCourseModule = async (course_id, module_number, name, description, duration) => {
+  if (!course_id || !module_number || !name || !description || !duration){
+    throw new Error("All fields are required");
+  }
+
+  const query = `INSERT INTO course_modules (course_id, module_number, name, description, duration) VALUES ($1, $2, $3, $4, $5)`;
+
+  const resultdb = await pool.query(query, [course_id, module_number, name, description, duration]);
+
+  return resultdb;
+} 
+
+export const getModulesForStudent = async (student_id, course_id) => {
+  const queryModules = "SELECT * FROM course_modules WHERE course_id = $1";
+  const queryCovered =
+    "SELECT modules_covered FROM enrollments WHERE student_id = $1 AND course_id = $2";
+
+  try {
+
+    const modulesResult = await pool.query(queryModules, [course_id]);
+    if (modulesResult.rows.length === 0) {
+      throw new Error("No modules found for this course");
+    }
+
+    const modules = modulesResult.rows;
+
+    const modulesCoveredResult = await pool.query(queryCovered, [
+      student_id,
+      course_id,
+    ]);
+  
+    if (modulesCoveredResult.rows[0].modules_covered.length === 0) {
+      throw new Error("No enrollment found for this student in this course");
+    }
+
+    return modules.slice(0, modulesCoveredResult.rows[0].modules_covered)
+  
+
+  } catch (error) {
+    console.error(
+      `Error retrieving covered modules for student ${student_id} in course ${course_id}:`,
+      error.message
+    );
+    throw new Error("Error retrieving covered modules");
+  }
+};
+
+// LESSON
+
+export const createLesson = async (module_id, title, content, lesson_number, estimated_time) => {
+  if (!module_id || !title || !content || !lesson_number || !estimated_time){
+    throw new Error("All fields are required");
+  }
+
+  const query = `INSERT INTO lessons (module_id, title, content, lesson_number, estimated_time) VALUES ($1, $2, $3, $4, $5)`;
+
+  const resultdb = await pool.query(query, [module_id, title, content, lesson_number, estimated_time]);
+
+  return resultdb;
+
+
+}
