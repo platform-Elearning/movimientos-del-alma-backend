@@ -203,3 +203,19 @@ export const getModulesForStudent = async (student_id, course_id) => {
     throw new Error("Error retrieving covered modules");
   }
 };
+
+// LESSON
+
+export const createLesson = async (module_id, title, content, lesson_number, estimated_time) => {
+  if (!module_id || !title || !content || !lesson_number || !estimated_time){
+    throw new Error("All fields are required");
+  }
+
+  const query = `INSERT INTO lessons (module_id, title, content, lesson_number, estimated_time) VALUES ($1, $2, $3, $4, $5)`;
+
+  const resultdb = await pool.query(query, [module_id, title, content, lesson_number, estimated_time]);
+
+  return resultdb;
+
+
+}
