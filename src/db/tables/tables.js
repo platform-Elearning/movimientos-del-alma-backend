@@ -317,7 +317,6 @@ const createCourseModulesTable = async () => {
       "module_number" INTEGER,
       "name" VARCHAR,
       "description" TEXT,
-      "duration" INTEGER,
       FOREIGN KEY ("course_id") REFERENCES "courses" ("id")
     );
   `;
@@ -351,9 +350,9 @@ const createLessonsTable = async () => {
       "id" SERIAL PRIMARY KEY,
       "module_id" INTEGER,
       "title" VARCHAR,
-      "content" TEXT,
+      "description" TEXT,
       "lesson_number" INTEGER,
-      "estimated_time" INTEGER,
+      "url" VARCHAR,
       FOREIGN KEY ("module_id") REFERENCES "course_modules" ("id")
     );
   `;

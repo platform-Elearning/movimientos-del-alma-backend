@@ -5,4 +5,32 @@ sudo docker exec -it postgres_container_movimientosdelalma psql -U admin -d movi
 DROP TABLE IF EXISTS users;
 
 #ver tabla
+<<<<<<< HEAD
 \d users
+=======
+\d users
+
+#################################################################
+
+-- Deshabilitar temporalmente las restricciones de clave foránea
+SET session_replication_role = 'replica';
+
+-- Eliminar las tablas en el orden correcto
+DROP TABLE IF EXISTS "module_videos" CASCADE;
+DROP TABLE IF EXISTS "lessons" CASCADE;
+DROP TABLE IF EXISTS "course_modules" CASCADE;
+DROP TABLE IF EXISTS "teacher_courses" CASCADE;
+DROP TABLE IF EXISTS "student" CASCADE;
+DROP TABLE IF EXISTS "payments" CASCADE;
+DROP TABLE IF EXISTS "payment_methods" CASCADE;
+DROP TABLE IF EXISTS "enrollments" CASCADE;
+DROP TABLE IF EXISTS "teacher" CASCADE;
+DROP TABLE IF EXISTS "courses" CASCADE;
+DROP TABLE IF EXISTS "users" CASCADE;
+
+-- Rehabilitar las restricciones de clave foránea
+SET session_replication_role = 'origin';
+
+-- Eliminar el tipo ENUM 'user_role'
+DROP TYPE IF EXISTS user_role;
+>>>>>>> cca7fba3af6e3fdd12f270016f2fc761cee90c33

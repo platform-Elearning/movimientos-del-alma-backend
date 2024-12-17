@@ -141,14 +141,13 @@ export const getModulesOfStudentController = async (req, res) => {
 };
 
 export const createCourseModuleController = async (req, res) => {
-  const { course_id, module_number, name, description, duration } = req.body;
+  const { course_id, module_number, name, description} = req.body;
 
   if (
     !course_id ||
     !module_number ||
     !name ||
-    !description ||
-    !duration 
+    !description
   ) {
     return res
       .status(400)
@@ -156,7 +155,7 @@ export const createCourseModuleController = async (req, res) => {
   }
 
   try {
-    const moduleCreated = await createCourseModule(course_id, module_number, name, description, duration);
+    const moduleCreated = await createCourseModule(course_id, module_number, name, description);
 
     if (!moduleCreated) {
       throw new Error("Failed to create module");
@@ -270,14 +269,14 @@ export const createEnrollmentToCourseController = async (req, res) => {
 // LESSONS
 
 export const createLessonController = async (req, res) => {
-  const { module_id, title, content, lesson_number, estimated_time } = req.body;
+  const { module_id, title, description, lesson_number, url } = req.body;
   console.log("el controller entra")
   if (
     !module_id ||
     !title ||
-    !content ||
+    !description ||
     !lesson_number ||
-    !estimated_time 
+    !url 
   ) {
     return res
       .status(400)
@@ -287,7 +286,7 @@ export const createLessonController = async (req, res) => {
   try {
 
     console.log("el try si entra")
-    const lessonCreated = await createLesson(module_id, title, content, lesson_number, estimated_time);
+    const lessonCreated = await createLesson(module_id, title, description, lesson_number, url);
 
     if (!lessonCreated) {
       throw new Error("Failed to create module");
