@@ -83,27 +83,16 @@ CREATE TABLE "course_modules" (
   "module_number" INTEGER,
   "name" VARCHAR,
   "description" TEXT,
-  "duration" INTEGER,
   FOREIGN KEY ("course_id") REFERENCES "courses" ("id")
-);
-
-CREATE TABLE "module_videos" (
-  "id" SERIAL PRIMARY KEY,
-  "lesson_number" INTEGER,
-  "title" VARCHAR,
-  "url" VARCHAR,
-  "description" TEXT,
-  "duration" INTEGER,
-  FOREIGN KEY ("lesson_id") REFERENCES "lessons" ("id")
 );
 
 CREATE TABLE "lessons" (
   "id" SERIAL PRIMARY KEY,
   "module_id" INTEGER,
   "title" VARCHAR,
-  "content" TEXT,
+  "description" TEXT,
   "lesson_number" INTEGER,
-  "estimated_time" INTEGER,
+  "url" VARCHAR,
   FOREIGN KEY ("module_id") REFERENCES "course_modules" ("id")
 );
 

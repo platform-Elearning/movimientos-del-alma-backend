@@ -157,14 +157,14 @@ export const registerToCourse = async (
 
 // MODULES
 
-export const createCourseModule = async (course_id, module_number, name, description, duration) => {
-  if (!course_id || !module_number || !name || !description || !duration){
+export const createCourseModule = async (course_id, module_number, name, description) => {
+  if (!course_id || !module_number || !name || !description){
     throw new Error("All fields are required");
   }
 
   const query = `INSERT INTO course_modules (course_id, module_number, name, description, duration) VALUES ($1, $2, $3, $4, $5)`;
 
-  const resultdb = await pool.query(query, [course_id, module_number, name, description, duration]);
+  const resultdb = await pool.query(query, [course_id, module_number, name, description]);
 
   return resultdb;
 } 
@@ -206,14 +206,14 @@ export const getModulesForStudent = async (student_id, course_id) => {
 
 // LESSON
 
-export const createLesson = async (module_id, title, content, lesson_number, estimated_time) => {
-  if (!module_id || !title || !content || !lesson_number || !estimated_time){
+export const createLesson = async (module_id, title, description, lesson_number, url) => {
+  if (!module_id || !title || !description || !lesson_number || !url){
     throw new Error("All fields are required");
   }
 
   const query = `INSERT INTO lessons (module_id, title, content, lesson_number, estimated_time) VALUES ($1, $2, $3, $4, $5)`;
 
-  const resultdb = await pool.query(query, [module_id, title, content, lesson_number, estimated_time]);
+  const resultdb = await pool.query(query, [module_id, title, description, lesson_number, url]);
 
   return resultdb;
 
