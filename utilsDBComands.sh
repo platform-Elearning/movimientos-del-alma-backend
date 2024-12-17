@@ -5,7 +5,6 @@ sudo docker exec -it postgres_container_movimientosdelalma psql -U admin -d movi
 DROP TABLE IF EXISTS users;
 
 #ver tabla
-
 \d users
 
 #################################################################

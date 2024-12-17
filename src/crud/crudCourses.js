@@ -162,7 +162,7 @@ export const createCourseModule = async (course_id, module_number, name, descrip
     throw new Error("All fields are required");
   }
 
-  const query = `INSERT INTO course_modules (course_id, module_number, name, description, duration) VALUES ($1, $2, $3, $4, $5)`;
+  const query = `INSERT INTO course_modules (course_id, module_number, name, description) VALUES ($1, $2, $3, $4)`;
 
   const resultdb = await pool.query(query, [course_id, module_number, name, description]);
 
