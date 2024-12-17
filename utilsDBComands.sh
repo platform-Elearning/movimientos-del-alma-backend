@@ -5,9 +5,6 @@ sudo docker exec -it postgres_container_movimientosdelalma psql -U admin -d movi
 DROP TABLE IF EXISTS users;
 
 #ver tabla
-<<<<<<< HEAD
-\d users
-=======
 \d users
 
 #################################################################
@@ -33,4 +30,4 @@ SET session_replication_role = 'origin';
 
 -- Eliminar el tipo ENUM 'user_role'
 DROP TYPE IF EXISTS user_role;
->>>>>>> cca7fba3af6e3fdd12f270016f2fc761cee90c33
+
