@@ -11,11 +11,11 @@ CREATE TABLE "users" (
 CREATE TABLE "courses" (
   "id" SERIAL PRIMARY KEY,
   "name" VARCHAR,
-  "duration_months" INTEGER,
-  "quantity_lessons" INTEGER,
-  "quantity_videos" INTEGER,
+  "description" INTEGER,
   "enrollment_fee" INTEGER,
   "enrollment_fee_usd" INTEGER,
+  "total_price" INTEGER,
+  "total_price_usd" INTEGER,
   "monthly_fee" INTEGER,
   "monthly_fee_usd" INTEGER
 );
