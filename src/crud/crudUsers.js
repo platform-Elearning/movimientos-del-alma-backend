@@ -187,7 +187,7 @@ export const getStudentsWithCourses = async () => {
     
     for (const student of allStudents) {
       const enrollments = (await getAllEnrollmentsByStudentId(student.id)) || [];
-
+     
       studentsWithCourses.push({
         user_id: student.id,
         dni: student.identification_number,
@@ -196,7 +196,8 @@ export const getStudentsWithCourses = async () => {
         email: student.email,
         nationality: student.nationality,
         courses: enrollments.map((enrollment) => ({
-          courses: enrollment.course_name,
+          course: enrollment.course_name,
+          description: enrollment.description,
           modules: enrollment.modules_covered,
         })),
       });

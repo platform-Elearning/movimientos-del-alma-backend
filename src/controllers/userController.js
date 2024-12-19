@@ -151,8 +151,7 @@ export const createTeacherController = async (req, res) => {
       name,
       lastname,
       identification_number,
-      email,
-      dni
+      email
     );
 
     if (!teacherCreated) {

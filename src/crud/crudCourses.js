@@ -26,7 +26,7 @@ export const getAllEnrollmentsByStudentId = async (student_id) => {
     SELECT
       c.id AS course_id,
       c.name AS course_name,
-      c.description
+      c.description,
       e.modules_covered
     FROM
       enrollments e
@@ -42,6 +42,7 @@ export const getAllEnrollmentsByStudentId = async (student_id) => {
       return [];
     }
 
+    
     return result.rows;
   } catch (error) {
     console.error("Error in getAllEnrollmentsByStudentId:", error);
