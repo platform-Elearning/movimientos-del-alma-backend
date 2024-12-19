@@ -26,13 +26,8 @@ export const getAllEnrollmentsByStudentId = async (student_id) => {
     SELECT
       c.id AS course_id,
       c.name AS course_name,
-      c.duration_months,
-      c.quantity_lessons,
-      c.quantity_videos,
-      c.enrollment_fee,
-      c.enrollment_fee_usd,
-      c.monthly_fee,
-      c.monthly_fee_usd
+      c.description
+      e.modules_covered
     FROM
       enrollments e
     INNER JOIN
@@ -63,39 +58,21 @@ export const getAllEnrollmentsByStudentId = async (student_id) => {
 
 export const createCourse = async (
   name,
-  description,
-  enrollment_fee,
-  enrollment_fee_usd,
-  total_price,
-  total_price_usd,
-  monthly_fee,
-  monthly_fee_usd
+  description
 ) => {
   if (!name || !description) {
-    throw new Error("Fields name and description are required");
+    throw new Error("All fields are required");
   }
 
   const query = `
       INSERT INTO courses (name,
-    description,
-    enrollment_fee,
-    enrollment_fee_usd,
-    total_price,
-    total_price_usd,
-    monthly_fee,
-    monthly_fee_usd)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    description)
+      VALUES ($1, $2)
     `;
 
   const resultdb = await pool.query(query, [
     name,
-    description,
-    enrollment_fee,
-    enrollment_fee_usd,
-    total_price,
-    total_price_usd,
-    monthly_fee,
-    monthly_fee_usd,
+    description
   ]);
   return resultdb;
 };
@@ -209,22 +186,22 @@ export const getModulesForStudent = async (student_id, course_id) => {
 
 export const createLesson = async (
   module_id,
+  lesson_number,
   title,
   description,
-  lesson_number,
   url
 ) => {
-  if (!module_id || !title || !description || !lesson_number || !url) {
+  if (!module_id || !lesson_number || !title || !description  || !url) {
     throw new Error("All fields are required");
   }
 
-  const query = `INSERT INTO lessons (module_id, title, content, lesson_number, estimated_time) VALUES ($1, $2, $3, $4, $5)`;
+  const query = `INSERT INTO lessons (module_id, lesson_number, title, description, url) VALUES ($1, $2, $3, $4, $5)`;
 
   const resultdb = await pool.query(query, [
     module_id,
+    lesson_number,
     title,
     description,
-    lesson_number,
     url,
   ]);
 

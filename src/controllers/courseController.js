@@ -33,13 +33,7 @@ export const getAllCoursesController = async (req, res) => {
 export const createCourseController = async (req, res) => {
   const {
     name,
-    description,
-    enrollment_fee,
-    enrollment_fee_usd,
-    total_price,
-    total_price_usd,
-    monthly_fee,
-    monthly_fee_usd
+    description
   } = req.body;
 
   if (!name || !description) {
@@ -51,13 +45,7 @@ export const createCourseController = async (req, res) => {
   try {
     const courseCreated = await createCourse(
       name,
-      description,
-      enrollment_fee,
-      enrollment_fee_usd,
-      total_price,
-      total_price_usd,
-      monthly_fee,
-      monthly_fee_usd
+      description
     );
 
     if (!courseCreated) {
@@ -256,9 +244,9 @@ export const createEnrollmentToCourseController = async (req, res) => {
 // LESSONS
 
 export const createLessonController = async (req, res) => {
-  const { module_id, title, description, lesson_number, url } = req.body;
+  const { module_id, lesson_number, title, description, url } = req.body;
   console.log("el controller entra");
-  if (!module_id || !title || !description || !lesson_number || !url) {
+  if (!module_id || !lesson_number || !title || !description  || !url) {
     return res
       .status(400)
       .json({ success: false, error: "Mandatory data missing" });
@@ -268,9 +256,9 @@ export const createLessonController = async (req, res) => {
     console.log("el try si entra");
     const lessonCreated = await createLesson(
       module_id,
+      lesson_number,
       title,
       description,
-      lesson_number,
       url
     );
 

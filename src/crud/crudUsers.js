@@ -85,23 +85,21 @@ export const createTeacher = async (
   name,
   lastname,
   identification_number,
-  email,
-  dni
+  email
 ) => {
   try {
-    if (!id || !name || !lastname || !identification_number || !email || !dni) {
+    if (!id || !name || !lastname || !identification_number || !email ) {
       throw new Error("All fields are required");
     }
 
-    const query = `INSERT INTO teacher (id, name, lastname, identification_number, email, dni) VALUES ($1,$2,$3,$4, $5, $6)`;
+    const query = `INSERT INTO teacher (id, name, lastname, identification_number, email) VALUES ($1,$2,$3,$4,$5)`;
 
     const resultdb = await pool.query(query, [
       id,
       name,
       lastname,
       identification_number,
-      email,
-      dni,
+      email
     ]);
 
     return resultdb.rowCount;
@@ -115,8 +113,8 @@ export const createStudent = async (
   identification_number,
   name,
   lastname,
-  nationality,
-  email
+  email,
+  nationality
 ) => {
   try {
     if (
@@ -124,8 +122,8 @@ export const createStudent = async (
       !identification_number ||
       !name ||
       !lastname ||
-      !nationality ||
-      !email
+      !email ||
+      !nationality 
     ) {
       throw new Error("All fields are required");
     }
@@ -135,8 +133,8 @@ export const createStudent = async (
   identification_number,
   name,
   lastname,
-  nationality,
-  email)
+  email,
+  nationality)
   VALUES ($1, $2, $3, $4, $5, $6)
 `;
 
@@ -145,8 +143,8 @@ export const createStudent = async (
       identification_number,
       name,
       lastname,
-      nationality,
       email,
+      nationality
     ]);
 
     return resultdb.rowCount;
@@ -193,13 +191,13 @@ export const getStudentsWithCourses = async () => {
       studentsWithCourses.push({
         user_id: student.id,
         dni: student.identification_number,
-        email: student.email,
         name: student.name,
         last_name: student.lastname,
+        email: student.email,
         nationality: student.nationality,
         courses: enrollments.map((enrollment) => ({
           courses: enrollment.course_name,
-          modules: enrollment.quantity_lessons,
+          modules: enrollment.modules_covered,
         })),
       });
     }
