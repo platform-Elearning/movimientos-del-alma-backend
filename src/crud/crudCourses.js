@@ -63,44 +63,39 @@ export const getAllEnrollmentsByStudentId = async (student_id) => {
 
 export const createCourse = async (
   name,
-  duration_months,
-  quantity_lessons,
-  quantity_videos,
+  description,
   enrollment_fee,
-  enrollment_fee_USD,
+  enrollment_fee_usd,
+  total_price,
+  total_price_usd,
   monthly_fee,
-  monthly_fee_USD
+  monthly_fee_usd
 ) => {
-  if (
-    !name ||
-    !duration_months ||
-    !quantity_lessons ||
-    !quantity_videos ||
-    !enrollment_fee ||
-    !enrollment_fee_USD ||
-    !monthly_fee ||
-    !monthly_fee_USD
-  ) {
-    throw new Error("All fields are required");
+  if (!name || !description) {
+    throw new Error("Fields name and description are required");
   }
 
   const query = `
-      INSERT INTO courses (name, duration_months, quantity_lessons, quantity_videos, enrollment_fee,
-      enrollment_fee_USD,
-      monthly_fee,
-      monthly_fee_USD)
+      INSERT INTO courses (name,
+    description,
+    enrollment_fee,
+    enrollment_fee_usd,
+    total_price,
+    total_price_usd,
+    monthly_fee,
+    monthly_fee_usd)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     `;
 
   const resultdb = await pool.query(query, [
     name,
-    duration_months,
-    quantity_lessons,
-    quantity_videos,
+    description,
     enrollment_fee,
-    enrollment_fee_USD,
+    enrollment_fee_usd,
+    total_price,
+    total_price_usd,
     monthly_fee,
-    monthly_fee_USD,
+    monthly_fee_usd,
   ]);
   return resultdb;
 };
@@ -124,7 +119,6 @@ export const getCourseById = () => {};
 export const updateCourse = () => {};
 
 export const deleteCourse = () => {};
-
 
 export const registerToCourse = async (
   student_id,
@@ -157,17 +151,27 @@ export const registerToCourse = async (
 
 // MODULES
 
-export const createCourseModule = async (course_id, module_number, name, description) => {
-  if (!course_id || !module_number || !name || !description){
+export const createCourseModule = async (
+  course_id,
+  module_number,
+  name,
+  description
+) => {
+  if (!course_id || !module_number || !name || !description) {
     throw new Error("All fields are required");
   }
 
   const query = `INSERT INTO course_modules (course_id, module_number, name, description) VALUES ($1, $2, $3, $4)`;
 
-  const resultdb = await pool.query(query, [course_id, module_number, name, description]);
+  const resultdb = await pool.query(query, [
+    course_id,
+    module_number,
+    name,
+    description,
+  ]);
 
   return resultdb;
-} 
+};
 
 export const getModulesForStudent = async (student_id, course_id) => {
   const queryModules = "SELECT * FROM course_modules WHERE course_id = $1";
@@ -175,7 +179,6 @@ export const getModulesForStudent = async (student_id, course_id) => {
     "SELECT modules_covered FROM enrollments WHERE student_id = $1 AND course_id = $2";
 
   try {
-
     const modulesResult = await pool.query(queryModules, [course_id]);
     if (modulesResult.rows.length === 0) {
       throw new Error("No modules found for this course");
@@ -187,14 +190,12 @@ export const getModulesForStudent = async (student_id, course_id) => {
       student_id,
       course_id,
     ]);
-  
+
     if (modulesCoveredResult.rows[0].modules_covered.length === 0) {
       throw new Error("No enrollment found for this student in this course");
     }
 
-    return modules.slice(0, modulesCoveredResult.rows[0].modules_covered)
-  
-
+    return modules.slice(0, modulesCoveredResult.rows[0].modules_covered);
   } catch (error) {
     console.error(
       `Error retrieving covered modules for student ${student_id} in course ${course_id}:`,
@@ -206,16 +207,26 @@ export const getModulesForStudent = async (student_id, course_id) => {
 
 // LESSON
 
-export const createLesson = async (module_id, title, description, lesson_number, url) => {
-  if (!module_id || !title || !description || !lesson_number || !url){
+export const createLesson = async (
+  module_id,
+  title,
+  description,
+  lesson_number,
+  url
+) => {
+  if (!module_id || !title || !description || !lesson_number || !url) {
     throw new Error("All fields are required");
   }
 
   const query = `INSERT INTO lessons (module_id, title, content, lesson_number, estimated_time) VALUES ($1, $2, $3, $4, $5)`;
 
-  const resultdb = await pool.query(query, [module_id, title, description, lesson_number, url]);
+  const resultdb = await pool.query(query, [
+    module_id,
+    title,
+    description,
+    lesson_number,
+    url,
+  ]);
 
   return resultdb;
-
-
-}
+};

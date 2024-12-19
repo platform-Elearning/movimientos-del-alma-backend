@@ -11,13 +11,7 @@ CREATE TABLE "users" (
 CREATE TABLE "courses" (
   "id" SERIAL PRIMARY KEY,
   "name" VARCHAR,
-  "description" INTEGER,
-  "enrollment_fee" INTEGER,
-  "enrollment_fee_usd" INTEGER,
-  "total_price" INTEGER,
-  "total_price_usd" INTEGER,
-  "monthly_fee" INTEGER,
-  "monthly_fee_usd" INTEGER
+  "description" INTEGER
 );
 
 CREATE TABLE "teacher" (
@@ -37,25 +31,6 @@ CREATE TABLE "enrollments" (
   "notes" VARCHAR,
   FOREIGN KEY ("student_id") REFERENCES "users" ("id"),
   FOREIGN KEY ("course_id") REFERENCES "courses" ("id")
-);
-
-CREATE TABLE "payment_methods" (
-  "id" INTEGER PRIMARY KEY,
-  "name" VARCHAR,
-  "description" VARCHAR
-);
-
-CREATE TABLE "payments" (
-  "id" INTEGER PRIMARY KEY,
-  "enrollment_id" INTEGER,
-  "amount" INTEGER,
-  "payment_method_id" INTEGER,
-  "months_covered" INTEGER,
-  "payment_date" TIMESTAMP,
-  "currency" VARCHAR,
-  "payment_reference" VARCHAR,
-  FOREIGN KEY ("enrollment_id") REFERENCES "enrollments" ("id"),
-  FOREIGN KEY ("payment_method_id") REFERENCES "payment_methods" ("id")
 );
 
 CREATE TABLE "student" (
@@ -89,9 +64,9 @@ CREATE TABLE "course_modules" (
 CREATE TABLE "lessons" (
   "id" SERIAL PRIMARY KEY,
   "module_id" INTEGER,
+  "lesson_number" INTEGER,
   "title" VARCHAR,
   "description" TEXT,
-  "lesson_number" INTEGER,
   "url" VARCHAR,
   FOREIGN KEY ("module_id") REFERENCES "course_modules" ("id")
 );

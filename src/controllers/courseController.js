@@ -6,7 +6,7 @@ import {
   getCourses,
   getModulesForStudent,
   createCourseModule,
-  createLesson
+  createLesson,
 } from "../crud/crudCourses.js";
 import { getStudentWithDni } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
@@ -33,25 +33,16 @@ export const getAllCoursesController = async (req, res) => {
 export const createCourseController = async (req, res) => {
   const {
     name,
-    duration_months,
-    quantity_lessons,
-    quantity_videos,
+    description,
     enrollment_fee,
     enrollment_fee_usd,
+    total_price,
+    total_price_usd,
     monthly_fee,
-    monthly_fee_usd,
+    monthly_fee_usd
   } = req.body;
 
-  if (
-    !name ||
-    !duration_months ||
-    !quantity_lessons ||
-    !quantity_videos ||
-    !enrollment_fee ||
-    !enrollment_fee_usd ||
-    !monthly_fee ||
-    !monthly_fee_usd
-  ) {
+  if (!name || !description) {
     return res
       .status(400)
       .json({ success: false, error: "Mandatory data missing" });
@@ -60,11 +51,11 @@ export const createCourseController = async (req, res) => {
   try {
     const courseCreated = await createCourse(
       name,
-      duration_months,
-      quantity_lessons,
-      quantity_videos,
+      description,
       enrollment_fee,
       enrollment_fee_usd,
+      total_price,
+      total_price_usd,
       monthly_fee,
       monthly_fee_usd
     );
@@ -121,10 +112,7 @@ export const getModulesOfStudentController = async (req, res) => {
   const { student_id, course_id } = req.body;
 
   try {
-    const modulesOfStudent = await getModulesForStudent(
-      student_id,
-      course_id
-    );
+    const modulesOfStudent = await getModulesForStudent(student_id, course_id);
 
     return res.status(200).json({
       success: true,
@@ -141,21 +129,21 @@ export const getModulesOfStudentController = async (req, res) => {
 };
 
 export const createCourseModuleController = async (req, res) => {
-  const { course_id, module_number, name, description} = req.body;
+  const { course_id, module_number, name, description } = req.body;
 
-  if (
-    !course_id ||
-    !module_number ||
-    !name ||
-    !description
-  ) {
+  if (!course_id || !module_number || !name || !description) {
     return res
       .status(400)
       .json({ success: false, error: "Mandatory data missing" });
   }
 
   try {
-    const moduleCreated = await createCourseModule(course_id, module_number, name, description);
+    const moduleCreated = await createCourseModule(
+      course_id,
+      module_number,
+      name,
+      description
+    );
 
     if (!moduleCreated) {
       throw new Error("Failed to create module");
@@ -166,7 +154,6 @@ export const createCourseModuleController = async (req, res) => {
       success: true,
       message: "Module create correctly successfully",
     });
-
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -270,23 +257,22 @@ export const createEnrollmentToCourseController = async (req, res) => {
 
 export const createLessonController = async (req, res) => {
   const { module_id, title, description, lesson_number, url } = req.body;
-  console.log("el controller entra")
-  if (
-    !module_id ||
-    !title ||
-    !description ||
-    !lesson_number ||
-    !url 
-  ) {
+  console.log("el controller entra");
+  if (!module_id || !title || !description || !lesson_number || !url) {
     return res
       .status(400)
       .json({ success: false, error: "Mandatory data missing" });
   }
 
   try {
-
-    console.log("el try si entra")
-    const lessonCreated = await createLesson(module_id, title, description, lesson_number, url);
+    console.log("el try si entra");
+    const lessonCreated = await createLesson(
+      module_id,
+      title,
+      description,
+      lesson_number,
+      url
+    );
 
     if (!lessonCreated) {
       throw new Error("Failed to create module");
@@ -297,7 +283,6 @@ export const createLessonController = async (req, res) => {
       success: true,
       message: "Lesson create correctly successfully",
     });
-
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -305,4 +290,4 @@ export const createLessonController = async (req, res) => {
       error: error,
     });
   }
-}
+};
