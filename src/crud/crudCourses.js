@@ -42,7 +42,6 @@ export const getAllEnrollmentsByStudentId = async (student_id) => {
       return [];
     }
 
-    
     return result.rows;
   } catch (error) {
     console.error("Error in getAllEnrollmentsByStudentId:", error);
@@ -57,10 +56,7 @@ export const getAllEnrollmentsByStudentId = async (student_id) => {
 
 // COURSES
 
-export const createCourse = async (
-  name,
-  description
-) => {
+export const createCourse = async (name, description) => {
   if (!name || !description) {
     throw new Error("All fields are required");
   }
@@ -71,10 +67,7 @@ export const createCourse = async (
       VALUES ($1, $2)
     `;
 
-  const resultdb = await pool.query(query, [
-    name,
-    description
-  ]);
+  const resultdb = await pool.query(query, [name, description]);
   return resultdb;
 };
 
@@ -89,6 +82,34 @@ export const getCourses = async () => {
   } catch (error) {
     console.error("Error in getAllCourses:", error);
     throw new Error("Failed to get courses");
+  }
+};
+
+export const getCoursesWithModules = async () => {
+  try {
+    const allCourses = await getCourses();
+
+    const coursesWithModules = [];
+
+    for (const course of allCourses) {
+      const modules = (await getModulesOfDeterminedCourse(course.id)) || [];
+
+      coursesWithModules.push({
+        course_id: course.id,
+        name: course.name,
+        description: course.description,
+        modules: modules.map((module) => ({
+          module_number: module.module_number,
+          name: module.name,
+          description: module.description,
+        })),
+      });
+    }
+
+    return coursesWithModules;
+  } catch (error) {
+    console.log("getCoursesWithModules error", error);
+    throw new Error("getCoursesWithModules error");
   }
 };
 
@@ -151,7 +172,7 @@ export const createCourseModule = async (
   return resultdb;
 };
 
-export const getModulesForStudent = async (student_id, course_id) => {
+export const getEnrolledModules = async (student_id, course_id) => {
   const queryModules = "SELECT * FROM course_modules WHERE course_id = $1";
   const queryCovered =
     "SELECT modules_covered FROM enrollments WHERE student_id = $1 AND course_id = $2";
@@ -183,6 +204,34 @@ export const getModulesForStudent = async (student_id, course_id) => {
   }
 };
 
+export const getModulesOfDeterminedCourse = async (id) => {
+  try {
+    const query = `
+      SELECT
+        cm.module_number,
+        cm.name,
+        cm.description
+      FROM
+        course_modules cm
+      INNER JOIN
+        courses c ON cm.course_id = c.id
+      WHERE
+        c.id = $1;
+    `;
+
+    const result = await pool.query(query, [id]);
+
+    if (result.rows.length === 0) {
+      return [];
+    }
+
+    return result.rows;
+  } catch (error) {
+    console.error("Error in getModulesForCourse:", error);
+    throw new Error("Error retrieving modules");
+  }
+};
+
 // LESSON
 
 export const createLesson = async (
@@ -192,7 +241,7 @@ export const createLesson = async (
   description,
   url
 ) => {
-  if (!module_id || !lesson_number || !title || !description  || !url) {
+  if (!module_id || !lesson_number || !title || !description || !url) {
     throw new Error("All fields are required");
   }
 

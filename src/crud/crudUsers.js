@@ -198,7 +198,7 @@ export const getStudentsWithCourses = async () => {
         courses: enrollments.map((enrollment) => ({
           course: enrollment.course_name,
           description: enrollment.description,
-          modules: enrollment.modules_covered,
+          modules: enrollment.modules_covered
         })),
       });
     }

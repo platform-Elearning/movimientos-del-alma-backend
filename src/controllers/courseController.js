@@ -4,9 +4,10 @@ import {
   getEnrollment,
   registerToCourse,
   getCourses,
-  getModulesForStudent,
+  getEnrolledModules,
   createCourseModule,
   createLesson,
+  getCoursesWithModules
 } from "../crud/crudCourses.js";
 import { getStudentWithDni } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
@@ -29,6 +30,23 @@ export const getAllCoursesController = async (req, res) => {
     });
   }
 };
+
+export const getAllCoursesWithModulesController = async (req, res) => {
+  try {
+    const coursesWithModules = await getCoursesWithModules();
+    return res.status(200).json({
+      success: true,
+      data: coursesWithModules,
+    });
+  } catch (error) {
+    console.error("Error in getAllCoursesWithModulesController:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error,
+    });
+  }
+}
 
 export const createCourseController = async (req, res) => {
   const {
@@ -100,7 +118,7 @@ export const getModulesOfStudentController = async (req, res) => {
   const { student_id, course_id } = req.body;
 
   try {
-    const modulesOfStudent = await getModulesForStudent(student_id, course_id);
+    const modulesOfStudent = await getEnrolledModules(student_id, course_id);
 
     return res.status(200).json({
       success: true,

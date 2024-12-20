@@ -6,7 +6,7 @@ import { authenticateToken } from "../auth/auth.js";
 const routerUsers = Router();
 
 // ROUTE FOR CREATE STUDENT AND USERSTUDENT
-routerUsers.route("/createCompleteStudent").post(authenticateToken, createStudentController);
+routerUsers.route("/createCompleteStudent").post(createStudentController);
 
 //ROUTE FOR GET STUDENT
 routerUsers.route("/getStudentById").get(getUserController);
@@ -15,7 +15,7 @@ routerUsers.route("/getStudentById").get(getUserController);
 routerUsers.route("/getAllStudents").get(getAllStudentsController);
 
 // ROUTE FOR CREATE TEACHER AND USERTEACHER
-routerUsers.route("/createCompleteTeacher").post(authenticateToken, createTeacherController);
+routerUsers.route("/createCompleteTeacher").post(createTeacherController);
 
 // ROUTE FOR LOGIN
 routerUsers.route("/login").post(loginController);
@@ -24,7 +24,7 @@ routerUsers.route("/login").post(loginController);
 routerUsers.route("/changePassword").post(changePasswordController);
 
 // ROUTE FOR CREATE ADMIN
-routerUsers.route("/createAdmin").post(authenticateToken, createAdminController);
+routerUsers.route("/createAdmin").post(createAdminController);
 
 // ROUTER FOR GET STUDENT WITH COURSES ASIGNED"
 routerUsers.route("/getStudentsWithCourses").get(getAllUsersWithCoursesController);
