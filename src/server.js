@@ -3,11 +3,11 @@ import routerUsers from "./routes/routesUsers.js";
 import routerTest from "./routes/routeTest.js";
 import session from "express-session";
 import cors from "cors";
-import morgan from "morgan";
 import { settings } from "./settings/settings.js";
 import { createTablesDbPostgres } from "./db/tables/tables.js";
 import routerCourses from "./routes/routesCourses.js";
 import dotenv from "dotenv";
+import routerEnrollments from "./routes/routesEnrollments.js";
 
 dotenv.config();
 
@@ -19,7 +19,6 @@ const corsOptions = {
   credentials: true,
 };
 app.use(cors(corsOptions));
-app.use(morgan("combined"));
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
@@ -37,6 +36,7 @@ app.use(
 app.use("/users", routerUsers);
 app.use("/test", routerTest);
 app.use("/courses", routerCourses);
+app.use("/enrollments", routerEnrollments);
 
 (async () => {
   try {
@@ -59,41 +59,4 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
-
-// ------------------- funtion admin creation  -----------------------------
-
-const createAdminUser = async () => {
-  // Función de sleep
-  const sleep = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  };
-  try {
-    await sleep(5000);
-    const response = await fetch('http://localhost:8080/users/createAdmin', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id: "1",
-        email: "admin@admin.com",
-        password: "admin"
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      if (errorData.errorMessage === "User already exist") {
-        console.log("Admin user already exists.");
-      } else {
-        throw new Error("Failed to create admin user");
-      }
-    } else {
-      const data = await response.json();
-      console.log("Admin user created:", data);
-    }
-  } catch (error) {
-    console.error("Error creating admin user:", error);
-  }
-};
 
