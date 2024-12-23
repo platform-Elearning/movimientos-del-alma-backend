@@ -1,5 +1,5 @@
 import { pool } from "../db/configPG.js";
-import { getAllEnrollmentsByStudentId } from "./crudCourses.js";
+import { getAllEnrollmentsByStudentId } from "./crudEnrollments.js";
 
 // CRUD FOR USER
 

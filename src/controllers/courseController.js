@@ -1,13 +1,13 @@
 import {
   createCourse,
-  getAllEnrollmentsByStudentId,
   getCourses,
   getEnrolledModules,
   createCourseModule,
   createLesson,
-  getCoursesWithModules
+  getCoursesWithModules,
+  deleteCourse,
 } from "../crud/crudCourses.js";
-
+import { getAllEnrollmentsByStudentId } from "../crud/crudEnrollments.js";
 
 // COURSES
 
@@ -43,13 +43,10 @@ export const getAllCoursesWithModulesController = async (req, res) => {
       error: error,
     });
   }
-}
+};
 
 export const createCourseController = async (req, res) => {
-  const {
-    name,
-    description
-  } = req.body;
+  const { name, description } = req.body;
 
   if (!name || !description) {
     return res
@@ -58,10 +55,7 @@ export const createCourseController = async (req, res) => {
   }
 
   try {
-    const courseCreated = await createCourse(
-      name,
-      description
-    );
+    const courseCreated = await createCourse(name, description);
 
     if (!courseCreated) {
       throw new Error("Failed to create course");
@@ -72,6 +66,7 @@ export const createCourseController = async (req, res) => {
       success: true,
       message: "Course create correctly successfully",
     });
+    
   } catch (error) {
     console.error("Error in courseCreateController:", error);
     return res.status(500).json({
@@ -105,6 +100,40 @@ export const getCoursesWithStudentIdController = async (req, res) => {
       success: false,
       message: "An error occurred while fetching courses",
       error: error.message || "Unknown error",
+    });
+  }
+};
+
+export const deleteCourseController = async (req, res) => {
+  const { id } = req.body;
+
+  if (!id || !Number.isInteger(id) || id <= 0) {
+    return res.status(400).json({
+      success: false,
+      error: "Error on data ID",
+    });
+  }
+
+  try {
+    const response = await deleteCourse(id);
+
+    if (response === 0) {
+      return res.status(404).json({
+        success: false,
+        message: `No course found with ID ${id}.`,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Course with ID ${id} deleted successfully.`,
+    });
+  } catch (error) {
+    console.error("Error in deleteCourseController:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error.message,
     });
   }
 };
@@ -171,7 +200,7 @@ export const createCourseModuleController = async (req, res) => {
 export const createLessonController = async (req, res) => {
   const { module_id, lesson_number, title, description, url } = req.body;
   console.log("el controller entra");
-  if (!module_id || !lesson_number || !title || !description  || !url) {
+  if (!module_id || !lesson_number || !title || !description || !url) {
     return res
       .status(400)
       .json({ success: false, error: "Mandatory data missing" });

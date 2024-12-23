@@ -1,4 +1,5 @@
-import { getEnrollment, registerToCourse } from "../crud/crudCourses.js";
+import { registerToCourse } from "../crud/crudCourses.js";
+import { getEnrollment } from "../crud/crudEnrollments.js";
 import { getStudentWithDni } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
 

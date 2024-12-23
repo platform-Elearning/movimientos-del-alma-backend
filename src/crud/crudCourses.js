@@ -1,59 +1,6 @@
 import { pool } from "../db/configPG.js";
 import { getDate } from "../utils/utils.js";
 
-// ENROLLMENTS
-
-export const getEnrollment = async (student_id, course_id) => {
-  try {
-    const query = `
-  SELECT * 
-  FROM enrollments
-  WHERE student_id = $1 AND course_id = $2
-`;
-
-    const res = await pool.query(query, [student_id, course_id]);
-
-    return res.rows[0];
-  } catch (error) {
-    console.log("cehckEnrollment not found", error);
-    throw new Error("Check enrollment not found", error);
-  }
-};
-
-export const getAllEnrollmentsByStudentId = async (student_id) => {
-  try {
-    const query = `
-    SELECT
-      c.id AS course_id,
-      c.name AS course_name,
-      c.description,
-      e.modules_covered
-    FROM
-      enrollments e
-    INNER JOIN
-      courses c ON e.course_id = c.id
-    WHERE
-      e.student_id = $1;
-  `;
-
-    const result = await pool.query(query, [student_id]);
-
-    if (result.rows.length === 0) {
-      return [];
-    }
-
-    return result.rows;
-  } catch (error) {
-    console.error("Error in getAllEnrollmentsByStudentId:", error);
-
-    return {
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    };
-  }
-};
-
 // COURSES
 
 export const createCourse = async (name, description) => {
@@ -85,6 +32,24 @@ export const getCourses = async () => {
   }
 };
 
+export const getCourseById = () => {};
+
+export const updateCourse = () => {};
+
+export const deleteCourse = async (id) => {
+  const query = `DELETE FROM courses WHERE id = $1 `;
+  
+  try {
+    const result = await pool.query(query, [id])
+    
+    return result.rowCount;
+
+  } catch (error) {
+    console.error("Error in deleteCourse:", error);
+    throw new Error("Failed to delete course");
+  }
+};
+
 export const getCoursesWithModules = async () => {
   try {
     const allCourses = await getCourses();
@@ -112,12 +77,6 @@ export const getCoursesWithModules = async () => {
     throw new Error("getCoursesWithModules error");
   }
 };
-
-export const getCourseById = () => {};
-
-export const updateCourse = () => {};
-
-export const deleteCourse = () => {};
 
 export const registerToCourse = async (
   student_id,

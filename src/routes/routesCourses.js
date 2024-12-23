@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createCourseController, getCoursesWithStudentIdController, getAllCoursesController, getModulesOfStudentController, createCourseModuleController, createLessonController, getAllCoursesWithModulesController } from "../controllers/courseController.js";
+import { createCourseController, getCoursesWithStudentIdController, getAllCoursesController, getModulesOfStudentController, createCourseModuleController, createLessonController, getAllCoursesWithModulesController, deleteCourseController } from "../controllers/courseController.js";
 import { authenticateToken } from "../auth/auth.js";
 
 const routerCourses = Router();
@@ -12,6 +12,9 @@ routerCourses.route("/getAllCoursesWithModules").get(getAllCoursesWithModulesCon
 
 // ROUTE FOR CREATE COURSE
 routerCourses.route("/createCourse").post(createCourseController);
+
+//router for delete course
+routerCourses.route("/deleteCourse").post(deleteCourseController);
 
 // ROUTER FOR GET ALL COURSES WITH STUDENT_ID
 routerCourses.route("/getCoursesByStudentId").get(getCoursesWithStudentIdController);
