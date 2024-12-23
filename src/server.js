@@ -41,11 +41,11 @@ app.use("/enrollments", routerEnrollments);
 (async () => {
   try {
     await createTablesDbPostgres();
-    await createAdminUser();
+    
     console.log(`
-      ╔════════════════════════════════════════╗
-      ║   Database initialized successfully    ║
-      ╚════════════════════════════════════════╝
+      ╔═════════════════════════════════════════╗
+      ║ Tables created/initialized successfully ║
+      ╚═════════════════════════════════════════╝
       `);
   } catch (error) {
     console.error("Error initializing the database:", error);
