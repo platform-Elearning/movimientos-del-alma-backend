@@ -6,16 +6,13 @@ import cors from "cors";
 import { settings } from "./settings/settings.js";
 import { createTablesDbPostgres } from "./db/tables/tables.js";
 import routerCourses from "./routes/routesCourses.js";
-import dotenv from "dotenv";
 import routerEnrollments from "./routes/routesEnrollments.js";
 
-dotenv.config();
-
 const app = express();
-const port = settings.server.serverPort || 8080;
+const port = settings.server.serverPort;
 
 const corsOptions = {
-  origin: process.env.ORIGIN,
+  origin: settings.cors.origin,
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -24,7 +21,7 @@ app.use(urlencoded({ extended: true }));
 
 app.use(
   session({
-    secret: process.env.SECRETKEY,
+    secret: settings.jwt.secretKey,
     resave: false,
     saveUninitialized: false,
     cookie: {

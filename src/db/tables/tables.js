@@ -22,7 +22,6 @@ const createUserRoleType = async () => {
   }
 };
 
-
 const createUsersTable = async () => {
   const checkQuery = `
     SELECT EXISTS (

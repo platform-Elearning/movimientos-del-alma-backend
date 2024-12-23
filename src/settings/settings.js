@@ -16,4 +16,7 @@ export const settings = {
   server: {
     serverPort: parseInt(process.env.SERVER_PORT, 10) || 8080,
   },
+  cors: {
+    origin: process.env.ORIGIN
+  }
 };
