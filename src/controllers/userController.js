@@ -181,8 +181,11 @@ export const createTeacherController = async (req, res) => {
 };
 
 export const getTeacherController = async (req, res) => {
+
+  const { id } = req.body;
+
   try {
-    const response = await getTeacher();
+    const response = await getTeacher(id);
     return res.status(200).json({
       response,
     });

@@ -18,7 +18,7 @@ routerUsers.route("/getAllStudents").get(getAllStudentsController);
 routerUsers.route("/createCompleteTeacher").post(createTeacherController);
 
 // ROUTE FOR GET TEACHER
-routerUsers.route("getTeacher").get(getTeacherController);
+routerUsers.route("/getTeacher").get(getTeacherController);
 
 // ROUTE FOR LOGIN
 routerUsers.route("/login").post(loginController);

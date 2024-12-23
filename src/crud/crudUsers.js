@@ -111,6 +111,7 @@ export const getTeacher = async (id) => {
     const query = `SELECT * FROM teacher WHERE id = $1`;
 
     const responsedb = await pool.query(query, [id]);
+    
     return responsedb.rows[0];
   } catch (error) {
     console.log("getTeacher error", error);
