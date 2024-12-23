@@ -88,7 +88,7 @@ export const createTeacher = async (
   email
 ) => {
   try {
-    if (!id || !name || !lastname || !identification_number || !email ) {
+    if (!id || !name || !lastname || !identification_number || !email) {
       throw new Error("All fields are required");
     }
 
@@ -99,11 +99,23 @@ export const createTeacher = async (
       name,
       lastname,
       identification_number,
-      email
+      email,
     ]);
 
     return resultdb.rowCount;
   } catch (error) {}
+};
+
+export const getTeacher = async (id) => {
+  try {
+    const query = `SELECT * FROM teacher WHERE id = $1`;
+
+    const responsedb = await pool.query(query, [id]);
+    return responsedb.rows[0];
+  } catch (error) {
+    console.log("getTeacher error", error);
+    throw new Error("getTeacher error");
+  }
 };
 
 // CRUD FOR STUDENTS
@@ -123,7 +135,7 @@ export const createStudent = async (
       !name ||
       !lastname ||
       !email ||
-      !nationality 
+      !nationality
     ) {
       throw new Error("All fields are required");
     }
@@ -144,7 +156,7 @@ export const createStudent = async (
       name,
       lastname,
       email,
-      nationality
+      nationality,
     ]);
 
     return resultdb.rowCount;
@@ -184,10 +196,11 @@ export const getStudentsWithCourses = async () => {
     const allStudents = await getAllStudents();
 
     const studentsWithCourses = [];
-    
+
     for (const student of allStudents) {
-      const enrollments = (await getAllEnrollmentsByStudentId(student.id)) || [];
-     
+      const enrollments =
+        (await getAllEnrollmentsByStudentId(student.id)) || [];
+
       studentsWithCourses.push({
         user_id: student.id,
         dni: student.identification_number,
@@ -198,7 +211,7 @@ export const getStudentsWithCourses = async () => {
         courses: enrollments.map((enrollment) => ({
           course: enrollment.course_name,
           description: enrollment.description,
-          modules: enrollment.modules_covered
+          modules: enrollment.modules_covered,
         })),
       });
     }
@@ -213,17 +226,17 @@ export const getStudentsWithCourses = async () => {
 export const getStudentWithDni = async (dni) => {
   try {
     const query = `SELECT * FROM student WHERE identification_number = $1`;
-    const { rows } = await pool.query(query, [dni]); 
+    const { rows } = await pool.query(query, [dni]);
 
     if (rows.length === 0) {
-
       throw new Error(`No student found with DNI: ${dni}`);
     }
 
-    return rows[0].id;  
-    
+    return rows[0].id;
   } catch (error) {
-    console.error("getStudentWithDni error:", error.message || error);  // Imprimir el error con más detalles
-    throw new Error(`Error while fetching student with DNI ${dni}: ${error.message || error}`);
+    console.error("getStudentWithDni error:", error.message || error); // Imprimir el error con más detalles
+    throw new Error(
+      `Error while fetching student with DNI ${dni}: ${error.message || error}`
+    );
   }
 };

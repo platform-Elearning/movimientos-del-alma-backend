@@ -180,7 +180,7 @@ const createStudentTable = async () => {
     if (!checkResult.rows[0].exists) {
       await pool.query(createQuery);
       console.log("Table 'student' created.");
-    }else {
+    } else {
       console.log("Table 'student_table' already exists.");
     }
   } catch (error) {
@@ -293,9 +293,7 @@ const createLessonsTable = async () => {
   }
 };
 
-
 export const createTablesDbPostgres = async () => {
-  
   try {
     await pool.query("BEGIN");
     await createUserRoleType();
@@ -307,14 +305,17 @@ export const createTablesDbPostgres = async () => {
     await createTeacherCoursesTable();
     await createCourseModulesTable();
     await createLessonsTable();
- 
-    
+
     await pool.query("COMMIT");
-    console.log("All tables and types were successfully initialized.");
+
+    console.log(`
+      ╔═════════════════════════════════════════╗
+      ║ Tables created/initialized successfully ║
+      ╚═════════════════════════════════════════╝
+      `);
   } catch (error) {
     await pool.query("ROLLBACK");
     console.error("Error initializing tables:", error);
     throw new Error("Failed to initialize tables.");
   }
 };
-

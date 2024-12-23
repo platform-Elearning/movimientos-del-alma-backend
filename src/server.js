@@ -38,12 +38,6 @@ app.use("/enrollments", routerEnrollments);
 (async () => {
   try {
     await createTablesDbPostgres();
-    
-    console.log(`
-      ╔═════════════════════════════════════════╗
-      ║ Tables created/initialized successfully ║
-      ╚═════════════════════════════════════════╝
-      `);
   } catch (error) {
     console.error("Error initializing the database:", error);
     console.warn(
@@ -55,5 +49,3 @@ app.use("/enrollments", routerEnrollments);
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
-

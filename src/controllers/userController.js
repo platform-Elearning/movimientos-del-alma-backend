@@ -7,6 +7,7 @@ import {
   getAllStudents,
   getStudentData,
   getStudentsWithCourses,
+  getTeacher,
 } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
 import { authFunc } from "../passwordStrategy/passwordStrategy.js";
@@ -178,6 +179,22 @@ export const createTeacherController = async (req, res) => {
     });
   }
 };
+
+export const getTeacherController = async (req, res) => {
+  try {
+    const response = await getTeacher();
+    return res.status(200).json({
+      response,
+    });
+  } catch (error) {
+    console.error("Error in getTeacherController:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error,
+    });
+  }
+}
 
 // STUDENT
 

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createAdminController, createStudentController, createTeacherController, getAllStudentsController, getAllUsersWithCoursesController, getUserController } from "../controllers/userController.js";
+import { createAdminController, createStudentController, createTeacherController, getAllStudentsController, getAllUsersWithCoursesController, getTeacherController, getUserController } from "../controllers/userController.js";
 import { loginController, changePasswordController } from "../controllers/authController.js";
 import { authenticateToken } from "../auth/auth.js";
 
@@ -16,6 +16,9 @@ routerUsers.route("/getAllStudents").get(getAllStudentsController);
 
 // ROUTE FOR CREATE TEACHER AND USERTEACHER
 routerUsers.route("/createCompleteTeacher").post(createTeacherController);
+
+// ROUTE FOR GET TEACHER
+routerUsers.route("getTeacher").get(getTeacherController);
 
 // ROUTE FOR LOGIN
 routerUsers.route("/login").post(loginController);
