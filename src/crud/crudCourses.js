@@ -191,6 +191,25 @@ export const getModulesOfDeterminedCourse = async (id) => {
   }
 };
 
+export const getModuleByCourseId = async (course_id) => {
+  const query = `
+    SELECT * FROM course_modules WHERE course_id = $1;
+  `;
+
+  try {
+    const result = await pool.query(query, [course_id]);
+
+    if (result.rows.length === 0) {
+      throw new Error(`No module found with course_id: ${course_id}`);
+    }
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error in getAllCourses:", error);
+    throw new Error("Failed to get courses");
+  }
+}
+
 // LESSON
 
 export const createLesson = async (

@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 export const loginController = async (req, res) => {
   const secretKey = settings.jwt.secretKey;
   const { email, password } = req.body;
+  
   try {
     const userData = await readLoginData(email);
 

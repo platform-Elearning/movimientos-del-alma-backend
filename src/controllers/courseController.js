@@ -6,6 +6,7 @@ import {
   createLesson,
   getCoursesWithModules,
   deleteCourse,
+  getModuleByCourseId,
 } from "../crud/crudCourses.js";
 import { getAllEnrollmentsByStudentId } from "../crud/crudEnrollments.js";
 
@@ -66,7 +67,6 @@ export const createCourseController = async (req, res) => {
       success: true,
       message: "Course create correctly successfully",
     });
-    
   } catch (error) {
     console.error("Error in courseCreateController:", error);
     return res.status(500).json({
@@ -159,6 +159,29 @@ export const getModulesOfStudentController = async (req, res) => {
     });
   }
 };
+
+export const getModuleByCourseIdController = async (req, res) => {
+  const {id} = req.body;
+
+  try {
+    const response = await getModuleByCourseId(id);
+
+    return res.status(200).json({
+      success: true,
+      message: response,
+    });
+
+  } catch (error) {
+    console.error("Error in getModuleByCourseIdController:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error.message,
+    });
+  }
+
+
+}
 
 export const createCourseModuleController = async (req, res) => {
   const { course_id, module_number, name, description } = req.body;
