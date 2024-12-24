@@ -203,7 +203,7 @@ export const getModuleByCourseId = async (course_id) => {
       throw new Error(`No module found with course_id: ${course_id}`);
     }
 
-    return result.rows[0];
+    return result.rows;
   } catch (error) {
     console.error("Error in getAllCourses:", error);
     throw new Error("Failed to get courses");
