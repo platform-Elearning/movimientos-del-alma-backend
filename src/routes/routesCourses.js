@@ -1,5 +1,15 @@
 import { Router } from "express";
-import { createCourseController, getCoursesWithStudentIdController, getAllCoursesController, getModulesOfStudentController, createCourseModuleController, createLessonController, getAllCoursesWithModulesController, deleteCourseController, getModuleByCourseIdController } from "../controllers/courseController.js";
+import {
+  createCourseController,
+  getCoursesWithStudentIdController,
+  getAllCoursesController,
+  getModulesOfStudentController,
+  createCourseModuleController,
+  createLessonController,
+  getAllCoursesWithModulesController,
+  deleteCourseController,
+  getModuleByCourseIdController,
+} from "../controllers/courseController.js";
 import { authenticateToken } from "../auth/auth.js";
 
 const routerCourses = Router();
@@ -10,7 +20,9 @@ const routerCourses = Router();
 routerCourses.route("/getAllCourses").get(getAllCoursesController);
 
 // ROUTE FOR GET ALL COURSES WITH MODULES
-routerCourses.route("/getAllCoursesWithModules").get(getAllCoursesWithModulesController);
+routerCourses
+  .route("/getAllCoursesWithModules")
+  .get(getAllCoursesWithModulesController);
 
 // ROUTE FOR CREATE COURSE
 routerCourses.route("/createCourse").post(createCourseController);
@@ -19,7 +31,9 @@ routerCourses.route("/createCourse").post(createCourseController);
 routerCourses.route("/deleteCourse").post(deleteCourseController);
 
 // ROUTER FOR GET ALL COURSES WITH STUDENT_ID
-routerCourses.route("/getCoursesByStudentId").get(getCoursesWithStudentIdController);
+routerCourses
+  .route("/getCoursesByStudentId")
+  .get(getCoursesWithStudentIdController);
 
 /// MODULES ///
 
@@ -38,3 +52,5 @@ routerCourses.route("/getModulesByCourseId").get(getModuleByCourseIdController);
 routerCourses.route("/createLesson").post(createLessonController);
 
 export default routerCourses;
+
+
