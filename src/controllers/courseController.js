@@ -170,7 +170,6 @@ export const getModuleByCourseIdController = async (req, res) => {
       success: true,
       message: response,
     });
-
   } catch (error) {
     console.error("Error in getModuleByCourseIdController:", error);
     return res.status(500).json({
@@ -179,9 +178,7 @@ export const getModuleByCourseIdController = async (req, res) => {
       error: error.message,
     });
   }
-
-
-}
+};
 
 export const createCourseModuleController = async (req, res) => {
   const { course_id, module_number, name, description } = req.body;

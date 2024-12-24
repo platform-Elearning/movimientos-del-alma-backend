@@ -1,6 +1,5 @@
 //import sendWelcomeSms from "../contact/twilio.js";
 import {
-  checkUserExist,
   createStudent,
   createTeacher,
   createUser,
@@ -11,7 +10,7 @@ import {
 } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
 import { authFunc } from "../passwordStrategy/passwordStrategy.js";
-import { generateRandomId, randomPassword } from "../utils/utils.js";
+import { checkUserExist, generateRandomId, randomPassword } from "../utils/utils.js";
 
 // USERS
 

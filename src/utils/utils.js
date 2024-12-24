@@ -28,3 +28,15 @@ const normalizeInput = (name) => {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
 };
+
+export const checkUserExist = async (email) => {
+  try {
+    const query = "SELECT email FROM users WHERE email = $1 ";
+    const res = await pool.query(query, [email]);
+
+    return res.rows[0];
+  } catch (error) {
+    console.log("checkUserExist not found", error);
+    throw new Error("Check user exist not found");
+  }
+};
