@@ -64,10 +64,12 @@ CREATE TABLE "course_modules" (
 CREATE TABLE "lessons" (
   "id" SERIAL PRIMARY KEY,
   "module_id" INTEGER,
+  "course_id" INTEGER,
   "lesson_number" INTEGER,
   "title" VARCHAR,
   "description" TEXT,
   "url" VARCHAR,
-  FOREIGN KEY ("module_id") REFERENCES "course_modules" ("id")
+  FOREIGN KEY ("module_id") REFERENCES "course_modules" ("id"),
+  FOREIGN KEY ("course_id") REFERENCES "courses" ("id")
 );
 

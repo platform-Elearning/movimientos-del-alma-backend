@@ -218,18 +218,19 @@ export const createCourseModuleController = async (req, res) => {
 // LESSONS
 
 export const createLessonController = async (req, res) => {
-  const { module_id, lesson_number, title, description, url } = req.body;
-  console.log("el controller entra");
-  if (!module_id || !lesson_number || !title || !description || !url) {
+  const { module_id, course_id, lesson_number, title, description, url } = req.body;
+
+  if (!module_id || !course_id || !lesson_number || !title || !description || !url) {
     return res
       .status(400)
       .json({ success: false, error: "Mandatory data missing" });
   }
 
   try {
-    console.log("el try si entra");
+    
     const lessonCreated = await createLesson(
       module_id,
+      course_id,
       lesson_number,
       title,
       description,

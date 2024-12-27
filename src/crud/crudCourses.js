@@ -214,19 +214,21 @@ export const getModuleByCourseId = async (course_id) => {
 
 export const createLesson = async (
   module_id,
+  course_id,
   lesson_number,
   title,
   description,
   url
 ) => {
-  if (!module_id || !lesson_number || !title || !description || !url) {
+  if (!module_id || !course_id || !lesson_number || !title || !description || !url) {
     throw new Error("All fields are required");
   }
 
-  const query = `INSERT INTO lessons (module_id, lesson_number, title, description, url) VALUES ($1, $2, $3, $4, $5)`;
+  const query = `INSERT INTO lessons (module_id, course_id, lesson_number, title, description, url) VALUES ($1, $2, $3, $4, $5, $6)`;
 
   const resultdb = await pool.query(query, [
     module_id,
+    course_id,
     lesson_number,
     title,
     description,
