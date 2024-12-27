@@ -23,7 +23,7 @@ export const createUser = async (id, email, password, role) => {
     return resultdb.rowCount;
   } catch (error) {
     console.error("Error in createUser:", error.message);
-    throw new Error("Failed to create Student", error);
+    throw new Error(error.detail || error);
   }
 };
 
@@ -44,9 +44,9 @@ export const readLoginData = async (email) => {
     } else {
       throw new Error("User not found");
     }
-  } catch (err) {
+  } catch (error) {
     console.error("Error to get user and password:", err);
-    throw new Error("Failed to readUserData", err);
+    throw new Error(error.detail || error);
   }
 };
 
@@ -63,7 +63,7 @@ export const changePassword = async (password, email) => {
 
     return res.command;
   } catch (error) {
-    throw new Error("Change password cannot be completed");
+    throw new Error(error.detail);
   }
 };
 // CRUD FOR TEACHERS
@@ -91,7 +91,10 @@ export const createTeacher = async (
     ]);
 
     return resultdb.rowCount;
-  } catch (error) {}
+  } catch (error) {
+    console.log("Error in function createTeacher");
+    throw new Error(error.detail);
+  }
 };
 
 export const getTeacher = async (id) => {
@@ -103,11 +106,11 @@ export const getTeacher = async (id) => {
     if (responsedb.rows.length === 0) {
       throw new Error(`No teacher found with id: ${id}`);
     }
-    
+
     return responsedb.rows[0];
   } catch (error) {
     console.log("getTeacher error", error);
-    throw new Error("getTeacher error");
+    throw new Error(error.detail);
   }
 };
 
@@ -155,7 +158,7 @@ export const createStudent = async (
     return resultdb.rowCount;
   } catch (error) {
     console.log("Error in function createStudent:", error.message);
-    throw new Error("Failed to create Student");
+    throw new Error(error.detail || error);
   }
 };
 
@@ -167,7 +170,7 @@ export const getStudentData = async (id) => {
     return responsedb.rows[0];
   } catch (error) {
     console.log("getStudentData error", error);
-    throw new Error("getStudentData error");
+    throw new Error(error.detail);
   }
 };
 
@@ -180,7 +183,7 @@ export const getAllStudents = async () => {
     return response.rows;
   } catch (error) {
     console.log("getStudentData error", error);
-    throw new Error("getStudentData error");
+    throw new Error(error.detail);
   }
 };
 
@@ -212,7 +215,7 @@ export const getStudentsWithCourses = async () => {
     return studentsWithCourses;
   } catch (error) {
     console.log("getStudentsWithCourses error", error);
-    throw new Error("getStudentsWithCourses error");
+    throw new Error(error.detail);
   }
 };
 
@@ -227,9 +230,7 @@ export const getStudentWithDni = async (dni) => {
 
     return rows[0].id;
   } catch (error) {
-    console.error("getStudentWithDni error:", error.message || error); // Imprimir el error con más detalles
-    throw new Error(
-      `Error while fetching student with DNI ${dni}: ${error.message || error}`
-    );
+    console.error("getStudentWithDni error:", error.message || error); 
+    throw new Error(error.detail);
   }
 };

@@ -10,7 +10,7 @@ import {
 } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
 import { authFunc } from "../passwordStrategy/passwordStrategy.js";
-import { checkUserExist, generateRandomId, randomPassword } from "../utils/utils.js";
+import { checkExist, generateRandomId, randomPassword } from "../utils/utils.js";
 
 // USERS
 
@@ -27,10 +27,13 @@ export const createAdminController = async (req, res) => {
   const hashedPassword = authFunc.hashPassword(password);
 
   try {
-    const check = await checkUserExist(email);
+    const check = await checkExist("users", "email", null, email);
 
     if (check) {
-      throw new Error("User already exist");
+      return res.status(409).json({
+        success: false,
+        message: "User already exists",
+      });
     }
 
     await pool.query("BEGIN");
@@ -132,11 +135,15 @@ export const createTeacherController = async (req, res) => {
   }
 
   try {
-    const check = await checkUserExist(email);
+    const check = await checkExist("users", "email", null, email);
 
     if (check) {
-      throw new Error("User already exist");
+      return res.status(409).json({
+        success: false,
+        message: "User already exists",
+      });
     }
+
 
     await pool.query("BEGIN");
 
@@ -233,10 +240,13 @@ export const createStudentController = async (req, res) => {
   const hashedPassword = authFunc.hashPassword(randomPW);
 
   try {
-    const check = await checkUserExist(email);
+    const check = await checkExist("users", "email", null, email);
 
     if (check) {
-      throw new Error("User already exist");
+      return res.status(409).json({
+        success: false,
+        message: "User already exists",
+      });
     }
 
     await pool.query("BEGIN");

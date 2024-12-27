@@ -15,7 +15,7 @@ export const getEnrollment = async (student_id, course_id) => {
     return res.rows[0];
   } catch (error) {
     console.log("cehckEnrollment not found", error);
-    throw new Error("Check enrollment not found", error);
+    throw new Error(error.detail);
   }
 };
 
@@ -45,10 +45,6 @@ export const getAllEnrollmentsByStudentId = async (student_id) => {
   } catch (error) {
     console.error("Error in getAllEnrollmentsByStudentId:", error);
 
-    return {
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    };
+    throw new Error(error.detail);
   }
 };

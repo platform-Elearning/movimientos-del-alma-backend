@@ -9,6 +9,7 @@ import {
   getModuleByCourseId,
 } from "../crud/crudCourses.js";
 import { getAllEnrollmentsByStudentId } from "../crud/crudEnrollments.js";
+import { checkExist } from "../utils/utils.js";
 
 // COURSES
 
@@ -56,6 +57,15 @@ export const createCourseController = async (req, res) => {
   }
 
   try {
+    const check = await checkExist("courses", "name", null, name);
+
+    if (check) {
+      return res.status(409).json({
+        success: false,
+        message: "Course already exists",
+      });
+    }
+
     const courseCreated = await createCourse(name, description);
 
     if (!courseCreated) {
@@ -190,6 +200,16 @@ export const createCourseModuleController = async (req, res) => {
   }
 
   try {
+
+    const check = await checkExist("course_modules", "course_id", "module_number", course_id, module_number);
+
+    if (check) {
+      return res.status(409).json({
+        success: false,
+        message: "Module number already exists",
+      });
+    }
+
     const moduleCreated = await createCourseModule(
       course_id,
       module_number,
@@ -207,10 +227,11 @@ export const createCourseModuleController = async (req, res) => {
       message: "Module create correctly successfully",
     });
   } catch (error) {
+    const errorMessage = error.message;
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
-      error: error,
+      error: errorMessage,
     });
   }
 };
@@ -218,16 +239,33 @@ export const createCourseModuleController = async (req, res) => {
 // LESSONS
 
 export const createLessonController = async (req, res) => {
-  const { module_id, course_id, lesson_number, title, description, url } = req.body;
+  const { module_id, course_id, lesson_number, title, description, url } =
+    req.body;
 
-  if (!module_id || !course_id || !lesson_number || !title || !description || !url) {
+  if (
+    !module_id ||
+    !course_id ||
+    !lesson_number ||
+    !title ||
+    !description ||
+    !url
+  ) {
     return res
       .status(400)
       .json({ success: false, error: "Mandatory data missing" });
   }
 
   try {
-    
+
+    const check = await checkExist("lessons", "lesson_number", null, lesson_number);
+
+    if (check) {
+      return res.status(409).json({
+        success: false,
+        message: "Lesson number already exist",
+      });
+    }
+
     const lessonCreated = await createLesson(
       module_id,
       course_id,

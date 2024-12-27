@@ -8,14 +8,19 @@ export const createCourse = async (name, description) => {
     throw new Error("All fields are required");
   }
 
-  const query = `
+  try {
+    const query = `
       INSERT INTO courses (name,
     description)
       VALUES ($1, $2)
     `;
 
-  const resultdb = await pool.query(query, [name, description]);
-  return resultdb;
+    const resultdb = await pool.query(query, [name, description]);
+    return resultdb;
+  } catch (error) {
+    console.log("Error in function createCourse");
+    throw new Error(error.detail);
+  }
 };
 
 export const getCourses = async () => {
@@ -28,7 +33,7 @@ export const getCourses = async () => {
     return result.rows;
   } catch (error) {
     console.error("Error in getAllCourses:", error);
-    throw new Error("Failed to get courses");
+    throw new Error(error.detail);
   }
 };
 
@@ -38,15 +43,14 @@ export const updateCourse = () => {};
 
 export const deleteCourse = async (id) => {
   const query = `DELETE FROM courses WHERE id = $1 `;
-  
-  try {
-    const result = await pool.query(query, [id])
-    
-    return result.rowCount;
 
+  try {
+    const result = await pool.query(query, [id]);
+
+    return result.rowCount;
   } catch (error) {
     console.error("Error in deleteCourse:", error);
-    throw new Error("Failed to delete course");
+    throw new Error(error.detail);
   }
 };
 
@@ -74,7 +78,7 @@ export const getCoursesWithModules = async () => {
     return coursesWithModules;
   } catch (error) {
     console.log("getCoursesWithModules error", error);
-    throw new Error("getCoursesWithModules error");
+    throw new Error(error.detail);
   }
 };
 
@@ -103,7 +107,7 @@ export const registerToCourse = async (
     return resultdb.rowCount;
   } catch (error) {
     console.error("Error in registerToCourse:", error.message);
-    throw new Error("Failed to register to course", error);
+    throw new Error(error.detail);
   }
 };
 
@@ -119,16 +123,21 @@ export const createCourseModule = async (
     throw new Error("All fields are required");
   }
 
-  const query = `INSERT INTO course_modules (course_id, module_number, name, description) VALUES ($1, $2, $3, $4)`;
+  try {
+    const query = `INSERT INTO course_modules (course_id, module_number, name, description) VALUES ($1, $2, $3, $4)`;
 
-  const resultdb = await pool.query(query, [
-    course_id,
-    module_number,
-    name,
-    description,
-  ]);
+    const resultdb = await pool.query(query, [
+      course_id,
+      module_number,
+      name,
+      description,
+    ]);
 
-  return resultdb;
+    return resultdb;
+  } catch (error) {
+    console.error(`Error to createCourse Module:`, error.detail);
+    throw new Error(error.detail);
+  }
 };
 
 export const getEnrolledModules = async (student_id, course_id) => {
@@ -159,7 +168,7 @@ export const getEnrolledModules = async (student_id, course_id) => {
       `Error retrieving covered modules for student ${student_id} in course ${course_id}:`,
       error.message
     );
-    throw new Error("Error retrieving covered modules");
+    throw new Error(error.detail);
   }
 };
 
@@ -187,7 +196,7 @@ export const getModulesOfDeterminedCourse = async (id) => {
     return result.rows;
   } catch (error) {
     console.error("Error in getModulesForCourse:", error);
-    throw new Error("Error retrieving modules");
+    throw new Error(error.detail);
   }
 };
 
@@ -206,9 +215,9 @@ export const getModuleByCourseId = async (course_id) => {
     return result.rows;
   } catch (error) {
     console.error("Error in getAllCourses:", error);
-    throw new Error("Failed to get courses");
+    throw new Error(error.detail);
   }
-}
+};
 
 // LESSON
 
@@ -220,20 +229,32 @@ export const createLesson = async (
   description,
   url
 ) => {
-  if (!module_id || !course_id || !lesson_number || !title || !description || !url) {
+  if (
+    !module_id ||
+    !course_id ||
+    !lesson_number ||
+    !title ||
+    !description ||
+    !url
+  ) {
     throw new Error("All fields are required");
   }
 
-  const query = `INSERT INTO lessons (module_id, course_id, lesson_number, title, description, url) VALUES ($1, $2, $3, $4, $5, $6)`;
+  try {
+    const query = `INSERT INTO lessons (module_id, course_id, lesson_number, title, description, url) VALUES ($1, $2, $3, $4, $5, $6)`;
 
-  const resultdb = await pool.query(query, [
-    module_id,
-    course_id,
-    lesson_number,
-    title,
-    description,
-    url,
-  ]);
+    const resultdb = await pool.query(query, [
+      module_id,
+      course_id,
+      lesson_number,
+      title,
+      description,
+      url,
+    ]);
 
-  return resultdb;
+    return resultdb;
+  } catch (error) {
+    console.log("Error in function createLesson");
+    throw new Error(error.detail);
+  }
 };
