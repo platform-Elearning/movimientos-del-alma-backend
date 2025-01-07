@@ -110,7 +110,7 @@ export const getTeacher = async (id) => {
     return responsedb.rows[0];
   } catch (error) {
     console.log("getTeacher error", error);
-    throw new Error(error.detail);
+    throw new Error(error.message);
   }
 };
 

@@ -173,7 +173,7 @@ export const getEnrolledModules = async (student_id, course_id) => {
       `Error retrieving covered modules for student ${student_id} in course ${course_id}:`,
       error.message
     );
-    throw new Error(error.detail);
+    throw new Error(error.message);
   }
 };
 
@@ -220,7 +220,7 @@ export const getModuleByCourseId = async (course_id) => {
     return result.rows;
   } catch (error) {
     console.error("Error in getAllCourses:", error);
-    throw new Error(error.detail);
+    throw new Error(error);
   }
 };
 

@@ -134,8 +134,8 @@ const createEnrollmentsTable = async () => {
       "enrollment_date" TIMESTAMP,
       "modules_covered" INTEGER, 
       "notes" VARCHAR,
-      FOREIGN KEY ("student_id") REFERENCES "users" ("id"),
-      FOREIGN KEY ("course_id") REFERENCES "courses" ("id")
+      FOREIGN KEY ("student_id") REFERENCES "users" ("id") ON DELETE CASCADE,
+      FOREIGN KEY ("course_id") REFERENCES "courses" ("id") ON DELETE CASCADE
     );
   `;
 
@@ -238,7 +238,7 @@ const createCourseModulesTable = async () => {
       "module_number" INTEGER,
       "name" VARCHAR,
       "description" TEXT,
-      FOREIGN KEY ("course_id") REFERENCES "courses" ("id")
+      FOREIGN KEY ("course_id") REFERENCES "courses" ("id") ON DELETE CASCADE
     );
   `;
 
@@ -275,8 +275,8 @@ const createLessonsTable = async () => {
       "title" VARCHAR,
       "description" TEXT,
       "url" VARCHAR,
-      FOREIGN KEY ("module_id") REFERENCES "course_modules" ("id"),
-      FOREIGN KEY ("course_id") REFERENCES "courses" ("id")
+      FOREIGN KEY ("module_id") REFERENCES "course_modules" ("id") ON DELETE CASCADE,
+      FOREIGN KEY ("course_id") REFERENCES "courses" ("id") ON DELETE CASCADE
     );
   `;
 
