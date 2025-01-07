@@ -44,7 +44,7 @@ routerCourses.route("/createCourseModule").post(createCourseModuleController);
 routerCourses.route("/getModulesOfStudent").get(getModulesOfStudentController);
 
 // router to get modules by course id
-routerCourses.route("/getModulesByCourseId").get(getModuleByCourseIdController);
+routerCourses.route("/getModulesByCourseId/:id").get(getModuleByCourseIdController);
 
 /// LESSONS ///
 

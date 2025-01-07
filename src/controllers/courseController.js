@@ -173,6 +173,8 @@ export const getModulesOfStudentController = async (req, res) => {
 export const getModuleByCourseIdController = async (req, res) => {
   const { id } = req.params;
 
+  console.log(id);
+
   try {
     const response = await getModuleByCourseId(id);
 
