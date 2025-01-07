@@ -45,7 +45,7 @@ export const readLoginData = async (email) => {
       throw new Error("User not found");
     }
   } catch (error) {
-    console.error("Error to get user and password:", err);
+    console.error("Error to get user and password:", error);
     throw new Error(error.detail || error);
   }
 };

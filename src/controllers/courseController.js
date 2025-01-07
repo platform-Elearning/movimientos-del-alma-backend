@@ -285,10 +285,11 @@ export const createLessonController = async (req, res) => {
       message: "Lesson create correctly successfully",
     });
   } catch (error) {
+    console.log(error)
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
-      error: error,
+      error: error.message,
     });
   }
 };

@@ -42,15 +42,20 @@ export const getCourseById = () => {};
 export const updateCourse = () => {};
 
 export const deleteCourse = async (id) => {
-  const query = `DELETE FROM courses WHERE id = $1 `;
+  const deleteModulesQuery = `DELETE FROM course_modules WHERE course_id = $1`;
+  const deleteCourseQuery = `DELETE FROM courses WHERE id = $1`;
 
   try {
-    const result = await pool.query(query, [id]);
+    await pool.query("BEGIN"); 
+    await pool.query(deleteModulesQuery, [id]); 
+    const result = await pool.query(deleteCourseQuery, [id]); 
+    await pool.query("COMMIT"); 
 
     return result.rowCount;
   } catch (error) {
+    await pool.query("ROLLBACK");
     console.error("Error in deleteCourse:", error);
-    throw new Error(error.detail);
+    throw new Error(error.detail || "Failed to delete course.");
   }
 };
 
@@ -255,6 +260,6 @@ export const createLesson = async (
     return resultdb;
   } catch (error) {
     console.log("Error in function createLesson");
-    throw new Error(error.detail);
+    throw new Error(error);
   }
 };
