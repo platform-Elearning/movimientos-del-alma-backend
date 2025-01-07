@@ -263,3 +263,17 @@ export const createLesson = async (
     throw new Error(error);
   }
 };
+
+export const getLessons = async () => {
+  const query = `
+    SELECT * FROM lessons;
+  `;
+
+  try {
+    const result = await pool.query(query);
+    return result.rows;
+  } catch (error) {
+    console.error("Error in getAllCourses:", error);
+    throw new Error(error.detail);
+  }
+};

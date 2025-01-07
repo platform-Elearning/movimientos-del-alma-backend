@@ -9,6 +9,7 @@ import {
   getAllCoursesWithModulesController,
   deleteCourseController,
   getModuleByCourseIdController,
+  getAllLessonsController,
 } from "../controllers/courseController.js";
 import { authenticateToken } from "../auth/auth.js";
 
@@ -50,6 +51,8 @@ routerCourses.route("/getModulesByCourseId/:id").get(getModuleByCourseIdControll
 
 // router to create lesson
 routerCourses.route("/createLesson").post(createLessonController);
+
+routerCourses.route("/getLessons").get(getAllLessonsController);
 
 export default routerCourses;
 

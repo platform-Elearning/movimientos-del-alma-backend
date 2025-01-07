@@ -7,6 +7,7 @@ import {
   getCoursesWithModules,
   deleteCourse,
   getModuleByCourseId,
+  getLessons,
 } from "../crud/crudCourses.js";
 import { getAllEnrollmentsByStudentId } from "../crud/crudEnrollments.js";
 import { checkExist } from "../utils/utils.js";
@@ -295,3 +296,21 @@ export const createLessonController = async (req, res) => {
     });
   }
 };
+
+export const getAllLessonsController = async (req, res) => {
+  try {
+    const lessons = await getLessons();
+
+    return res.status(200).json({
+      success: true,
+      data: lessons,
+    });
+  } catch (error) {
+    console.error("Error in getAllLessonsController:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error,
+    });
+  }
+}
