@@ -10,7 +10,7 @@ import {
   getLessons,
 } from "../crud/crudCourses.js";
 import { getAllEnrollmentsByStudentId } from "../crud/crudEnrollments.js";
-import { checkExist } from "../utils/utils.js";
+import { checkExist, checkLessonExist } from "../utils/utils.js";
 
 // COURSES
 
@@ -260,7 +260,7 @@ export const createLessonController = async (req, res) => {
 
   try {
 
-    const check = await checkExist("lessons", "lesson_number", null, lesson_number);
+    const check = await checkLessonExist("lessons", "module_id", "course_id", "lesson_number", module_id, course_id, lesson_number)
 
     if (check) {
       return res.status(409).json({

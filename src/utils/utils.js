@@ -57,3 +57,17 @@ export const checkExist = async (table, column1, column2, value1, value2) => {
     throw new Error(`Error checking existence in table ${table}`);
   }
 };
+
+export const checkLessonExist = async (table, column1, column2, column3, value1, value2, value3) => {
+  try {
+    const query = `SELECT * FROM ${table} WHERE ${column1} = $1 AND ${column2} = $2 AND ${column3} = $3`;
+    const values = [value1, value2, value3]; 
+
+    const res = await pool.query(query, values);
+
+    return res.rows[0]; 
+  } catch (error) {
+    console.error(`Error checking existence in table ${table}:`, error.message);
+    throw new Error(`Error checking existence in table ${table}`);
+  }
+};
