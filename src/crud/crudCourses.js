@@ -46,10 +46,10 @@ export const deleteCourse = async (id) => {
   const deleteCourseQuery = `DELETE FROM courses WHERE id = $1`;
 
   try {
-    await pool.query("BEGIN"); 
-    await pool.query(deleteModulesQuery, [id]); 
-    const result = await pool.query(deleteCourseQuery, [id]); 
-    await pool.query("COMMIT"); 
+    await pool.query("BEGIN");
+    await pool.query(deleteModulesQuery, [id]);
+    const result = await pool.query(deleteCourseQuery, [id]);
+    await pool.query("COMMIT");
 
     return result.rowCount;
   } catch (error) {
@@ -84,6 +84,85 @@ export const getCoursesWithModules = async () => {
   } catch (error) {
     console.log("getCoursesWithModules error", error);
     throw new Error(error.detail);
+  }
+};
+
+export const getCoursesWithModulesAndLessons = async () => {
+  const query = `
+    SELECT
+      courses.id AS course_id,
+      courses.name AS course_name,
+      course_modules.id AS module_id,
+      course_modules.name AS module_name,
+      lessons.id AS lesson_id,
+      lessons.lesson_number AS lesson_number,
+      lessons.title AS lesson_title,
+      lessons.description AS lesson_description,
+      lessons.url AS lesson_url
+    FROM
+      courses
+    LEFT JOIN
+      course_modules ON courses.id = course_modules.course_id
+    LEFT JOIN
+      lessons ON course_modules.id = lessons.module_id;
+  `;
+
+  try {
+    const result = await pool.query(query);
+    const coursesMap = {};
+
+    /////////////////////////////////////////////////////
+    result.rows.forEach((row) => {
+
+
+      if (!coursesMap[row.course_id]) {
+        coursesMap[row.course_id] = {
+          id: row.course_id,
+          name: row.course_name,
+          modules: [],
+        };
+      }
+
+    
+      if (row.module_id) {
+
+        const moduleIndex = coursesMap[row.course_id].modules.findIndex(
+          (m) => m.id === row.module_id
+        );
+
+        if (moduleIndex === -1) {
+          coursesMap[row.course_id].modules.push({
+            id: row.module_id,
+            name: row.module_name,
+            lessons: [],
+          });
+        }
+
+        const module = coursesMap[row.course_id].modules.find(
+          (m) => m.id === row.module_id
+        );
+
+        if (row.lesson_id) {
+          module.lessons.push({
+            id: row.lesson_id,
+            number: row.lesson_number,
+            title: row.lesson_title,
+            description: row.lesson_description,
+            url: row.lesson_url,
+          });
+          
+        }
+      }
+
+
+
+    });
+    ////////////////////////////////////////////////
+
+    return Object.values(coursesMap);
+  } catch (error) {
+    console.error("Error ejecutando la consulta:", error);
+    throw error;
   }
 };
 

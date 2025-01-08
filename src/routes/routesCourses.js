@@ -10,6 +10,7 @@ import {
   deleteCourseController,
   getModuleByCourseIdController,
   getAllLessonsController,
+  getAllCoursesWithModulesAndLessonsController,
 } from "../controllers/courseController.js";
 import { authenticateToken } from "../auth/auth.js";
 
@@ -36,6 +37,10 @@ routerCourses
   .route("/getCoursesByStudentId")
   .get(getCoursesWithStudentIdController);
 
+routerCourses
+  .route("/getAllCoursesWithModulesAndLessons")
+  .get(getAllCoursesWithModulesAndLessonsController);
+
 /// MODULES ///
 
 // router to create module
@@ -45,7 +50,9 @@ routerCourses.route("/createCourseModule").post(createCourseModuleController);
 routerCourses.route("/getModulesOfStudent").get(getModulesOfStudentController);
 
 // router to get modules by course id
-routerCourses.route("/getModulesByCourseId/:id").get(getModuleByCourseIdController);
+routerCourses
+  .route("/getModulesByCourseId/:id")
+  .get(getModuleByCourseIdController);
 
 /// LESSONS ///
 
@@ -55,5 +62,3 @@ routerCourses.route("/createLesson").post(createLessonController);
 routerCourses.route("/getLessons").get(getAllLessonsController);
 
 export default routerCourses;
-
-
