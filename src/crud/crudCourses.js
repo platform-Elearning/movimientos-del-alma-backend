@@ -111,58 +111,52 @@ export const getCoursesWithModulesAndLessons = async () => {
     const result = await pool.query(query);
     const coursesMap = {};
 
-    /////////////////////////////////////////////////////
     result.rows.forEach((row) => {
-
 
       if (!coursesMap[row.course_id]) {
         coursesMap[row.course_id] = {
-          id: row.course_id,
-          name: row.course_name,
-          modules: [],
+          courseId: row.course_id,
+          courseName: row.course_name,
+          courseModules: [],
         };
       }
 
-    
       if (row.module_id) {
 
-        const moduleIndex = coursesMap[row.course_id].modules.findIndex(
-          (m) => m.id === row.module_id
+        const moduleIndex = coursesMap[row.course_id].courseModules.findIndex(
+          (m) => m.moduleId === row.module_id
         );
 
         if (moduleIndex === -1) {
-          coursesMap[row.course_id].modules.push({
-            id: row.module_id,
-            name: row.module_name,
-            lessons: [],
+          coursesMap[row.course_id].courseModules.push({
+            moduleId: row.module_id,
+            moduleName: row.module_name,
+            moduleLessons: [],
           });
         }
 
-        const module = coursesMap[row.course_id].modules.find(
-          (m) => m.id === row.module_id
+        const module = coursesMap[row.course_id].courseModules.find(
+          (m) => m.moduleId === row.module_id
         );
 
         if (row.lesson_id) {
-          module.lessons.push({
-            id: row.lesson_id,
-            number: row.lesson_number,
-            title: row.lesson_title,
-            description: row.lesson_description,
-            url: row.lesson_url,
+          module.moduleLessons.push({
+            lessonId: row.lesson_id,
+            lessonNumber: row.lesson_number,
+            lessonTitle: row.lesson_title,
+            lessonDescription: row.lesson_description,
+            lessonUrl: row.lesson_url,
           });
           
         }
       }
 
-
-
     });
-    ////////////////////////////////////////////////
 
     return Object.values(coursesMap);
   } catch (error) {
-    console.error("Error ejecutando la consulta:", error);
-    throw error;
+    console.error("Error in function getCoursesWithModulesAndLessons:", error);
+    throw new Error(error);
   }
 };
 
