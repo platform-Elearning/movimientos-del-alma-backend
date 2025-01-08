@@ -1,19 +1,47 @@
 import { Router } from "express";
-import { createCourseController, createEnrollmentToCourseController, getCoursesWithStudentIdController, getAllCoursesController, getModulesOfStudentController, createCourseModuleController, createLessonController } from "../controllers/courseController.js";
+import {
+  createCourseController,
+  getCoursesWithStudentIdController,
+  getAllCoursesController,
+  getModulesOfStudentController,
+  createCourseModuleController,
+  createLessonController,
+  getAllCoursesWithModulesController,
+  deleteCourseController,
+  getModuleByCourseIdController,
+  getAllLessonsController,
+  getAllCoursesWithModulesAndLessonsController,
+} from "../controllers/courseController.js";
+import { authenticateToken } from "../auth/auth.js";
 
 const routerCourses = Router();
+
+/// COURSES ///
 
 // ROUTE FOR GET ALL COURSES
 routerCourses.route("/getAllCourses").get(getAllCoursesController);
 
+// ROUTE FOR GET ALL COURSES WITH MODULES
+routerCourses
+  .route("/getAllCoursesWithModules")
+  .get(getAllCoursesWithModulesController);
+
 // ROUTE FOR CREATE COURSE
 routerCourses.route("/createCourse").post(createCourseController);
 
-// ROUTE FOR REGISTER TO COURSE
-routerCourses.route("/registerToCourse").post(createEnrollmentToCourseController);
+//router for delete course
+routerCourses.route("/deleteCourse").post(deleteCourseController);
 
 // ROUTER FOR GET ALL COURSES WITH STUDENT_ID
-routerCourses.route("/getCoursesByStudentId").get(getCoursesWithStudentIdController);
+routerCourses
+  .route("/getCoursesByStudentId")
+  .get(getCoursesWithStudentIdController);
+
+routerCourses
+  .route("/getAllCoursesWithModulesAndLessons")
+  .get(getAllCoursesWithModulesAndLessonsController);
+
+/// MODULES ///
 
 // router to create module
 routerCourses.route("/createCourseModule").post(createCourseModuleController);
@@ -21,7 +49,16 @@ routerCourses.route("/createCourseModule").post(createCourseModuleController);
 // router to get a student's modules
 routerCourses.route("/getModulesOfStudent").get(getModulesOfStudentController);
 
+// router to get modules by course id
+routerCourses
+  .route("/getModulesByCourseId/:id")
+  .get(getModuleByCourseIdController);
+
+/// LESSONS ///
+
 // router to create lesson
 routerCourses.route("/createLesson").post(createLessonController);
+
+routerCourses.route("/getLessons").get(getAllLessonsController);
 
 export default routerCourses;

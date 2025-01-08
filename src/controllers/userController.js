@@ -1,16 +1,16 @@
 //import sendWelcomeSms from "../contact/twilio.js";
 import {
-  checkUserExist,
   createStudent,
   createTeacher,
   createUser,
   getAllStudents,
   getStudentData,
   getStudentsWithCourses,
+  getTeacher,
 } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
 import { authFunc } from "../passwordStrategy/passwordStrategy.js";
-import { generateRandomId, randomPassword } from "../utils/utils.js";
+import { checkExist, generateRandomId, randomPassword } from "../utils/utils.js";
 
 // USERS
 
@@ -27,10 +27,13 @@ export const createAdminController = async (req, res) => {
   const hashedPassword = authFunc.hashPassword(password);
 
   try {
-    const check = await checkUserExist(email);
+    const check = await checkExist("users", "email", null, email);
 
     if (check) {
-      throw new Error("User already exist");
+      return res.status(409).json({
+        success: false,
+        message: "User already exists",
+      });
     }
 
     await pool.query("BEGIN");
@@ -132,11 +135,15 @@ export const createTeacherController = async (req, res) => {
   }
 
   try {
-    const check = await checkUserExist(email);
+    const check = await checkExist("users", "email", null, email);
 
     if (check) {
-      throw new Error("User already exist");
+      return res.status(409).json({
+        success: false,
+        message: "User already exists",
+      });
     }
+
 
     await pool.query("BEGIN");
 
@@ -151,8 +158,7 @@ export const createTeacherController = async (req, res) => {
       name,
       lastname,
       identification_number,
-      email,
-      dni
+      email
     );
 
     if (!teacherCreated) {
@@ -179,6 +185,25 @@ export const createTeacherController = async (req, res) => {
     });
   }
 };
+
+export const getTeacherController = async (req, res) => {
+
+  const { id } = req.body;
+
+  try {
+    const response = await getTeacher(id);
+    return res.status(200).json({
+      response,
+    });
+  } catch (error) {
+    console.error("Error in getTeacherController:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error.message,
+    });
+  }
+}
 
 // STUDENT
 
@@ -215,10 +240,13 @@ export const createStudentController = async (req, res) => {
   const hashedPassword = authFunc.hashPassword(randomPW);
 
   try {
-    const check = await checkUserExist(email);
+    const check = await checkExist("users", "email", null, email);
 
     if (check) {
-      throw new Error("User already exist");
+      return res.status(409).json({
+        success: false,
+        message: "User already exists",
+      });
     }
 
     await pool.query("BEGIN");
