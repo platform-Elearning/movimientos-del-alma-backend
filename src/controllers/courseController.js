@@ -4,12 +4,11 @@ import {
   getEnrolledModules,
   createCourseModule,
   createLesson,
-  getCoursesWithModules,
   deleteCourse,
   getModuleByCourseId,
   getLessons,
   getCoursesWithModulesAndLessons,
-  
+  getCoursesWithModules,
 } from "../crud/crudCourses.js";
 import { getAllEnrollmentsByStudentId } from "../crud/crudEnrollments.js";
 import { checkExist, checkLessonExist } from "../utils/utils.js";
@@ -50,9 +49,13 @@ export const getAllCoursesWithModulesController = async (req, res) => {
   }
 };
 
-export const getAllCoursesWithModulesAndLessonsController = async (req, res) => {
+export const getAllCoursesWithModulesAndLessonsController = async (
+  req,
+  res
+) => {
   try {
-    const coursesWithModulesAndLessons = await getCoursesWithModulesAndLessons();
+    const coursesWithModulesAndLessons =
+      await getCoursesWithModulesAndLessons();
     return res.status(200).json({
       success: true,
       data: coursesWithModulesAndLessons,
@@ -65,7 +68,24 @@ export const getAllCoursesWithModulesAndLessonsController = async (req, res) => 
       error: error,
     });
   }
-}
+};
+
+export const getDataCoursesCompleteByStudentIdController = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+  } catch (error) {
+    console.error(
+      "Error in getDataCoursesCompleteByStudentIdController:",
+      error
+    );
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error,
+    });
+  }
+};
 
 export const createCourseController = async (req, res) => {
   const { name, description } = req.body;
@@ -222,8 +242,13 @@ export const createCourseModuleController = async (req, res) => {
   }
 
   try {
-
-    const check = await checkExist("course_modules", "course_id", "module_number", course_id, module_number);
+    const check = await checkExist(
+      "course_modules",
+      "course_id",
+      "module_number",
+      course_id,
+      module_number
+    );
 
     if (check) {
       return res.status(409).json({
@@ -278,15 +303,16 @@ export const createLessonController = async (req, res) => {
   }
 
   try {
+    const check = await checkLessonExist(
+      module_id, course_id, lesson_number
+    );
 
-    const check = await checkLessonExist("lessons", "module_id", "course_id", "lesson_number", module_id, course_id, lesson_number)
-
-    if (check) {
+    if (!check) {
       return res.status(409).json({
         success: false,
-        message: "Lesson number already exist",
+        message: "Lesson already exist",
       });
-    }
+    } 
 
     const lessonCreated = await createLesson(
       module_id,
@@ -307,7 +333,7 @@ export const createLessonController = async (req, res) => {
       message: "Lesson create correctly successfully",
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -332,4 +358,4 @@ export const getAllLessonsController = async (req, res) => {
       error: error,
     });
   }
-}
+};

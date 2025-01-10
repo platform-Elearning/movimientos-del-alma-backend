@@ -59,6 +59,7 @@ export const deleteCourse = async (id) => {
   }
 };
 
+/*
 export const getCoursesWithModules = async () => {
   try {
     const allCourses = await getCourses();
@@ -81,6 +82,56 @@ export const getCoursesWithModules = async () => {
     }
 
     return coursesWithModules;
+  } catch (error) {
+    console.log("getCoursesWithModules error", error);
+    throw new Error(error.detail);
+  }
+};
+*/
+
+export const getCoursesWithModules = async () => {
+  const query = `
+  SELECT
+    courses.id AS course_id,
+    courses.name AS course_name,
+    courses.description AS course_description,
+    course_modules.id AS module_id,
+    course_modules.module_number AS module_number,
+    course_modules.name AS module_name,
+    course_modules.description AS module_description
+  FROM
+    courses
+  LEFT JOIN 
+    course_modules ON courses.id = course_modules.course_id`;
+
+  try {
+    const res = await pool.query(query);
+    const coursesWithModulesMap = {};
+
+    res.rows.forEach((row) => {
+      if (!coursesWithModulesMap[row.course_id]) {
+        coursesWithModulesMap[row.course_id] = {
+          courseId: row.course_id,
+          courseName: row.course_name,
+          courseModules: [],
+        };
+      }
+
+      if (row.module_id) {
+        const moduleIndex = coursesWithModulesMap[
+          row.course_id
+        ].courseModules.findIndex((m) => m.moduleId === row.module_id);
+
+        if (moduleIndex === -1) {
+          coursesWithModulesMap[row.course_id].courseModules.push({
+            moduleId: row.module_id,
+            moduleName: row.module_name,
+          });
+        }
+      }
+    });
+
+    return Object.values(coursesWithModulesMap);
   } catch (error) {
     console.log("getCoursesWithModules error", error);
     throw new Error(error.detail);
@@ -112,7 +163,6 @@ export const getCoursesWithModulesAndLessons = async () => {
     const coursesMap = {};
 
     result.rows.forEach((row) => {
-
       if (!coursesMap[row.course_id]) {
         coursesMap[row.course_id] = {
           courseId: row.course_id,
@@ -122,7 +172,6 @@ export const getCoursesWithModulesAndLessons = async () => {
       }
 
       if (row.module_id) {
-
         const moduleIndex = coursesMap[row.course_id].courseModules.findIndex(
           (m) => m.moduleId === row.module_id
         );
@@ -147,10 +196,8 @@ export const getCoursesWithModulesAndLessons = async () => {
             lessonDescription: row.lesson_description,
             lessonUrl: row.lesson_url,
           });
-          
         }
       }
-
     });
 
     return Object.values(coursesMap);
