@@ -29,7 +29,22 @@ export const createUser = async (id, email, password, role) => {
 
 export const updateUser = () => {};
 
-export const deleteUser = () => {};
+export const deleteUser = async (id) => {
+  const query = `
+    DELETE FROM users WHERE id = $1
+  `;
+
+  try {
+    const result = await pool.query(query, [id]);
+
+    console.log(`User delete with ID: ${id}`);
+
+    return result.rowCount;
+  } catch (error) {
+    console.error("Error in function deleteUser", error);
+    throw new Error(error.message);
+  }
+};
 
 export const readLoginData = async (email) => {
   try {
@@ -110,6 +125,23 @@ export const getTeacher = async (id) => {
     return responsedb.rows[0];
   } catch (error) {
     console.log("getTeacher error", error);
+    throw new Error(error.message);
+  }
+};
+
+export const deleteTeacher = async (id) => {
+  const query = `
+    DELETE FROM teacher WHERE id = $1
+  `;
+
+  try {
+    const result = await pool.query(query, [id]);
+
+    console.log(`Teacher delete with ID: ${id}`);
+
+    return result.rowCount;
+  } catch (error) {
+    console.error("Error in function deleteTeacher", error);
     throw new Error(error.message);
   }
 };
@@ -232,5 +264,22 @@ export const getStudentWithDni = async (dni) => {
   } catch (error) {
     console.error("getStudentWithDni error:", error.message || error); 
     throw new Error(error.detail);
+  }
+};
+
+export const deleteStudent = async (id) => {
+  const query = `
+    DELETE FROM student WHERE id = $1
+  `;
+
+  try {
+    const result = await pool.query(query, [id]);
+
+    console.log(`Student delete with ID: ${id}`);
+
+    return result.rowCount;
+  } catch (error) {
+    console.error("Error in function deleteStudent", error);
+    throw new Error(error.message);
   }
 };

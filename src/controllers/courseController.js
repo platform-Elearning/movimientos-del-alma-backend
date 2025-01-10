@@ -10,6 +10,7 @@ import {
   getCoursesWithModulesAndLessons,
   getCoursesWithModules,
   deleteLesson,
+  deleteModule,
 } from "../crud/crudCourses.js";
 import { getAllEnrollmentsByStudentId } from "../crud/crudEnrollments.js";
 import { checkExist, checkLessonExist } from "../utils/utils.js";
@@ -280,6 +281,32 @@ export const createCourseModuleController = async (req, res) => {
       success: false,
       errorMessage: "Internal server error",
       error: errorMessage,
+    });
+  }
+};
+
+export const deleteModuleController = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const response = await deleteModule(id);
+
+    if (response.rowCount === 0) {
+      return res
+        .status(404)
+        .json({ message: `Module with ID ${id} not found` });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: `Module with ID ${id} deleted successfully`,
+    });
+  } catch (error) {
+    console.error("Error in deleteModuleController:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error,
     });
   }
 };

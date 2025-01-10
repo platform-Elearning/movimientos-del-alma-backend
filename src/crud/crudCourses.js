@@ -344,6 +344,23 @@ export const getModuleByCourseId = async (course_id) => {
   }
 };
 
+export const deleteModule = async (id) => {
+  const query = `
+    DELETE FROM course_modules WHERE id = $1
+  `;
+
+  try {
+    const result = await pool.query(query, [id]);
+
+    console.log(`Course module delete with ID: ${id}`);
+
+    return result.rowCount;
+  } catch (error) {
+    console.error("Error in function deleteModule", error);
+    throw new Error(error.message);
+  }
+};
+
 // LESSON
 
 export const createLesson = async (

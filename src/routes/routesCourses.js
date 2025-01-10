@@ -12,6 +12,7 @@ import {
   getAllLessonsController,
   getAllCoursesWithModulesAndLessonsController,
   deleteLessonController,
+  deleteModuleController,
 } from "../controllers/courseController.js";
 import { authenticateToken } from "../auth/auth.js";
 
@@ -46,6 +47,8 @@ routerCourses.route("/getModulesOfStudent").get(getModulesOfStudentController);
 routerCourses
   .route("/getModulesByCourseId/:id")
   .get(getModuleByCourseIdController);
+
+routerCourses.route("/deleteModule/:id").delete(deleteModuleController);
 
 /// LESSONS ///
 

@@ -1,24 +1,27 @@
 import { Router } from "express";
-import { createAdminController, createStudentController, createTeacherController, getAllStudentsController, getAllUsersWithCoursesController, getTeacherController, getUserController } from "../controllers/userController.js";
+import { createAdminController, createStudentController, createTeacherController, deleteStudentController, deleteTeacherController, deleteUserController, getAllStudentsController, getAllUsersWithCoursesController, getTeacherController, getUserController } from "../controllers/userController.js";
 import { loginController, changePasswordController } from "../controllers/authController.js";
 import { authenticateToken } from "../auth/auth.js";
 
 const routerUsers = Router();
-
-// ROUTE FOR CREATE STUDENT AND USERSTUDENT
+// ROUTER STUDENTS //
 routerUsers.route("/createCompleteStudent").post(createStudentController);
 
-//ROUTE FOR GET STUDENT
 routerUsers.route("/getStudentById").get(getUserController);
 
-// ROUTE FOR GET ALL STUDENTS
 routerUsers.route("/getAllStudents").get(getAllStudentsController);
 
-// ROUTE FOR CREATE TEACHER AND USERTEACHER
+routerUsers.route("/getStudentsWithCourses").get(getAllUsersWithCoursesController);
+
+routerUsers.route("/deleteStudent/:id").delete(deleteStudentController);
+
+// ROUTER TEACHERS //
+
 routerUsers.route("/createCompleteTeacher").post(createTeacherController);
 
-// ROUTE FOR GET TEACHER
 routerUsers.route("/getTeacher").get(getTeacherController);
+
+routerUsers.route("/deleteTeacher/:id").delete(deleteTeacherController);
 
 // ROUTE FOR LOGIN
 routerUsers.route("/login").post(loginController);
@@ -29,7 +32,8 @@ routerUsers.route("/changePassword").post(changePasswordController);
 // ROUTE FOR CREATE ADMIN
 routerUsers.route("/createAdmin").post(createAdminController);
 
-// ROUTER FOR GET STUDENT WITH COURSES ASIGNED"
-routerUsers.route("/getStudentsWithCourses").get(getAllUsersWithCoursesController);
+// ROUTE FOR DELETE USER
+routerUsers.route("/deleteUser/:id").delete(deleteUserController);
+
 
 export default routerUsers;

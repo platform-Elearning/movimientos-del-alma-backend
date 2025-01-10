@@ -3,6 +3,9 @@ import {
   createStudent,
   createTeacher,
   createUser,
+  deleteStudent,
+  deleteTeacher,
+  deleteUser,
   getAllStudents,
   getStudentData,
   getStudentsWithCourses,
@@ -118,6 +121,32 @@ export const getAllUsersWithCoursesController = async (req, res) => {
   }
 };
 
+export const deleteUserController = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const response = await deleteUser(id);
+
+    if (response.rowCount === 0) {
+      return res
+        .status(404)
+        .json({ message: `User with ID ${id} not found` });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: `User with ID ${id} deleted successfully`,
+    });
+  } catch (error) {
+    console.error("Error in deleteUserController:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error,
+    });
+  }
+};
+
 // TEACHER
 
 export const createTeacherController = async (req, res) => {
@@ -205,6 +234,32 @@ export const getTeacherController = async (req, res) => {
   }
 }
 
+export const deleteTeacherController = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const response = await deleteTeacher(id);
+
+    if (response.rowCount === 0) {
+      return res
+        .status(404)
+        .json({ message: `Teacher with ID ${id} not found` });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: `Teacher with ID ${id} deleted successfully`,
+    });
+  } catch (error) {
+    console.error("Error in deleteTeacherController:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error,
+    });
+  }
+};
+
 // STUDENT
 
 export const getAllStudentsController = async (req, res) => {
@@ -287,6 +342,32 @@ export const createStudentController = async (req, res) => {
       success: false,
       errorMessage: "Internal server error",
       error: error.mesage || error,
+    });
+  }
+};
+
+export const deleteStudentController = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const response = await deleteStudent(id);
+
+    if (response.rowCount === 0) {
+      return res
+        .status(404)
+        .json({ message: `Student with ID ${id} not found` });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: `Student with ID ${id} deleted successfully`,
+    });
+  } catch (error) {
+    console.error("Error in deleteStudentController:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error,
     });
   }
 };
