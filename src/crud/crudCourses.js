@@ -397,3 +397,20 @@ export const getLessons = async () => {
     throw new Error(error.detail);
   }
 };
+
+export const deleteLesson = async (id) => {
+  const query = `
+    DELETE FROM lessons WHERE id = $1
+  `;
+
+  try {
+    const result = await pool.query(query, [id]);
+
+    console.log(`Row delete with ID: ${id}`);
+
+    return result.rowCount;
+  } catch (error) {
+    console.error("Error in function deleteLesson", error);
+    throw new Error(error.message);
+  }
+};

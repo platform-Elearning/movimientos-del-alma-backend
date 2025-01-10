@@ -9,6 +9,7 @@ import {
   getLessons,
   getCoursesWithModulesAndLessons,
   getCoursesWithModules,
+  deleteLesson,
 } from "../crud/crudCourses.js";
 import { getAllEnrollmentsByStudentId } from "../crud/crudEnrollments.js";
 import { checkExist, checkLessonExist } from "../utils/utils.js";
@@ -303,16 +304,14 @@ export const createLessonController = async (req, res) => {
   }
 
   try {
-    const check = await checkLessonExist(
-      module_id, course_id, lesson_number
-    );
+    const check = await checkLessonExist(module_id, course_id, lesson_number);
 
     if (!check) {
       return res.status(409).json({
         success: false,
         message: "Lesson already exist",
       });
-    } 
+    }
 
     const lessonCreated = await createLesson(
       module_id,
@@ -352,6 +351,32 @@ export const getAllLessonsController = async (req, res) => {
     });
   } catch (error) {
     console.error("Error in getAllLessonsController:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error,
+    });
+  }
+};
+
+export const deleteLessonController = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const response = await deleteLesson(id);
+
+    if (response.rowCount === 0) {
+      return res
+        .status(404)
+        .json({ message: `Lesson with ID ${id} not found` });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: `Lesson with ID ${id} deleted successfully`,
+    });
+  } catch (error) {
+    console.error("Error in deleteLessonController:", error);
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
