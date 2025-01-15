@@ -125,6 +125,16 @@ export const deleteUserController = async (req, res) => {
   const { id } = req.params;
 
   try {
+
+    const check = await checkExist("users", "id", null, id);
+
+    if(!check) {
+      return res.status(409).json({
+        success: false,
+        message: "User not exist",
+      });
+    }
+
     const response = await deleteUser(id);
 
     if (response.rowCount === 0) {
@@ -238,6 +248,16 @@ export const deleteTeacherController = async (req, res) => {
   const { id } = req.params;
 
   try {
+
+    const check = await checkExist("teacher", "id", null, id);
+
+    if(!check) {
+      return res.status(409).json({
+        success: false,
+        message: "Teacher not exist",
+      });
+    }
+
     const response = await deleteTeacher(id);
 
     if (response.rowCount === 0) {
@@ -350,6 +370,16 @@ export const deleteStudentController = async (req, res) => {
   const { id } = req.params;
 
   try {
+
+    const check = await checkExist("student", "id", null, id);
+
+    if(!check) {
+      return res.status(409).json({
+        success: false,
+        message: "Student not exist",
+      });
+    }
+
     const response = await deleteStudent(id);
 
     if (response.rowCount === 0) {

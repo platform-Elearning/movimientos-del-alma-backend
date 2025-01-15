@@ -13,8 +13,10 @@ import {
   getAllCoursesWithModulesAndLessonsController,
   deleteLessonController,
   deleteModuleController,
+  getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController,
 } from "../controllers/courseController.js";
 import { authenticateToken } from "../auth/auth.js";
+import { getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId } from "../crud/crudCourses.js";
 
 const routerCourses = Router();
 
@@ -37,6 +39,8 @@ routerCourses
 routerCourses
   .route("/getAllCoursesWithModulesAndLessons")
   .get(getAllCoursesWithModulesAndLessonsController);
+
+routerCourses.route("/getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId").get(getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController);
 
 /// MODULES ///
 

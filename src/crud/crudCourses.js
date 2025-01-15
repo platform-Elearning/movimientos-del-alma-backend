@@ -207,6 +207,97 @@ export const getCoursesWithModulesAndLessons = async () => {
   }
 };
 
+export const getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId =
+  async (course_id, student_id) => {
+    const queryCovered =
+      "SELECT modules_covered FROM enrollments WHERE student_id = $1 AND course_id = $2";
+
+    const query = `
+    SELECT
+      courses.id AS course_id,
+      courses.name AS course_name,
+      course_modules.id AS module_id,
+      course_modules.name AS module_name,
+      lessons.id AS lesson_id,
+      lessons.lesson_number AS lesson_number,
+      lessons.title AS lesson_title,
+      lessons.description AS lesson_description,
+      lessons.url AS lesson_url
+    FROM
+      courses
+    LEFT JOIN
+      course_modules ON courses.id = course_modules.course_id
+    LEFT JOIN
+      lessons ON course_modules.id = lessons.module_id
+    WHERE
+    courses.id = $1;
+  `;
+
+    try {
+      const modulesCoveredResult = await pool.query(queryCovered, [
+        student_id,
+        course_id,
+      ]);
+
+      if (modulesCoveredResult.rows[0].modules_covered.length === 0) {
+        throw new Error("No enrollment found for this student in this course");
+      }
+
+      const result = await pool.query(query, [course_id]);
+      const coursesMap = {};
+
+    result.rows.forEach((row) => {
+      if (!coursesMap[row.course_id]) {
+        coursesMap[row.course_id] = {
+          courseId: row.course_id,
+          courseName: row.course_name,
+          courseModules: [],
+        };
+      }
+
+      if (row.module_id) {
+        const moduleIndex = coursesMap[row.course_id].courseModules.findIndex(
+          (m) => m.moduleId === row.module_id
+        );
+
+        if (moduleIndex === -1) {
+          if (coursesMap[row.course_id].courseModules.length < modulesCoveredResult.rows[0].modules_covered) {
+            coursesMap[row.course_id].courseModules.push({
+              moduleId: row.module_id,
+              moduleName: row.module_name,
+              moduleLessons: [],
+            });
+          }
+        }
+
+        const module = coursesMap[row.course_id].courseModules.find(
+          (m) => m.moduleId === row.module_id
+        );
+
+        if (row.lesson_id) {
+          module.moduleLessons.push({
+            lessonId: row.lesson_id,
+            lessonNumber: row.lesson_number,
+            lessonTitle: row.lesson_title,
+            lessonDescription: row.lesson_description,
+            lessonUrl: row.lesson_url,
+          });
+        }
+      }
+    });
+
+
+
+    return Object.values(coursesMap);
+    } catch (error) {
+      console.error(
+        "Error in function getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId:",
+        error
+      );
+      throw new Error(error);
+    }
+  };
+
 export const registerToCourse = async (
   student_id,
   course_id,
@@ -267,6 +358,7 @@ export const createCourseModule = async (
 
 export const getEnrolledModules = async (student_id, course_id) => {
   const queryModules = "SELECT * FROM course_modules WHERE course_id = $1";
+
   const queryCovered =
     "SELECT modules_covered FROM enrollments WHERE student_id = $1 AND course_id = $2";
 

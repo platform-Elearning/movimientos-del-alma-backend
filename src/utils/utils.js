@@ -42,10 +42,10 @@ export const checkExist = async (table, column1, column2, value1, value2) => {
     const values = [];
 
     if (column2) {
-      query = `SELECT * FROM ${table} WHERE ${column1} = $1 AND ${column2} = $2`;
+      query = `SELECT id FROM ${table} WHERE ${column1} = $1 AND ${column2} = $2`;
       values.push(value1, value2);
     } else {
-      query = `SELECT * FROM ${table} WHERE ${column1} = $1`;
+      query = `SELECT id FROM ${table} WHERE ${column1} = $1`;
       values.push(value1);
     }
 
