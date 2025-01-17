@@ -11,7 +11,8 @@ import {
   getCoursesWithModules,
   deleteLesson,
   deleteModule,
-  getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId
+  getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId,
+  getLessonsByModuleIdAndCourseId,
 } from "../crud/crudCourses.js";
 import { getAllEnrollmentsByStudentId } from "../crud/crudEnrollments.js";
 import { checkExist, checkLessonExist } from "../utils/utils.js";
@@ -73,28 +74,36 @@ export const getAllCoursesWithModulesAndLessonsController = async (
   }
 };
 
-export const getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController = async (req, res) => {
-  const student_id = req.query.student_id;
-  const course_id =  req.query.course_id;
+export const getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController =
+  async (req, res) => {
+    const student_id = req.query.student_id;
+    const course_id = req.query.course_id;
 
-  console.log(course_id, student_id)
+    console.log(course_id, student_id);
 
-  try {
-    const dataTotal = await getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId(course_id, student_id);
+    try {
+      const dataTotal =
+        await getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId(
+          course_id,
+          student_id
+        );
 
-    return res.status(200).json({
-      success: true,
-      data: dataTotal,
-    });
-  } catch (error) {
-    console.error("Error in getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController:", error);
-    return res.status(500).json({
-      success: false,
-      errorMessage: "Internal server error",
-      error: error.message,
-    });
-  }
-}
+      return res.status(200).json({
+        success: true,
+        data: dataTotal,
+      });
+    } catch (error) {
+      console.error(
+        "Error in getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController:",
+        error
+      );
+      return res.status(500).json({
+        success: false,
+        errorMessage: "Internal server error",
+        error: error.message,
+      });
+    }
+  };
 
 export const getDataCoursesCompleteByStudentIdController = async (req, res) => {
   const { id } = req.params;
@@ -218,7 +227,7 @@ export const deleteCourseController = async (req, res) => {
 
 export const getModulesOfStudentController = async (req, res) => {
   const student_id = req.query.student_id;
-  const course_id =  req.query.course_id;
+  const course_id = req.query.course_id;
 
   try {
     const modulesOfStudent = await getEnrolledModules(student_id, course_id);
@@ -314,10 +323,9 @@ export const deleteModuleController = async (req, res) => {
   const { id } = req.params;
 
   try {
-
     const check = await checkExist("users", "id", null, id);
 
-    if(!check) {
+    if (!check) {
       return res.status(409).json({
         success: false,
         message: "User not exist",
@@ -425,10 +433,9 @@ export const deleteLessonController = async (req, res) => {
   const { id } = req.params;
 
   try {
-
     const check = await checkExist("lessons", "id", null, id);
 
-    if(!check) {
+    if (!check) {
       return res.status(409).json({
         success: false,
         message: "Lesson not exist",
@@ -457,6 +464,26 @@ export const deleteLessonController = async (req, res) => {
   }
 };
 
+export const getLessonsByModuleIdAndCourseIdController = async (req, res) => {
+  const module_id = req.query.module_id;
+  const course_id = req.query.course_id;
 
+  try {
+    const response = await getLessonsByModuleIdAndCourseId(
+      module_id,
+      course_id
+    );
 
-
+    return res.status(200).json({
+      success: true,
+      data: response,
+    });
+  } catch (error) {
+    console.error("Error in getLessonsByModuleIdAndCourseIdController:", error);
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error,
+    });
+  }
+};

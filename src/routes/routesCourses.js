@@ -14,9 +14,8 @@ import {
   deleteLessonController,
   deleteModuleController,
   getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController,
+  getLessonsByModuleIdAndCourseIdController,
 } from "../controllers/courseController.js";
-import { authenticateToken } from "../auth/auth.js";
-import { getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId } from "../crud/crudCourses.js";
 
 const routerCourses = Router();
 
@@ -62,5 +61,6 @@ routerCourses.route("/getLessons").get(getAllLessonsController);
 
 routerCourses.route("/deleteLesson/:id").delete(deleteLessonController);
 
+routerCourses.route("/getLessonsByModuleIdAndCourseId").get(getLessonsByModuleIdAndCourseIdController);
 
 export default routerCourses;

@@ -246,49 +246,50 @@ export const getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId =
       const result = await pool.query(query, [course_id]);
       const coursesMap = {};
 
-    result.rows.forEach((row) => {
-      if (!coursesMap[row.course_id]) {
-        coursesMap[row.course_id] = {
-          courseId: row.course_id,
-          courseName: row.course_name,
-          courseModules: [],
-        };
-      }
+      result.rows.forEach((row) => {
+        if (!coursesMap[row.course_id]) {
+          coursesMap[row.course_id] = {
+            courseId: row.course_id,
+            courseName: row.course_name,
+            courseModules: [],
+          };
+        }
 
-      if (row.module_id) {
-        const moduleIndex = coursesMap[row.course_id].courseModules.findIndex(
-          (m) => m.moduleId === row.module_id
-        );
+        if (row.module_id) {
+          const moduleIndex = coursesMap[row.course_id].courseModules.findIndex(
+            (m) => m.moduleId === row.module_id
+          );
 
-        if (moduleIndex === -1) {
-          if (coursesMap[row.course_id].courseModules.length < modulesCoveredResult.rows[0].modules_covered) {
-            coursesMap[row.course_id].courseModules.push({
-              moduleId: row.module_id,
-              moduleName: row.module_name,
-              moduleLessons: [],
+          if (moduleIndex === -1) {
+            if (
+              coursesMap[row.course_id].courseModules.length <
+              modulesCoveredResult.rows[0].modules_covered
+            ) {
+              coursesMap[row.course_id].courseModules.push({
+                moduleId: row.module_id,
+                moduleName: row.module_name,
+                moduleLessons: [],
+              });
+            }
+          }
+
+          const module = coursesMap[row.course_id].courseModules.find(
+            (m) => m.moduleId === row.module_id
+          );
+
+          if (row.lesson_id) {
+            module.moduleLessons.push({
+              lessonId: row.lesson_id,
+              lessonNumber: row.lesson_number,
+              lessonTitle: row.lesson_title,
+              lessonDescription: row.lesson_description,
+              lessonUrl: row.lesson_url,
             });
           }
         }
+      });
 
-        const module = coursesMap[row.course_id].courseModules.find(
-          (m) => m.moduleId === row.module_id
-        );
-
-        if (row.lesson_id) {
-          module.moduleLessons.push({
-            lessonId: row.lesson_id,
-            lessonNumber: row.lesson_number,
-            lessonTitle: row.lesson_title,
-            lessonDescription: row.lesson_description,
-            lessonUrl: row.lesson_url,
-          });
-        }
-      }
-    });
-
-
-
-    return Object.values(coursesMap);
+      return Object.values(coursesMap);
     } catch (error) {
       console.error(
         "Error in function getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId:",
@@ -523,3 +524,18 @@ export const deleteLesson = async (id) => {
     throw new Error(error.message);
   }
 };
+
+export const getLessonsByModuleIdAndCourseId = async (module_id, course_id) => {
+  const query = `SELECT id, lesson_number, title, description, url FROM lessons WHERE module_id = $1 AND course_id = $2`;
+
+  try {
+    const result = await pool.query(query, [module_id, course_id]);
+
+    return result.rows;
+  } catch (error) {
+    console.error("Error in function deleteLesson", error);
+    throw new Error(error.message);
+  }
+};
+
+
