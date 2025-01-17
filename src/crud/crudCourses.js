@@ -531,6 +531,10 @@ export const getLessonsByModuleIdAndCourseId = async (module_id, course_id) => {
   try {
     const result = await pool.query(query, [module_id, course_id]);
 
+    if (result.rows.length === 0) {
+      throw new Error(`Lessons not founds with module_id:${module_id} and course_id:${course_id}`);
+    }
+
     return result.rows;
   } catch (error) {
     console.error("Error in function deleteLesson", error);
