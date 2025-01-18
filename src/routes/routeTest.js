@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authenticateToken } from "../auth/auth.js";
 import { getStudentWithDni } from "../crud/crudUsers.js";
+import { getCoursesWithModules } from "../crud/crudCourses.js";
 
 const routerTest = Router();
 
@@ -23,19 +24,15 @@ routerTest.route("/protected").get(authenticateToken, async (res) => {
   return true;
 });
 
-routerTest.route("/test").post(async (req, res) => {
-  const { dni } = req.body;
+routerTest.route("/test").get(async (req, res) => {
+  
 
   try {
-    const student = await getStudentWithDni(dni);
 
-    if (!student) {
-      return res
-        .status(404)
-        .json({ message: `No student found with DNI: ${dni}` });
-    }
+    const response = await getCoursesWithModules();
+    console.log(response)
 
-    return res.status(200).json(student);
+    return res.status(200).json("LLEGO EL GET");
   } catch (error) {
     console.error("Error in /test route:", error);
     return res.status(500).json({ message: "Internal server error" });

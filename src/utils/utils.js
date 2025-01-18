@@ -42,10 +42,10 @@ export const checkExist = async (table, column1, column2, value1, value2) => {
     const values = [];
 
     if (column2) {
-      query = `SELECT * FROM ${table} WHERE ${column1} = $1 AND ${column2} = $2`;
+      query = `SELECT id FROM ${table} WHERE ${column1} = $1 AND ${column2} = $2`;
       values.push(value1, value2);
     } else {
-      query = `SELECT * FROM ${table} WHERE ${column1} = $1`;
+      query = `SELECT id FROM ${table} WHERE ${column1} = $1`;
       values.push(value1);
     }
 
@@ -58,16 +58,26 @@ export const checkExist = async (table, column1, column2, value1, value2) => {
   }
 };
 
-export const checkLessonExist = async (table, column1, column2, column3, value1, value2, value3) => {
+export const checkLessonExist = async (module_id, course_id, lesson_number) => {
   try {
-    const query = `SELECT * FROM ${table} WHERE ${column1} = $1 AND ${column2} = $2 AND ${column3} = $3`;
-    const values = [value1, value2, value3]; 
+    const query = `SELECT module_id, course_id, lesson_number 
+                   FROM lessons 
+                   WHERE lesson_number = $1`;
 
-    const res = await pool.query(query, values);
+    const res = await pool.query(query, [lesson_number]);
 
-    return res.rows[0]; 
+    for (const row of res.rows) {
+      if (
+        row.module_id === module_id &&
+        row.course_id === course_id &&
+        row.lesson_number === lesson_number
+      ) {
+        return false;
+      }
+    }
+    return true;
   } catch (error) {
-    console.error(`Error checking existence in table ${table}:`, error.message);
-    throw new Error(`Error checking existence in table ${table}`);
+    console.error(`Error checking existence in table lessons:`, error.message);
+    throw new Error(`Error checking existence in table lesson`);
   }
 };
