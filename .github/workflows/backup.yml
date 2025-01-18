@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Definir TIMESTAMP en UTC-3 con formato legible
         run: echo "TIMESTAMP=$(date -u --date='3 hours ago' +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_ENV
 

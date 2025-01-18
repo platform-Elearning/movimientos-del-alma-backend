@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authenticateToken } from "../auth/auth.js";
-import { changePasswordController } from "../controllers/authController.js";
+import { getStudentWithDni } from "../crud/crudUsers.js";
+import { getCoursesWithModules } from "../crud/crudCourses.js";
 
 const routerTest = Router();
 
@@ -20,7 +21,22 @@ routerTest
 routerTest.route("/protected").get(authenticateToken, async (res) => {
   console.log("Route protected ok");
   res.send("PROTECTED ROUTE IS OK");
-  return true
+  return true;
+});
+
+routerTest.route("/test").get(async (req, res) => {
+  
+
+  try {
+
+    const response = await getCoursesWithModules();
+    console.log(response)
+
+    return res.status(200).json("LLEGO EL GET");
+  } catch (error) {
+    console.error("Error in /test route:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 export default routerTest;

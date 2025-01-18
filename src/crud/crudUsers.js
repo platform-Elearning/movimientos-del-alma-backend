@@ -1,5 +1,5 @@
 import { pool } from "../db/configPG.js";
-import { getAllEnrollmentsByStudentId } from "./crudCourses.js";
+import { getAllEnrollmentsByStudentId } from "./crudEnrollments.js";
 
 // CRUD FOR USER
 
@@ -23,13 +23,28 @@ export const createUser = async (id, email, password, role) => {
     return resultdb.rowCount;
   } catch (error) {
     console.error("Error in createUser:", error.message);
-    throw new Error("Failed to create Student", error);
+    throw new Error(error.detail || error);
   }
 };
 
 export const updateUser = () => {};
 
-export const deleteUser = () => {};
+export const deleteUser = async (id) => {
+  const query = `
+    DELETE FROM users WHERE id = $1
+  `;
+
+  try {
+    const result = await pool.query(query, [id]);
+
+    console.log(`User delete with ID: ${id}`);
+
+    return result.rowCount;
+  } catch (error) {
+    console.error("Error in function deleteUser", error);
+    throw new Error(error.message);
+  }
+};
 
 export const readLoginData = async (email) => {
   try {
@@ -44,21 +59,9 @@ export const readLoginData = async (email) => {
     } else {
       throw new Error("User not found");
     }
-  } catch (err) {
-    console.error("Error to get user and password:", err);
-    throw new Error("Failed to readUserData", err);
-  }
-};
-
-export const checkUserExist = async (email) => {
-  try {
-    const query = "SELECT email FROM users WHERE email = $1 ";
-    const res = await pool.query(query, [email]);
-
-    return res.rows[0];
   } catch (error) {
-    console.log("checkUserExist not found", error);
-    throw new Error("Check user exist not found");
+    console.error("Error to get user and password:", error);
+    throw new Error(error.detail || error);
   }
 };
 
@@ -75,7 +78,7 @@ export const changePassword = async (password, email) => {
 
     return res.command;
   } catch (error) {
-    throw new Error("Change password cannot be completed");
+    throw new Error(error.detail);
   }
 };
 // CRUD FOR TEACHERS
@@ -85,15 +88,14 @@ export const createTeacher = async (
   name,
   lastname,
   identification_number,
-  email,
-  dni
+  email
 ) => {
   try {
-    if (!id || !name || !lastname || !identification_number || !email || !dni) {
+    if (!id || !name || !lastname || !identification_number || !email) {
       throw new Error("All fields are required");
     }
 
-    const query = `INSERT INTO teacher (id, name, lastname, identification_number, email, dni) VALUES ($1,$2,$3,$4, $5, $6)`;
+    const query = `INSERT INTO teacher (id, name, lastname, identification_number, email) VALUES ($1,$2,$3,$4,$5)`;
 
     const resultdb = await pool.query(query, [
       id,
@@ -101,11 +103,47 @@ export const createTeacher = async (
       lastname,
       identification_number,
       email,
-      dni,
     ]);
 
     return resultdb.rowCount;
-  } catch (error) {}
+  } catch (error) {
+    console.log("Error in function createTeacher");
+    throw new Error(error.detail);
+  }
+};
+
+export const getTeacher = async (id) => {
+  try {
+    const query = `SELECT * FROM teacher WHERE id = $1`;
+
+    const responsedb = await pool.query(query, [id]);
+
+    if (responsedb.rows.length === 0) {
+      throw new Error(`No teacher found with id: ${id}`);
+    }
+
+    return responsedb.rows[0];
+  } catch (error) {
+    console.log("getTeacher error", error);
+    throw new Error(error.message);
+  }
+};
+
+export const deleteTeacher = async (id) => {
+  const query = `
+    DELETE FROM teacher WHERE id = $1
+  `;
+
+  try {
+    const result = await pool.query(query, [id]);
+
+    console.log(`Teacher delete with ID: ${id}`);
+
+    return result.rowCount;
+  } catch (error) {
+    console.error("Error in function deleteTeacher", error);
+    throw new Error(error.message);
+  }
 };
 
 // CRUD FOR STUDENTS
@@ -115,8 +153,8 @@ export const createStudent = async (
   identification_number,
   name,
   lastname,
-  nationality,
-  email
+  email,
+  nationality
 ) => {
   try {
     if (
@@ -124,8 +162,8 @@ export const createStudent = async (
       !identification_number ||
       !name ||
       !lastname ||
-      !nationality ||
-      !email
+      !email ||
+      !nationality
     ) {
       throw new Error("All fields are required");
     }
@@ -135,8 +173,8 @@ export const createStudent = async (
   identification_number,
   name,
   lastname,
-  nationality,
-  email)
+  email,
+  nationality)
   VALUES ($1, $2, $3, $4, $5, $6)
 `;
 
@@ -145,14 +183,14 @@ export const createStudent = async (
       identification_number,
       name,
       lastname,
-      nationality,
       email,
+      nationality,
     ]);
 
     return resultdb.rowCount;
   } catch (error) {
     console.log("Error in function createStudent:", error.message);
-    throw new Error("Failed to create Student");
+    throw new Error(error.detail || error);
   }
 };
 
@@ -164,7 +202,7 @@ export const getStudentData = async (id) => {
     return responsedb.rows[0];
   } catch (error) {
     console.log("getStudentData error", error);
-    throw new Error("getStudentData error");
+    throw new Error(error.detail);
   }
 };
 
@@ -177,7 +215,7 @@ export const getAllStudents = async () => {
     return response.rows;
   } catch (error) {
     console.log("getStudentData error", error);
-    throw new Error("getStudentData error");
+    throw new Error(error.detail);
   }
 };
 
@@ -186,20 +224,22 @@ export const getStudentsWithCourses = async () => {
     const allStudents = await getAllStudents();
 
     const studentsWithCourses = [];
-    
+
     for (const student of allStudents) {
-      const enrollments = (await getAllEnrollmentsByStudentId(student.id)) || [];
+      const enrollments =
+        (await getAllEnrollmentsByStudentId(student.id)) || [];
 
       studentsWithCourses.push({
         user_id: student.id,
         dni: student.identification_number,
-        email: student.email,
         name: student.name,
         last_name: student.lastname,
+        email: student.email,
         nationality: student.nationality,
         courses: enrollments.map((enrollment) => ({
-          courses: enrollment.course_name,
-          modules: enrollment.quantity_lessons,
+          course: enrollment.course_name,
+          description: enrollment.description,
+          modules: enrollment.modules_covered,
         })),
       });
     }
@@ -207,6 +247,39 @@ export const getStudentsWithCourses = async () => {
     return studentsWithCourses;
   } catch (error) {
     console.log("getStudentsWithCourses error", error);
-    throw new Error("getStudentsWithCourses error");
+    throw new Error(error.detail);
+  }
+};
+
+export const getStudentWithDni = async (dni) => {
+  try {
+    const query = `SELECT * FROM student WHERE identification_number = $1`;
+    const { rows } = await pool.query(query, [dni]);
+
+    if (rows.length === 0) {
+      throw new Error(`No student found with DNI: ${dni}`);
+    }
+
+    return rows[0].id;
+  } catch (error) {
+    console.error("getStudentWithDni error:", error.message || error); 
+    throw new Error(error.detail);
+  }
+};
+
+export const deleteStudent = async (id) => {
+  const query = `
+    DELETE FROM student WHERE id = $1
+  `;
+
+  try {
+    const result = await pool.query(query, [id]);
+
+    console.log(`Student delete with ID: ${id}`);
+
+    return result.rowCount;
+  } catch (error) {
+    console.error("Error in function deleteStudent", error);
+    throw new Error(error.message);
   }
 };

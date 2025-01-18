@@ -19,7 +19,7 @@ pool
   .then((client) => {
     console.log(`
       ╔════════════════════════════════════════╗
-      ║  Connection successfully to PostgreSQL ║
+      ║  Connected successfully to PostgreSQL  ║
       ╚════════════════════════════════════════╝
       `);
     client.release();

@@ -1,18 +1,66 @@
 import { Router } from "express";
-import { courseCreateController, enrollmentToCourseController, getCoursesWithStudentIdController, getAllCoursesController } from "../controllers/courseController.js";
+import {
+  createCourseController,
+  getCoursesWithStudentIdController,
+  getAllCoursesController,
+  getModulesOfStudentController,
+  createCourseModuleController,
+  createLessonController,
+  getAllCoursesWithModulesController,
+  deleteCourseController,
+  getModuleByCourseIdController,
+  getAllLessonsController,
+  getAllCoursesWithModulesAndLessonsController,
+  deleteLessonController,
+  deleteModuleController,
+  getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController,
+  getLessonsByModuleIdAndCourseIdController,
+} from "../controllers/courseController.js";
 
 const routerCourses = Router();
 
-// ROUTE FOR GET ALL COURSES
+/// COURSES ///
+
 routerCourses.route("/getAllCourses").get(getAllCoursesController);
 
-// ROUTE FOR CREATE COURSE
-routerCourses.route("/createCourse").post(courseCreateController);
+routerCourses
+  .route("/getAllCoursesWithModules")
+  .get(getAllCoursesWithModulesController);
 
-// ROUTE FOR REGISTER TO COURSE
-routerCourses.route("/registerToCourse").post(enrollmentToCourseController);
+routerCourses.route("/createCourse").post(createCourseController);
 
-// ROUTER FOR GET ALL COURSES WITH STUDENT_ID
-routerCourses.route("/getCoursesByStudentId").get(getCoursesWithStudentIdController);
+routerCourses.route("/deleteCourse").post(deleteCourseController);
+
+routerCourses
+  .route("/getCoursesByStudentId")
+  .get(getCoursesWithStudentIdController);
+
+routerCourses
+  .route("/getAllCoursesWithModulesAndLessons")
+  .get(getAllCoursesWithModulesAndLessonsController);
+
+routerCourses.route("/getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId").get(getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController);
+
+/// MODULES ///
+
+routerCourses.route("/createCourseModule").post(createCourseModuleController);
+
+routerCourses.route("/getModulesOfStudent").get(getModulesOfStudentController);
+
+routerCourses
+  .route("/getModulesByCourseId/:id")
+  .get(getModuleByCourseIdController);
+
+routerCourses.route("/deleteModule/:id").delete(deleteModuleController);
+
+/// LESSONS ///
+
+routerCourses.route("/createLesson").post(createLessonController);
+
+routerCourses.route("/getLessons").get(getAllLessonsController);
+
+routerCourses.route("/deleteLesson/:id").delete(deleteLessonController);
+
+routerCourses.route("/getLessonsByModuleIdAndCourseId").get(getLessonsByModuleIdAndCourseIdController);
 
 export default routerCourses;
