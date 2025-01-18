@@ -48,6 +48,7 @@ app.use("/enrollments", routerEnrollments);
 
 // console log process.env.PG_DBNAME
 console.log("pg db name",process.env.PG_DBNAME);
+console.log("pg db name",process.env.PG_PASSWORD);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
