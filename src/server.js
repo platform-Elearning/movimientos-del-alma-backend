@@ -46,9 +46,15 @@ app.use("/enrollments", routerEnrollments);
   }
 })();
 
-// console log process.env.PG_DBNAME
-console.log("pg db name",process.env.PG_DBNAME);
-console.log("pg db name",process.env.PG_PASSWORD);
+// Log para ver las variables de entorno
+console.log("Configuración de la base de datos:");
+console.log({
+  user: settings.database.user,
+  password: settings.database.password,
+  database: settings.database.database,
+  host: settings.database.host,
+  port: settings.database.port,
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
