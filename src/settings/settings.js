@@ -4,10 +4,10 @@ dotenv.config();
 
 export const settings = {
   database: {
-    user: process.env.PG_USER || "admin",
-    password: process.env.PG_PASSWORD || "123456",
-    database: process.env.PG_DBNAME || "movimientosdelalma_database",
-    host: process.env.HOST || "localhost",
+    user: process.env.PG_USER,
+    password: process.env.PG_PASSWORD,
+    database: process.env.PG_DBNAME,
+    host: process.env.HOST,
     port: parseInt(process.env.PORT, 10) || 5432, 
   },
   jwt: {
