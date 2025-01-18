@@ -33,7 +33,7 @@ coverage/
 
 
 # environment files
-.env
+#.env
 .prod
 .local
 .dev
