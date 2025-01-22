@@ -53,7 +53,12 @@ export const checkExist = async (table, column1, column2, value1, value2) => {
 
     return res.rows[0];
   } catch (error) {
-    console.log(`Error checking existence in table ${table}`, error);
+    logger.error(
+      `Error checking existence in table ${table}. ERROR: ${error.message}`,
+      {
+        stack: error.stack,
+      }
+    );
     throw new Error(`Error checking existence in table ${table}`);
   }
 };
@@ -77,7 +82,12 @@ export const checkLessonExist = async (module_id, course_id, lesson_number) => {
     }
     return true;
   } catch (error) {
-    console.error(`Error checking existence in table lessons:`, error.message);
+    logger.error(
+      `Error checking existence in table lessons. ERROR: ${error.message}`,
+      {
+        stack: error.stack,
+      }
+    );
     throw new Error(`Error checking existence in table lesson`);
   }
 };

@@ -1,5 +1,6 @@
 import { settings } from "../settings/settings.js";
 import pkg from "pg";
+import logger from "../utils/logger.js";
 
 const { Pool } = pkg;
 
@@ -17,14 +18,16 @@ export const pool = new Pool({
 pool
   .connect()
   .then((client) => {
-    console.log(`
+    logger.info(`
       ╔════════════════════════════════════════╗
       ║  Connected successfully to PostgreSQL  ║
       ╚════════════════════════════════════════╝
       `);
     client.release();
   })
-  .catch((err) => {
-    console.error("Connection to PostgreSQL failed:", err.message);
+  .catch((error) => {
+    logger.error(`Connection to PostgreSQL failed:. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     process.exit(1);
   });

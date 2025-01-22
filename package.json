@@ -29,7 +29,8 @@
     "nodemailer": "^6.9.16",
     "passport-local": "^1.0.0",
     "pg": "^8.13.1",
-    "twilio": "^5.3.6"
+    "twilio": "^5.3.6",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "globals": "^15.1.0",

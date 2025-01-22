@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 export const loginController = async (req, res) => {
   const secretKey = settings.jwt.secretKey;
   const { email, password } = req.body;
-  
+
   try {
     const userData = await readLoginData(email);
 
@@ -28,11 +28,14 @@ export const loginController = async (req, res) => {
       }
     );
 
+    logger.info(`Loggin with success with EMAIL: ${email}`);
     res.json({ token });
   } catch (error) {
-    console.log("ERROR request - /login", error);
+    logger.error(`Error in loginController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     res.status(401).send("Error in login controller");
-    return error.message
+    return error.message;
   }
 };
 
@@ -40,7 +43,9 @@ export const changePasswordController = async (req, res) => {
   const { email, password, newPassword1, newPassword2 } = req.body;
 
   if (newPassword1 !== newPassword2) {
-    console.log("Error: The new password fields do not match.");
+    logger.warn(
+      "Error: The new password fields do not match on changePasswordController"
+    );
     return res.status(400).json({
       success: false,
       errorMessage: "The new password must be the same in both fields.",
@@ -53,7 +58,9 @@ export const changePasswordController = async (req, res) => {
     const userData = await readLoginData(email);
     const isValidated = await authFunc.authLogin(password, userData.password);
     if (!isValidated) {
-      console.log("Invalid current password, please try again.");
+      logger.warn(
+        "Invalid current password, please try again. on changePasswordController"
+      );
       return res.status(401).json({
         success: false,
         errorMessage: "Invalid current password, please try again.",
@@ -71,7 +78,9 @@ export const changePasswordController = async (req, res) => {
       throw new Error("User not found");
     }
   } catch (error) {
-    console.log("Error in changePassword", error);
+    logger.error(`Error in changePassword. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
