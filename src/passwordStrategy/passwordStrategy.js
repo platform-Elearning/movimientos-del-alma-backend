@@ -10,12 +10,12 @@ const validatePassword = (plainPassword, hashedPassword) => {
 
 const authLogin = async (password, userPW) => {
   if (validatePassword(password, userPW)) {
-    console.log('Password validated')
-    return true
+    logger.info("Password validated");
+    return true;
   } else {
-    console.log('Password not validated')
-    return false
+    logger.warn("Password not validated");
+    return false;
   }
 };
 
-export const authFunc = { hashPassword, validatePassword, authLogin};
+export const authFunc = { hashPassword, validatePassword, authLogin };

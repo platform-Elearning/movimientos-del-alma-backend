@@ -1,3 +1,4 @@
+import logger from "../../utils/logger.js";
 import { pool } from "../configPG.js";
 
 const createUserRoleType = async () => {
@@ -15,10 +16,12 @@ const createUserRoleType = async () => {
     const checkResult = await pool.query(checkQuery);
     if (!checkResult.rows[0].exists) {
       await pool.query(createQuery);
-      console.log("Type 'user_role' created.");
+      logger.info("Type 'user_role' created.");
     }
   } catch (error) {
-    console.error("Error creating type 'user_role':", error);
+    logger.error(`Error creating type 'user_role':. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
   }
 };
 
@@ -44,10 +47,12 @@ const createUsersTable = async () => {
     const checkResult = await pool.query(checkQuery);
     if (!checkResult.rows[0].exists) {
       await pool.query(createQuery);
-      console.log("Table 'users' created.");
+      logger.info("Table 'users' created.");
     }
   } catch (error) {
-    console.error("Error creating table 'users':", error);
+    logger.error(`Error creating table 'users':. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
   }
 };
 
@@ -74,12 +79,14 @@ const createCoursesTable = async () => {
 
     if (!tableExists) {
       await pool.query(createQuery);
-      console.log("Table 'courses' created.");
+      logger.info("Table 'courses' created.");
     } else {
-      console.log("Table 'courses' already exists.");
+      logger.warn("Table 'courses' already exists.");
     }
   } catch (error) {
-    console.error("Error creating table 'courses':", error);
+    logger.error(`Error creating table 'courses': ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
   }
 };
 
@@ -108,12 +115,14 @@ const createTeacherTable = async () => {
 
     if (!tableExists) {
       await pool.query(createQuery);
-      console.log("Table 'teacher' created.");
+      logger.info("Table 'teacher' created.");
     } else {
-      console.log("Table 'teacher' already exists.");
+      logger.warn("Table 'teacher' already exists.");
     }
   } catch (error) {
-    console.error("Error creating table 'teacher':", error);
+    logger.error(`Error creating table 'teacher': ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
   }
 };
 
@@ -145,12 +154,17 @@ const createEnrollmentsTable = async () => {
 
     if (!tableExists) {
       await pool.query(createQuery);
-      console.log("Table 'enrollments' created.");
+      logger.info("Table 'enrollments' created.");
     } else {
-      console.log("Table 'enrollments' already exists.");
+      logger.warn("Table 'enrollments' already exists.");
     }
   } catch (error) {
-    console.error("Error creating table 'enrollments':", error);
+    logger.error(
+      `Error creating table 'enrollments': ERROR: ${error.message}`,
+      {
+        stack: error.stack,
+      }
+    );
   }
 };
 
@@ -179,12 +193,14 @@ const createStudentTable = async () => {
     const checkResult = await pool.query(checkQuery);
     if (!checkResult.rows[0].exists) {
       await pool.query(createQuery);
-      console.log("Table 'student' created.");
+      logger.info("Table 'student' created.");
     } else {
-      console.log("Table 'student_table' already exists.");
+      logger.warn("Table 'student_table' already exists.");
     }
   } catch (error) {
-    console.error("Error creating table 'student':", error);
+    logger.error(`Error creating table 'student': ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
   }
 };
 
@@ -213,12 +229,17 @@ const createTeacherCoursesTable = async () => {
 
     if (!tableExists) {
       await pool.query(createQuery);
-      console.log("Table 'teacher_courses' created.");
+      logger.info("Table 'teacher_courses' created.");
     } else {
-      console.log("Table 'teacher_courses' already exists.");
+      logger.warn("Table 'teacher_courses' already exists.");
     }
   } catch (error) {
-    console.error("Error creating table 'teacher_courses':", error);
+    logger.error(
+      `Error creating table 'teacher_courses': ERROR: ${error.message}`,
+      {
+        stack: error.stack,
+      }
+    );
   }
 };
 
@@ -248,12 +269,17 @@ const createCourseModulesTable = async () => {
 
     if (!tableExists) {
       await pool.query(createQuery);
-      console.log("Table 'course_modules' created.");
+      logger.info("Table 'course_modules' created.");
     } else {
-      console.log("Table 'course_modules' already exists.");
+      logger.warn("Table 'course_modules' already exists.");
     }
   } catch (error) {
-    console.error("Error creating table 'course_modules':", error);
+    logger.error(
+      `Error creating table 'course_modules': ERROR: ${error.message}`,
+      {
+        stack: error.stack,
+      }
+    );
   }
 };
 
@@ -286,12 +312,14 @@ const createLessonsTable = async () => {
 
     if (!tableExists) {
       await pool.query(createQuery);
-      console.log("Table 'lessons' created.");
+      logger.info("Table 'lessons' created.");
     } else {
-      console.log("Table 'lessons' already exists.");
+      logger.warn("Table 'lessons' already exists.");
     }
   } catch (error) {
-    console.error("Error creating table 'lessons':", error);
+    logger.error(`Error creating table 'lessons': ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
   }
 };
 
@@ -310,14 +338,16 @@ export const createTablesDbPostgres = async () => {
 
     await pool.query("COMMIT");
 
-    console.log(`
+    logger.info(`
       ╔═════════════════════════════════════════╗
       ║ Tables created/initialized successfully ║
       ╚═════════════════════════════════════════╝
       `);
   } catch (error) {
     await pool.query("ROLLBACK");
-    console.error("Error initializing tables:", error);
+    logger.error(`Error initializing tables: ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     throw new Error("Failed to initialize tables.");
   }
 };

@@ -7,6 +7,7 @@ import { settings } from "./settings/settings.js";
 import { createTablesDbPostgres } from "./db/tables/tables.js";
 import routerCourses from "./routes/routesCourses.js";
 import routerEnrollments from "./routes/routesEnrollments.js";
+import logger from "./utils/logger.js";
 
 const app = express();
 const port = settings.server.serverPort;
@@ -39,13 +40,12 @@ app.use("/enrollments", routerEnrollments);
   try {
     await createTablesDbPostgres();
   } catch (error) {
-    console.error("Error initializing the database:", error);
-    console.warn(
+    logger.warn(
       "The server will start, but some features may not work without the database."
     );
   }
 })();
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  logger.info(`Server is running on port ${port}`);
 });

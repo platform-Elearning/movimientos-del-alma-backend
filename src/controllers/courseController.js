@@ -27,7 +27,10 @@ export const getAllCoursesController = async (req, res) => {
       data: courses,
     });
   } catch (error) {
-    console.error("Error in getAllCoursesController:", error);
+    logger.error(`Error in getAllCoursesController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
+
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -44,7 +47,12 @@ export const getAllCoursesWithModulesController = async (req, res) => {
       data: coursesWithModules,
     });
   } catch (error) {
-    console.error("Error in getAllCoursesWithModulesController:", error);
+    logger.error(
+      `Error in getAllCoursesWithModulesController. ERROR: ${error.message}`,
+      {
+        stack: error.stack,
+      }
+    );
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -65,7 +73,12 @@ export const getAllCoursesWithModulesAndLessonsController = async (
       data: coursesWithModulesAndLessons,
     });
   } catch (error) {
-    console.error("Error in getAllCoursesWithModulesController:", error);
+    logger.error(
+      `Error in getAllCoursesWithModulesController. ERROR: ${error.message}`,
+      {
+        stack: error.stack,
+      }
+    );
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -79,8 +92,6 @@ export const getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdControll
     const student_id = req.query.student_id;
     const course_id = req.query.course_id;
 
-    console.log(course_id, student_id);
-
     try {
       const dataTotal =
         await getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId(
@@ -93,9 +104,11 @@ export const getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdControll
         data: dataTotal,
       });
     } catch (error) {
-      console.error(
-        "Error in getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController:",
-        error
+      logger.error(
+        `Error in getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController. ERROR: ${error.message}`,
+        {
+          stack: error.stack,
+        }
       );
       return res.status(500).json({
         success: false,
@@ -105,7 +118,7 @@ export const getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdControll
     }
   };
 
-export const getDataCoursesCompleteByStudentIdController = async (req, res) => {
+/*export const getDataCoursesCompleteByStudentIdController = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -120,7 +133,7 @@ export const getDataCoursesCompleteByStudentIdController = async (req, res) => {
       error: error,
     });
   }
-};
+};*/
 
 export const createCourseController = async (req, res) => {
   const { name, description } = req.body;
@@ -147,13 +160,15 @@ export const createCourseController = async (req, res) => {
       throw new Error("Failed to create course");
     }
 
-    console.log("Course create correctly");
+    logger.info(`Course ${name} create correctly`);
     return res.status(201).json({
       success: true,
-      message: "Course create correctly successfully",
+      message: "Course create correctly",
     });
   } catch (error) {
-    console.error("Error in courseCreateController:", error);
+    logger.error(`Error in courseCreateController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -180,7 +195,12 @@ export const getCoursesWithStudentIdController = async (req, res) => {
       data: enrollments,
     });
   } catch (error) {
-    console.error(error);
+    logger.error(
+      `Error in getCoursesWithStudentIdController. ERROR: ${error.message}`,
+      {
+        stack: error.stack,
+      }
+    );
     return res.status(500).json({
       success: false,
       message: "An error occurred while fetching courses",
@@ -208,13 +228,15 @@ export const deleteCourseController = async (req, res) => {
         message: `No course found with ID ${id}.`,
       });
     }
-
+    logger.info(`Course with ID ${id} deleted successfully.`);
     return res.status(200).json({
       success: true,
       message: `Course with ID ${id} deleted successfully.`,
     });
   } catch (error) {
-    console.error("Error in deleteCourseController:", error);
+    logger.error(`Error in deleteCourseController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -237,7 +259,9 @@ export const getModulesOfStudentController = async (req, res) => {
       data: modulesOfStudent,
     });
   } catch (error) {
-    console.error("Error in getAllCoursesController:", error);
+    logger.error(`Error in getAllCoursesController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -249,8 +273,6 @@ export const getModulesOfStudentController = async (req, res) => {
 export const getModuleByCourseIdController = async (req, res) => {
   const { id } = req.params;
 
-  console.log(id);
-
   try {
     const response = await getModuleByCourseId(id);
 
@@ -259,7 +281,12 @@ export const getModuleByCourseIdController = async (req, res) => {
       message: response,
     });
   } catch (error) {
-    console.error("Error in getModuleByCourseIdController:", error);
+    logger.error(
+      `Error in getModuleByCourseIdController. ERROR: ${error.message}`,
+      {
+        stack: error.stack,
+      }
+    );
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -304,17 +331,22 @@ export const createCourseModuleController = async (req, res) => {
       throw new Error("Failed to create module");
     }
 
-    console.log("Module create correctly");
+    logger.info(`Module ${name} create correctly.`);
     return res.status(201).json({
       success: true,
       message: "Module create correctly successfully",
     });
   } catch (error) {
-    const errorMessage = error.message;
+    logger.error(
+      `Error in createCourseModuleController. ERROR: ${error.message}`,
+      {
+        stack: error.stack,
+      }
+    );
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
-      error: errorMessage,
+      error: error.message,
     });
   }
 };
@@ -340,12 +372,15 @@ export const deleteModuleController = async (req, res) => {
         .json({ message: `Module with ID ${id} not found` });
     }
 
+    logger.info(`Module with ID ${id} deleted successfully`);
     return res.status(200).json({
       success: true,
       data: `Module with ID ${id} deleted successfully`,
     });
   } catch (error) {
-    console.error("Error in deleteModuleController:", error);
+    logger.error(`Error in deleteModuleController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -396,13 +431,17 @@ export const createLessonController = async (req, res) => {
       throw new Error("Failed to create module");
     }
 
-    console.log("Lesson create correctly");
+    logger.info(
+      `Lesson number ${lesson_number} of module with id ${module_id} create correctly`
+    );
     return res.status(201).json({
       success: true,
-      message: "Lesson create correctly successfully",
+      message: "Lesson create correctly",
     });
   } catch (error) {
-    console.log(error);
+    logger.error(`Error in createLessonController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -420,7 +459,9 @@ export const getAllLessonsController = async (req, res) => {
       data: lessons,
     });
   } catch (error) {
-    console.error("Error in getAllLessonsController:", error);
+    logger.error(`Error in getAllLessonsController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -450,12 +491,15 @@ export const deleteLessonController = async (req, res) => {
         .json({ message: `Lesson with ID ${id} not found` });
     }
 
+    logger.info(`Lesson with ID ${id} deleted successfully`);
     return res.status(200).json({
       success: true,
       data: `Lesson with ID ${id} deleted successfully`,
     });
   } catch (error) {
-    console.error("Error in deleteLessonController:", error);
+    logger.error(`Error in deleteLessonController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -479,7 +523,12 @@ export const getLessonsByModuleIdAndCourseIdController = async (req, res) => {
       data: response,
     });
   } catch (error) {
-    console.error("Error in getLessonsByModuleIdAndCourseIdController:", error);
+    logger.error(
+      `Error in getLessonsByModuleIdAndCourseIdController. ERROR: ${error.message}`,
+      {
+        stack: error.stack,
+      }
+    );
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",

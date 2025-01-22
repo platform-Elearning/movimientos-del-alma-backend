@@ -13,7 +13,12 @@ import {
 } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
 import { authFunc } from "../passwordStrategy/passwordStrategy.js";
-import { checkExist, generateRandomId, randomPassword } from "../utils/utils.js";
+import {
+  checkExist,
+  generateRandomId,
+  randomPassword,
+} from "../utils/utils.js";
+import logger from "../utils/logger.js";
 
 // USERS
 
@@ -49,8 +54,7 @@ export const createAdminController = async (req, res) => {
 
     await pool.query("COMMIT");
 
-    console.log("ADMIN create correctly");
-    console.log(password);
+    logger.info(`Admin create successfully with ID: ${id}`);
 
     //await sendWelcomeSms(email, password); TWILIO
 
@@ -61,7 +65,9 @@ export const createAdminController = async (req, res) => {
     });
   } catch (error) {
     await pool.query("ROLLBACK");
-    console.error("Error in adminCreateController:", error);
+    logger.error(`Error in createAdminController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -87,7 +93,7 @@ export const getUserController = async (req, res) => {
       throw new Error("Student not found");
     }
 
-    return res.status(500).json({
+    return res.status(200).json({
       dni: response.identification_number,
       name: response.name,
       lastname: response.lastname,
@@ -96,23 +102,30 @@ export const getUserController = async (req, res) => {
       identification_number: response.identification_number,
     });
   } catch (error) {
-    console.error("Error in getUsercontroller:", error);
+    logger.error(`Error in getUserController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
-      error: error,
+      error: error.message,
     });
   }
 };
 
 export const getAllUsersWithCoursesController = async (req, res) => {
   try {
-    const response = await getStudentsWithCourses()
+    const response = await getStudentsWithCourses();
     return res.status(200).json({
       response,
     });
   } catch (error) {
-    console.error("Error in getUserWithCoursesController:", error);
+    logger.error(
+      `Error in getAllUsersWithCoursesController. ERROR: ${error.message}`,
+      {
+        stack: error.stack,
+      }
+    );
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -125,10 +138,9 @@ export const deleteUserController = async (req, res) => {
   const { id } = req.params;
 
   try {
-
     const check = await checkExist("users", "id", null, id);
 
-    if(!check) {
+    if (!check) {
       return res.status(409).json({
         success: false,
         message: "User not exist",
@@ -138,17 +150,18 @@ export const deleteUserController = async (req, res) => {
     const response = await deleteUser(id);
 
     if (response.rowCount === 0) {
-      return res
-        .status(404)
-        .json({ message: `User with ID ${id} not found` });
+      return res.status(404).json({ message: `User with ID ${id} not found` });
     }
 
+    logger.info(`User with ID: ${id} delete successfully`);
     return res.status(200).json({
       success: true,
       data: `User with ID ${id} deleted successfully`,
     });
   } catch (error) {
-    console.error("Error in deleteUserController:", error);
+    logger.error(`Error in deleteUserController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -183,7 +196,6 @@ export const createTeacherController = async (req, res) => {
       });
     }
 
-
     await pool.query("BEGIN");
 
     const userCreated = await createUser(id, email, hashedPassword, role);
@@ -206,8 +218,7 @@ export const createTeacherController = async (req, res) => {
 
     await pool.query("COMMIT");
 
-    console.log("Teacher create correctly");
-    console.log(randomPW);
+    logger.info(`Teacher create with success, ID: ${id}`);
 
     return res.status(201).json({
       success: true,
@@ -216,7 +227,9 @@ export const createTeacherController = async (req, res) => {
     });
   } catch (error) {
     await pool.query("ROLLBACK");
-    console.error("Error in teacherCreateController:", error);
+    logger.error(`Error in teacherCreateController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -226,7 +239,6 @@ export const createTeacherController = async (req, res) => {
 };
 
 export const getTeacherController = async (req, res) => {
-
   const { id } = req.body;
 
   try {
@@ -235,23 +247,24 @@ export const getTeacherController = async (req, res) => {
       response,
     });
   } catch (error) {
-    console.error("Error in getTeacherController:", error);
+    logger.error(`Error in getTeacherController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
       error: error.message,
     });
   }
-}
+};
 
 export const deleteTeacherController = async (req, res) => {
   const { id } = req.params;
 
   try {
-
     const check = await checkExist("teacher", "id", null, id);
 
-    if(!check) {
+    if (!check) {
       return res.status(409).json({
         success: false,
         message: "Teacher not exist",
@@ -265,13 +278,15 @@ export const deleteTeacherController = async (req, res) => {
         .status(404)
         .json({ message: `Teacher with ID ${id} not found` });
     }
-
+    logger.info(`Teacher with ID ${id} deleted successfully`);
     return res.status(200).json({
       success: true,
       data: `Teacher with ID ${id} deleted successfully`,
     });
   } catch (error) {
-    console.error("Error in deleteTeacherController:", error);
+    logger.error(`Error in deleteTeacherController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -290,7 +305,9 @@ export const getAllStudentsController = async (req, res) => {
       response,
     });
   } catch (error) {
-    console.error("Error in getAllStudentsController:", error);
+    logger.error(`Error in getAllStudentsController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
@@ -347,8 +364,7 @@ export const createStudentController = async (req, res) => {
 
     await pool.query("COMMIT");
 
-    console.log("Student create correctly");
-    console.log(randomPW);
+    logger.info(`Student create correctly with ID: ${id}`);
     return res.status(201).json({
       success: true,
       message: "Student and user created successfully",
@@ -356,7 +372,9 @@ export const createStudentController = async (req, res) => {
     });
   } catch (error) {
     await pool.query("ROLLBACK");
-    console.error("Error in studentCreateController:", error);
+    logger.error(`Error in createStudentController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
 
     return res.status(500).json({
       success: false,
@@ -370,10 +388,9 @@ export const deleteStudentController = async (req, res) => {
   const { id } = req.params;
 
   try {
-
     const check = await checkExist("student", "id", null, id);
 
-    if(!check) {
+    if (!check) {
       return res.status(409).json({
         success: false,
         message: "Student not exist",
@@ -388,12 +405,15 @@ export const deleteStudentController = async (req, res) => {
         .json({ message: `Student with ID ${id} not found` });
     }
 
+    logger.info(`Student with ID ${id} deleted successfully`);
     return res.status(200).json({
       success: true,
       data: `Student with ID ${id} deleted successfully`,
     });
   } catch (error) {
-    console.error("Error in deleteStudentController:", error);
+    logger.error(`Error in deleteStudentController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
