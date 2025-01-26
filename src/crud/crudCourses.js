@@ -1,4 +1,5 @@
 import { pool } from "../db/configPG.js";
+import logger from "../utils/logger.js";
 import { getDate } from "../utils/utils.js";
 
 // COURSES
@@ -18,7 +19,7 @@ export const createCourse = async (name, description) => {
     const resultdb = await pool.query(query, [name, description]);
     return resultdb;
   } catch (error) {
-    console.log("Error in function createCourse");
+    logger.warn("Error in function createCourse.");
     throw new Error(error.detail);
   }
 };
@@ -32,7 +33,9 @@ export const getCourses = async () => {
     const result = await pool.query(query);
     return result.rows;
   } catch (error) {
-    console.error("Error in getAllCourses:", error);
+    logger.error(`Error in getAllCourses: ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
     throw new Error(error.detail);
   }
 };
@@ -54,7 +57,7 @@ export const deleteCourse = async (id) => {
     return result.rowCount;
   } catch (error) {
     await pool.query("ROLLBACK");
-    console.error("Error in deleteCourse:", error);
+    logger.warn("Error in function deleteCourse.");
     throw new Error(error.detail || "Failed to delete course.");
   }
 };
@@ -133,7 +136,7 @@ export const getCoursesWithModules = async () => {
 
     return Object.values(coursesWithModulesMap);
   } catch (error) {
-    console.log("getCoursesWithModules error", error);
+    logger.warn("Error in function getCoursesWithModules.");
     throw new Error(error.detail);
   }
 };
@@ -202,7 +205,7 @@ export const getCoursesWithModulesAndLessons = async () => {
 
     return Object.values(coursesMap);
   } catch (error) {
-    console.error("Error in function getCoursesWithModulesAndLessons:", error);
+    logger.warn("Error in function getCoursesWithModulesAndLessons.");
     throw new Error(error);
   }
 };
@@ -291,9 +294,8 @@ export const getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId =
 
       return Object.values(coursesMap);
     } catch (error) {
-      console.error(
-        "Error in function getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId:",
-        error
+      logger.warn(
+        "Error in function getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId."
       );
       throw new Error(error);
     }
@@ -323,7 +325,7 @@ export const registerToCourse = async (
 
     return resultdb.rowCount;
   } catch (error) {
-    console.error("Error in registerToCourse:", error.message);
+    logger.warn("Error in function registerToCourse.");
     throw new Error(error.detail);
   }
 };
@@ -352,7 +354,7 @@ export const createCourseModule = async (
 
     return resultdb;
   } catch (error) {
-    console.error(`Error to createCourse Module:`, error.detail);
+    logger.warn("Error in function createCourseModule.");
     throw new Error(error.detail);
   }
 };
@@ -382,9 +384,8 @@ export const getEnrolledModules = async (student_id, course_id) => {
 
     return modules.slice(0, modulesCoveredResult.rows[0].modules_covered);
   } catch (error) {
-    console.error(
-      `Error retrieving covered modules for student ${student_id} in course ${course_id}:`,
-      error.message
+    logger.warn(
+      `Error retrieving covered modules for student ${student_id} in course ${course_id}.`
     );
     throw new Error(error.message);
   }
@@ -413,7 +414,7 @@ export const getModulesOfDeterminedCourse = async (id) => {
 
     return result.rows;
   } catch (error) {
-    console.error("Error in getModulesForCourse:", error);
+    logger.warn("Error in function getModulesOfDeterminedCourse.");
     throw new Error(error.detail);
   }
 };
@@ -432,7 +433,7 @@ export const getModuleByCourseId = async (course_id) => {
 
     return result.rows;
   } catch (error) {
-    console.error("Error in getAllCourses:", error);
+    logger.warn("Error in function getModuleByCourseId.");
     throw new Error(error);
   }
 };
@@ -449,7 +450,7 @@ export const deleteModule = async (id) => {
 
     return result.rowCount;
   } catch (error) {
-    console.error("Error in function deleteModule", error);
+    logger.warn("Error in function deleteModule.");
     throw new Error(error.message);
   }
 };
@@ -489,7 +490,7 @@ export const createLesson = async (
 
     return resultdb;
   } catch (error) {
-    console.log("Error in function createLesson");
+    logger.warn("Error in function createLesson.");
     throw new Error(error);
   }
 };
@@ -503,7 +504,7 @@ export const getLessons = async () => {
     const result = await pool.query(query);
     return result.rows;
   } catch (error) {
-    console.error("Error in getAllCourses:", error);
+    logger.warn("Error in function getLessons.");
     throw new Error(error.detail);
   }
 };
@@ -516,11 +517,9 @@ export const deleteLesson = async (id) => {
   try {
     const result = await pool.query(query, [id]);
 
-    console.log(`Row delete with ID: ${id}`);
-
     return result.rowCount;
   } catch (error) {
-    console.error("Error in function deleteLesson", error);
+    logger.warn("Error in function deleteLesson.");
     throw new Error(error.message);
   }
 };
@@ -532,14 +531,14 @@ export const getLessonsByModuleIdAndCourseId = async (module_id, course_id) => {
     const result = await pool.query(query, [module_id, course_id]);
 
     if (result.rows.length === 0) {
-      throw new Error(`Lessons not founds with module_id:${module_id} and course_id:${course_id}`);
+      throw new Error(
+        `Lessons not founds with module_id:${module_id} and course_id:${course_id}`
+      );
     }
 
     return result.rows;
   } catch (error) {
-    console.error("Error in function deleteLesson", error);
+    logger.warn("Error in function getLessonsByModuleIdAndCourseId.");
     throw new Error(error.message);
   }
 };
-
-

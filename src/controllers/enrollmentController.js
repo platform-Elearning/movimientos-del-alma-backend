@@ -2,6 +2,7 @@ import { registerToCourse } from "../crud/crudCourses.js";
 import { getEnrollment } from "../crud/crudEnrollments.js";
 import { getStudentWithDni } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
+import logger from "../utils/logger.js";
 
 // ENROLLMENT
 
@@ -78,12 +79,20 @@ export const createEnrollmentToCourseController = async (req, res) => {
       throw new Error("Failed to register the student to the course.");
     }
 
+    logger.info(
+      `Student with dni: ${dni} enrolled in the course with id: ${course_id} successfully.`
+    );
     return res.status(201).json({
       success: true,
       message: "Student enrolled in the course successfully.",
     });
   } catch (error) {
-    console.error("Error in enrollmentToCourseController:", error);
+    logger.error(
+      `Error in enrollmentToCourseController. ERROR: ${error.message}`,
+      {
+        stack: error.stack,
+      }
+    );
 
     return res.status(500).json({
       success: false,
@@ -92,5 +101,3 @@ export const createEnrollmentToCourseController = async (req, res) => {
     });
   }
 };
-
-

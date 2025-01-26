@@ -31,11 +31,9 @@ coverage/
 *.tmp
 *.swp
 
-
 # environment files
 #.env
 .prod
 .local
 .dev
 
- 

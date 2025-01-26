@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { createAdminController, createStudentController, createTeacherController, deleteStudentController, deleteTeacherController, deleteUserController, getAllStudentsController, getAllUsersWithCoursesController, getTeacherController, getUserController } from "../controllers/userController.js";
 import { loginController, changePasswordController } from "../controllers/authController.js";
-import { authenticateToken } from "../auth/auth.js";
 
 const routerUsers = Router();
 // ROUTER STUDENTS //

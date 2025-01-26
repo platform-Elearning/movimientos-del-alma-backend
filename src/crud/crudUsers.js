@@ -1,4 +1,5 @@
 import { pool } from "../db/configPG.js";
+import logger from "../utils/logger.js";
 import { getAllEnrollmentsByStudentId } from "./crudEnrollments.js";
 
 // CRUD FOR USER
@@ -22,7 +23,7 @@ export const createUser = async (id, email, password, role) => {
 
     return resultdb.rowCount;
   } catch (error) {
-    console.error("Error in createUser:", error.message);
+    logger.warn("Error in function createUser.");
     throw new Error(error.detail || error);
   }
 };
@@ -41,7 +42,7 @@ export const deleteUser = async (id) => {
 
     return result.rowCount;
   } catch (error) {
-    console.error("Error in function deleteUser", error);
+    logger.warn("Error in function deleteUser.");
     throw new Error(error.message);
   }
 };
@@ -60,7 +61,7 @@ export const readLoginData = async (email) => {
       throw new Error("User not found");
     }
   } catch (error) {
-    console.error("Error to get user and password:", error);
+    logger.warn("Error to get user and password.");
     throw new Error(error.detail || error);
   }
 };
@@ -78,7 +79,8 @@ export const changePassword = async (password, email) => {
 
     return res.command;
   } catch (error) {
-    throw new Error(error.detail);
+    logger.warn("Error in function changePassword.");
+    throw new Error(error);
   }
 };
 // CRUD FOR TEACHERS
@@ -107,7 +109,7 @@ export const createTeacher = async (
 
     return resultdb.rowCount;
   } catch (error) {
-    console.log("Error in function createTeacher");
+    logger.warn("Error in function createTeacher.");
     throw new Error(error.detail);
   }
 };
@@ -124,7 +126,7 @@ export const getTeacher = async (id) => {
 
     return responsedb.rows[0];
   } catch (error) {
-    console.log("getTeacher error", error);
+    logger.warn("Error in function getTeacher.");
     throw new Error(error.message);
   }
 };
@@ -141,7 +143,7 @@ export const deleteTeacher = async (id) => {
 
     return result.rowCount;
   } catch (error) {
-    console.error("Error in function deleteTeacher", error);
+    logger.warn("Error in function deleteTeacher.");
     throw new Error(error.message);
   }
 };
@@ -189,7 +191,7 @@ export const createStudent = async (
 
     return resultdb.rowCount;
   } catch (error) {
-    console.log("Error in function createStudent:", error.message);
+    logger.warn("Error in function createStudent.");
     throw new Error(error.detail || error);
   }
 };
@@ -201,7 +203,7 @@ export const getStudentData = async (id) => {
     const responsedb = await pool.query(query, [id]);
     return responsedb.rows[0];
   } catch (error) {
-    console.log("getStudentData error", error);
+    logger.warn("Error in function getStudentData.");
     throw new Error(error.detail);
   }
 };
@@ -214,7 +216,7 @@ export const getAllStudents = async () => {
 
     return response.rows;
   } catch (error) {
-    console.log("getStudentData error", error);
+    logger.warn("Error in function getAllStudents.");
     throw new Error(error.detail);
   }
 };
@@ -246,7 +248,7 @@ export const getStudentsWithCourses = async () => {
 
     return studentsWithCourses;
   } catch (error) {
-    console.log("getStudentsWithCourses error", error);
+    logger.warn("Error in function getStudentsWithCourses.");
     throw new Error(error.detail);
   }
 };
@@ -262,7 +264,7 @@ export const getStudentWithDni = async (dni) => {
 
     return rows[0].id;
   } catch (error) {
-    console.error("getStudentWithDni error:", error.message || error); 
+    logger.warn("Error in function getStudentWithDni.");
     throw new Error(error.detail);
   }
 };
@@ -279,7 +281,7 @@ export const deleteStudent = async (id) => {
 
     return result.rowCount;
   } catch (error) {
-    console.error("Error in function deleteStudent", error);
+    logger.warn("Error in function deleteStudent.");
     throw new Error(error.message);
   }
 };

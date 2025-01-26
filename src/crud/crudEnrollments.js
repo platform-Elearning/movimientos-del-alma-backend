@@ -1,4 +1,5 @@
 import { pool } from "../db/configPG.js";
+import logger from "../utils/logger.js";
 
 // ENROLLMENTS
 
@@ -14,7 +15,7 @@ export const getEnrollment = async (student_id, course_id) => {
 
     return res.rows[0];
   } catch (error) {
-    console.log("cehckEnrollment not found", error);
+    logger.warn("getEnrollment not found.");
     throw new Error(error.detail);
   }
 };
@@ -43,7 +44,7 @@ export const getAllEnrollmentsByStudentId = async (student_id) => {
 
     return result.rows;
   } catch (error) {
-    console.error("Error in getAllEnrollmentsByStudentId:", error);
+    logger.warn("Error in function getAllEnrollmentsByStudentId.");
 
     throw new Error(error.detail);
   }

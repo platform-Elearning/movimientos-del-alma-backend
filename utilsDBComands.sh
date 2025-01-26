@@ -24,7 +24,6 @@ DROP TABLE IF EXISTS "enrollments" CASCADE;
 DROP TABLE IF EXISTS "teacher" CASCADE;
 DROP TABLE IF EXISTS "courses" CASCADE;
 DROP TABLE IF EXISTS "users" CASCADE;
-DROP TABLE IF EXISTS "enrollment_status" CASCADE;
 
 -- Rehabilitar las restricciones de clave foránea
 SET session_replication_role = 'origin';
