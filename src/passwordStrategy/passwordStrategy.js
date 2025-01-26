@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import logger from "../utils/logger.js";
 
 const hashPassword = (password) => {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(10));

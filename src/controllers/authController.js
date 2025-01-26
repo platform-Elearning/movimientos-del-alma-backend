@@ -2,6 +2,7 @@ import { readLoginData, changePassword } from "../crud/crudUsers.js";
 import { authFunc } from "../passwordStrategy/passwordStrategy.js";
 import { settings } from "../settings/settings.js";
 import jwt from "jsonwebtoken";
+import logger from "../utils/logger.js";
 
 export const loginController = async (req, res) => {
   const secretKey = settings.jwt.secretKey;
