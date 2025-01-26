@@ -1,5 +1,6 @@
 import { randomBytes } from "crypto";
 import { pool } from "../db/configPG.js";
+import logger from "./logger.js";
 
 export const generateRandomId = () => {
   return randomBytes(3).toString("hex");

@@ -15,6 +15,7 @@ import {
   getLessonsByModuleIdAndCourseId,
 } from "../crud/crudCourses.js";
 import { getAllEnrollmentsByStudentId } from "../crud/crudEnrollments.js";
+import logger from "../utils/logger.js";
 import { checkExist, checkLessonExist } from "../utils/utils.js";
 
 // COURSES

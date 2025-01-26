@@ -1,4 +1,5 @@
 import { pool } from "../db/configPG.js";
+import logger from "../utils/logger.js";
 
 // ENROLLMENTS
 
