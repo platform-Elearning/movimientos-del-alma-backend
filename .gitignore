@@ -32,6 +32,7 @@ coverage/
 *.swp
 
 # environment files
+#.env
 .prod
 .local
 .dev

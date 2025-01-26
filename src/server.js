@@ -46,6 +46,16 @@ app.use("/enrollments", routerEnrollments);
   }
 })();
 
+// Log para ver las variables de entorno
+console.log("Configuración de la base de datos:");
+console.log({
+  user: settings.database.user,
+  password: settings.database.password,
+  database: settings.database.database,
+  host: settings.database.host,
+  port: settings.database.port,
+});
+
 app.listen(port, () => {
   logger.info(`Server is running on port ${port}`);
 });
