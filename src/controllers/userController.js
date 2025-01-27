@@ -278,6 +278,13 @@ export const deleteTeacherController = async (req, res) => {
         .status(404)
         .json({ message: `Teacher with ID ${id} not found` });
     }
+
+    const userDeletionResult = await deleteUser(id);
+
+    if (userDeletionResult.rowCount === 0) {
+      return res.status(404).json({ message: `User with ID ${id} not found` });
+    }
+
     logger.info(`Teacher with ID ${id} deleted successfully`);
     return res.status(200).json({
       success: true,
@@ -290,7 +297,7 @@ export const deleteTeacherController = async (req, res) => {
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
-      error: error,
+      error: error.message,
     });
   }
 };
@@ -405,6 +412,12 @@ export const deleteStudentController = async (req, res) => {
         .json({ message: `Student with ID ${id} not found` });
     }
 
+    const userDeletionResult = await deleteUser(id);
+
+    if (userDeletionResult.rowCount === 0) {
+      return res.status(404).json({ message: `User with ID ${id} not found` });
+    }
+
     logger.info(`Student with ID ${id} deleted successfully`);
     return res.status(200).json({
       success: true,
@@ -417,7 +430,7 @@ export const deleteStudentController = async (req, res) => {
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
-      error: error,
+      error: error.message,
     });
   }
 };
