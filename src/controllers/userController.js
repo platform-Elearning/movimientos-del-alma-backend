@@ -327,9 +327,9 @@ export const createStudentController = async (req, res) => {
   }
 
   const id = generateRandomId();
-  const randomPW = randomPassword();
+  //const randomPW = randomPassword();
   const role = "student";
-  const hashedPassword = authFunc.hashPassword(randomPW);
+  const hashedPassword = authFunc.hashPassword(identification_number);
 
   try {
     const check = await checkExist("users", "email", null, email);
