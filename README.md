@@ -299,7 +299,7 @@ El proceso de autenticación y autorización asegura que solo los usuarios auten
         |<--------------------------|                           |
         |                           |                           |
         | 5. Usar token JWT para    |                           |
-        |    solicitudes subsecuentes|                           |
+        |   solicitudes subsecuentes|                           |
         |-------------------------->|                           |
 ```
 
