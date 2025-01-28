@@ -76,7 +76,7 @@ La aplicación "Movimientos del Alma" es una plataforma web diseñada para la ge
 
 ## Estructura de Directorios
 
-```plaintext
+```
 movimientos-del-alma-backend/
 ├── src/
 │   ├── auth/
@@ -110,33 +110,29 @@ movimientos-del-alma-backend/
 ## Instalación y Configuración
 
 1. Clona el repositorio:
-   ```bash
+   ```
    git clone https://github.com/tu-usuario/movimientos-del-alma-backend.git
    cd movimientos-del-alma-backend
    ```
 
 2. Instala las dependencias:
-   ```bash
+   ```
    npm install
    ```
 
 3. Configura las variables de entorno:
-   Crea un archivo 
+Crea un archivo `.env` en la raíz del proyecto y añade las siguientes variables al archivo `.env`:
 
-.env
-
- en la raíz del proyecto y añade las siguientes variables:
-   ```plaintext
-    SECRET_KEY=tu_clave_secreta
-    PG_USER=tu_usuario_pg
-    PG_PASSWORD=tu_contraseña_pg
-    PG_DBNAME=tu_nombre_bd
-    HOST=tu_host
-    PORT=tu_puerto
-    SERVER_PORT=puerto_servidor
-    ORIGIN=tu_origen
-   ```
-
+```
+SECRET_KEY=tu_clave_secreta
+PG_USER=tu_usuario_pg
+PG_PASSWORD=tu_contraseña_pg
+PG_DBNAME=tu_nombre_bd
+HOST=tu_host
+PORT=tu_puerto
+SERVER_PORT=puerto_servidor
+ORIGIN=tu_origen
+```
 ## Ejecución
 
 Para ejecutar el servidor en modo desarrollo:
@@ -177,6 +173,22 @@ npm test
     "token": "jwt_token"
   }
   ```
+- **Ejemplo de Código**:
+  ```javascript
+  fetch('/api/auth/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      email: 'usuario@example.com',
+      password: 'contraseña'
+    })
+  })
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
+  ```
 
 ### Usuarios
 
@@ -198,6 +210,23 @@ npm test
     "message": "User created successfully"
   }
   ```
+- **Ejemplo de Código**:
+  ```javascript
+  fetch('/api/users', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: 'Nombre',
+      email: 'usuario@example.com',
+      password: 'contraseña'
+    })
+  })
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
+  ```
 
 #### Obtener Usuarios
 - **URL**: `/api/users`
@@ -213,6 +242,18 @@ npm test
     },
     ...
   ]
+  ```
+- **Ejemplo de Código**:
+  ```javascript
+  fetch('/api/users', {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer jwt_token'
+    }
+  })
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
   ```
 
 ### Cursos
@@ -234,6 +275,23 @@ npm test
     "message": "Course created successfully"
   }
   ```
+- **Ejemplo de Código**:
+  ```javascript
+  fetch('/api/courses', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer jwt_token'
+    },
+    body: JSON.stringify({
+      title: 'Título del Curso',
+      description: 'Descripción del Curso'
+    })
+  })
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
+  ```
 
 #### Obtener Cursos
 - **URL**: `/api/courses`
@@ -249,6 +307,18 @@ npm test
     },
     ...
   ]
+  ```
+- **Ejemplo de Código**:
+  ```javascript
+  fetch('/api/courses', {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer jwt_token'
+    }
+  })
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
   ```
 
 ### Inscripciones
@@ -269,6 +339,23 @@ npm test
   {
     "message": "Enrollment created successfully"
   }
+  ```
+- **Ejemplo de Código**:
+  ```javascript
+  fetch('/api/enrollments', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer jwt_token'
+    },
+    body: JSON.stringify({
+      studentId: 1,
+      courseId: 1
+    })
+  })
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
   ```
 
 ## Flujos de Datos
@@ -519,4 +606,4 @@ export const createUserController = async (req, res) => {
 - **Caché**: Utilizado para almacenar en caché las respuestas frecuentes y reducir la carga en la base de datos.
 
 ## Conclusión
-La arquitectura del backend de "Movimientos del Alma" está diseñada para ser modular, escalable y segura, permitiendo una fácil expansión y mantenimiento a medida que la aplicación crece. 
+La arquitectura del backend de "Movimientos del Alma" está diseñada para ser modular, escalable y segura, permitiendo una fácil expansión y mantenimiento a medida que la aplicación crece.
