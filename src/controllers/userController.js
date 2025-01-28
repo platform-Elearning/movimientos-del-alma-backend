@@ -21,6 +21,7 @@ import {
 import logger from "../utils/logger.js";
 
 // USERS
+export const test = async () => {};
 
 export const createAdminController = async (req, res) => {
   const { id, email, password } = req.body;
