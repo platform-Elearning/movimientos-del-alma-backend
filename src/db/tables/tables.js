@@ -183,8 +183,8 @@ const createStudentTable = async () => {
       "identification_number" VARCHAR,
       "name" VARCHAR,
       "lastname" VARCHAR,
-      "email" VARCHAR UNIQUE,
       "nationality" VARCHAR,
+      "email" VARCHAR UNIQUE,
       FOREIGN KEY ("id") REFERENCES "users" ("id")
     );
   `;
