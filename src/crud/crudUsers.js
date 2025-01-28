@@ -155,8 +155,8 @@ export const createStudent = async (
   identification_number,
   name,
   lastname,
-  email,
-  nationality
+  nationality,
+  email
 ) => {
   try {
     if (
@@ -164,8 +164,8 @@ export const createStudent = async (
       !identification_number ||
       !name ||
       !lastname ||
-      !email ||
-      !nationality
+      !nationality ||
+      !email
     ) {
       throw new Error("All fields are required");
     }
@@ -175,8 +175,8 @@ export const createStudent = async (
   identification_number,
   name,
   lastname,
-  email,
-  nationality)
+  nationality,
+  email)
   VALUES ($1, $2, $3, $4, $5, $6)
 `;
 
@@ -185,8 +185,8 @@ export const createStudent = async (
       identification_number,
       name,
       lastname,
-      email,
       nationality,
+      email,
     ]);
 
     return resultdb.rowCount;
