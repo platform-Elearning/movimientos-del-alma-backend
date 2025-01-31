@@ -154,107 +154,146 @@ npm test
 
 ## API Endpoints
 
-### Autenticación
+### Crear Usuario
+- **URL**: `/users/createAdmin`
+- **Método**: `Post`
+- **Descripción**: crear nuevo usuario.
+- **Cuerpo de la Solicitud**:
+```json
+{
+  "id": 3,
+  "email": "usuario@example.com",
+  "password": "adminpassword"
+}
+```
 
-#### Login
-- **URL**: `/api/auth/login`
+### login Usuario
+- **URL**: `/users/login`
+- **Método**: `Post`
+- **Descripción**: Loggear Admin.
+- **Cuerpo de la Solicitud**:
+  ```json
+  {
+     "email": "usuario@example.com",
+     "password":"123456"
+  }
+  ```
+
+### Cambiar Contraseña Usuario
+- **URL**: `/users/changePassword`
 - **Método**: `POST`
-- **Descripción**: Autentica a un usuario y devuelve un token JWT.
+- **Descripción**: Cambiar Contraseña.
 - **Cuerpo de la Solicitud**:
   ```json
   {
     "email": "usuario@example.com",
-    "password": "contraseña"
+    "password": "contraseña_actual",
+    "newPassword1": "nueva_contraseña",
+    "newPassword2": "nueva_contraseña"
   }
-  ```
-- **Respuesta Exitosa**:
-  ```json
-  {
-    "token": "jwt_token"
-  }
-  ```
-- **Ejemplo de Código**:
-  ```javascript
-  fetch('/api/auth/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      email: 'usuario@example.com',
-      password: 'contraseña'
-    })
-  })
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));
+
   ```
 
-### Usuarios
+### Borrar Usuario
+- **URL**: `/users/deleteUser/:id`
+- **Método**: `delete`
+- **Descripción**: Borra Usuario segun id.
 
-#### Crear Usuario
-- **URL**: `/api/users`
+#### Crear Estudiante
+- **URL**: `/users/createCompleteStudent`
 - **Método**: `POST`
-- **Descripción**: Crea un nuevo usuario.
+- **Descripción**: Crea un nuevo estudiante.
 - **Cuerpo de la Solicitud**:
   ```json
   {
+    "identification_number": "123456",
     "name": "Nombre",
+    "lastname": "lastname",
+    "nationality": "nationality",
     "email": "usuario@example.com",
-    "password": "contraseña"
   }
   ```
 - **Respuesta Exitosa**:
   ```json
   {
-    "message": "User created successfully"
+    "succese": true,
+    "message": "student and user created succesfully",
+    "userId" : "id"
   }
   ```
-- **Ejemplo de Código**:
-  ```javascript
-  fetch('/api/users', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      name: 'Nombre',
-      email: 'usuario@example.com',
-      password: 'contraseña'
-    })
-  })
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));
-  ```
+-----
+  ### Obtener Estudiante por Identificacion
+- **URL**: `/users/getStudentById`
+- **Método**: `get`
+- **headers**: require parametros de consulta, necesitas pasar un id
+  ~~~  
+  id=123456
+  ~~~
+  **Descripcion**: Obtienes informacion de alumno(id)
+  **Respuesta Exitosa**
+  ```json
+  {
+    "dni":"123456",
+    "name": "Nombre",
+    "lastname": "lastname",
+    "email": "email@email.com",
+    "nationality": "nationality",
+    "identification_number":"123456"
+  }
 
-#### Obtener Usuarios
-- **URL**: `/api/users`
-- **Método**: `GET`
-- **Descripción**: Obtiene una lista de todos los usuarios.
+  ```
+----
+
+### Obtener todos los Estudiantes
+- **URL**: `/users/getAllStudents`
+- **Método**: `get`
+  **Descripcion**: Obtienes informacion de todos los alumnos
+
+### Obtener informacion de los cursos de cada alumno
+- **URL**: `/users/getStudentsWithCourses`
+- **Método**: `get`
+  **Descripcion**: Obtienes informacion de todos los alumnos y los cursos que estos tengan
+
+### Borrar Alumnos
+- **URL**: `/users/deleteStudent/:id`
+- **Método**: `delete`
+  **Descripcion**: Borra alumnos , remplaza :id por el "id" del estudiante que deseas borrar.
+----
+
+
+
+- #### Crear Profesor 
+- **URL**: `/users/createCompleteTeacher`
+- **Método**: `POST`
+- **Descripción**: Crea un nuevo Profesor.
+- **Cuerpo de la Solicitud**:
+  ```json
+  {
+    "identification_number": "123456",
+    "name": "Nombre",
+    "lastname": "lastname",
+    "nationality": "nationality",
+    "email": "usuario@example.com",
+  }
+  ```
 - **Respuesta Exitosa**:
   ```json
-  [
-    {
-      "id": 1,
-      "name": "Nombre",
-      "email": "usuario@example.com"
-    },
-    ...
-  ]
+  {
+    "succese": true,
+    "message": "Teacher and user created succesfully",
+    "userId" : "id"
+  }
   ```
-- **Ejemplo de Código**:
-  ```javascript
-  fetch('/api/users', {
-    method: 'GET',
-    headers: {
-      'Authorization': 'Bearer jwt_token'
-    }
-  })
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));
-  ```
+
+  ### Obtener Profesor (///aun no esta implementado.)
+  **URL**: `/users/getTeacher`
+- **Método**: `get`
+- **Descripción**: Obtener todos los profesores.
+
+  ### Borrar Profesor
+  **URL**: `/users/deleteTeacher/:id`
+- **Método**: `delete`
+- **Descripción**: Borra Profesor segun id. cambias :id por "id" profesor.
 
 ### Cursos
 
