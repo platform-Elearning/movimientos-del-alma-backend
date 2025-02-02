@@ -253,13 +253,13 @@ export const getStudentsWithCourses = async () => {
   }
 };
 
-export const getStudentWithDni = async (dni) => {
+export const getStudentWithDni = async (identification_number) => {
   try {
     const query = `SELECT * FROM student WHERE identification_number = $1`;
-    const { rows } = await pool.query(query, [dni]);
+    const { rows } = await pool.query(query, [identification_number]);
 
     if (rows.length === 0) {
-      throw new Error(`No student found with DNI: ${dni}`);
+      throw new Error(`No student found with DNI: ${identification_number}`);
     }
 
     return rows[0].id;
