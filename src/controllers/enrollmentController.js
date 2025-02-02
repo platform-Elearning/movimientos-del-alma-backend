@@ -7,9 +7,9 @@ import logger from "../utils/logger.js";
 // ENROLLMENT
 
 export const createEnrollmentToCourseController = async (req, res) => {
-  const { dni, course_id, modules_covered, notes } = req.body;
+  const { identification_number, course_id, modules_covered, notes } = req.body;
 
-  if (!dni || !course_id || !modules_covered) {
+  if (!identification_number || !course_id || !modules_covered) {
     return res.status(400).json({
       success: false,
       errorMessage: "DNI, course_id, and modules_covered are required",
@@ -17,7 +17,7 @@ export const createEnrollmentToCourseController = async (req, res) => {
   }
 
   try {
-    const student_id = await getStudentWithDni(dni);
+    const student_id = await getStudentWithDni(identification_number);
     if (!student_id) {
       return res.status(404).json({
         success: false,
@@ -80,7 +80,7 @@ export const createEnrollmentToCourseController = async (req, res) => {
     }
 
     logger.info(
-      `Student with dni: ${dni} enrolled in the course with id: ${course_id} successfully.`
+      `Student with dni: ${identification_number} enrolled in the course with id: ${course_id} successfully.`
     );
     return res.status(201).json({
       success: true,
