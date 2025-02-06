@@ -335,14 +335,20 @@ export const createStudentController = async (req, res) => {
   }
 
   const id = generateRandomId();
-  //const randomPW = randomPassword();
   const role = "student";
   const hashedPassword = authFunc.hashPassword(identification_number);
 
   try {
     const check = await checkExist("users", "email", null, email);
 
-    if (check) {
+    const checkIdentification = await checkExist(
+      "student",
+      "identification_number",
+      null,
+      identification_number
+    );
+
+    if (check || checkIdentification) {
       return res.status(409).json({
         success: false,
         message: "User already exists",
