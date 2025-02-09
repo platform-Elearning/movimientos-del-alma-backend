@@ -13,9 +13,18 @@ const app = express();
 const port = settings.server.serverPort;
 
 const corsOptions = {
+  origin: 'https://restcountries.com/v3.1/all', // Reemplaza con tu dominio
+  optionsSuccessStatus: 200,
   origin: settings.cors.origin,
   credentials: true,
 };
+
+
+app.get('/v3.1/all', (req, res) => {
+  // Tu lógica para manejar la solicitud
+  res.json({ message: 'Hello World' });
+});
+
 app.use(cors(corsOptions));
 app.use(json());
 app.use(urlencoded({ extended: true }));
