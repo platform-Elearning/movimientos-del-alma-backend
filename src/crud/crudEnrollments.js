@@ -42,10 +42,9 @@ export const getAllEnrollmentsByStudentId = async (student_id) => {
       return [];
     }
 
-    return result.rows;
+    return result.rows.length ? result.rows : [];
   } catch (error) {
     logger.warn("Error in function getAllEnrollmentsByStudentId.");
-
     throw new Error(error.detail);
   }
 };
