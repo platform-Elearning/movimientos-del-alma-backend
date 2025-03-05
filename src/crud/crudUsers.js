@@ -28,7 +28,59 @@ export const createUser = async (id, email, password, role) => {
   }
 };
 
-export const updateUser = () => {};
+export const updateUser = async (id, email, role) => {
+  if (!id) {
+    throw new Error("ID is required");
+  }
+
+  if (!email && !role) {
+    return 0;
+  }
+
+  if (role) {
+    const validRoles = ["teacher", "student", "admin"];
+    if (!validRoles.includes(role)) {
+      throw new Error("Role must be 'teacher', 'student' or 'admin'");
+    }
+  }
+
+  try {
+    const updates = [];
+    const values = [];
+    let paramIndex = 1;
+
+    if (email) {
+      updates.push(`email = $${paramIndex}`);
+      values.push(email);
+      paramIndex++;
+    }
+
+    if (role) {
+      updates.push(`role = $${paramIndex}`);
+      values.push(role);
+      paramIndex++;
+    }
+
+    if (updates.length === 0) {
+      throw new Error("No fields to update");
+    }
+
+    values.push(id);
+
+    const query = `
+      UPDATE users
+      SET ${updates.join(", ")}
+      WHERE id = $${paramIndex}
+    `;
+
+    const resultdb = await pool.query(query, values);
+
+    return resultdb.rowCount;
+  } catch (error) {
+    logger.warn("Error in function updateUser.");
+    throw new Error(error.detail || error);
+  }
+};
 
 export const deleteUser = async (id) => {
   const query = `
@@ -266,6 +318,72 @@ export const getStudentWithDni = async (identification_number) => {
   } catch (error) {
     logger.warn("Error in function getStudentWithDni.");
     throw new Error(error.detail);
+  }
+};
+
+export const updateStudent = async (
+  id,
+  identification_number,
+  name,
+  lastname,
+  nationality,
+  email
+) => {
+  if (!id) {
+    throw new Error("ID is required");
+  }
+
+  try {
+    const updates = [];
+    const values = [];
+    let paramIndex = 1;
+
+    if (identification_number) {
+      updates.push(`identification_number = $${paramIndex}`);
+      values.push(identification_number);
+      paramIndex++;
+    }
+
+    if (name) {
+      updates.push(`name = $${paramIndex}`);
+      values.push(name);
+      paramIndex++;
+    }
+
+    if (lastname) {
+      updates.push(`lastname = $${paramIndex}`);
+      values.push(lastname);
+      paramIndex++;
+    }
+
+    if (nationality) {
+      updates.push(`nationality = $${paramIndex}`);
+      values.push(nationality);
+      paramIndex++;
+    }
+
+    if (email) {
+      updates.push(`email = $${paramIndex}`);
+      values.push(email);
+      paramIndex++;
+    }
+
+    if (updates.length === 0) {
+      throw new Error("No fields to update");
+    }
+
+    values.push(id);
+
+    const query = `
+    UPDATE student SET ${updates.join(", ")} WHERE id = $${paramIndex}
+    `;
+
+    const resultdb = await pool.query(query, values);
+
+    return resultdb.rowCount;
+  } catch (error) {
+    logger.warn("Error in function updateStudent.");
+    throw new Error(error.detail || error);
   }
 };
 

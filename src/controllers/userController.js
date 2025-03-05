@@ -10,6 +10,8 @@ import {
   getStudentData,
   getStudentsWithCourses,
   getTeacher,
+  updateStudent,
+  updateUser,
 } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
 import { authFunc } from "../passwordStrategy/passwordStrategy.js";
@@ -19,7 +21,6 @@ import {
   randomPassword,
 } from "../utils/utils.js";
 import logger from "../utils/logger.js";
-
 // USERS
 export const test = async () => {};
 
@@ -167,6 +168,63 @@ export const deleteUserController = async (req, res) => {
       success: false,
       errorMessage: "Internal server error",
       error: error,
+    });
+  }
+};
+
+export const updateUserController = async (req, res) => {
+  const { user_id, email, identification_number, name, lastname, nationality } =
+    req.body;
+
+  if (!user_id) {
+    return res.status(400).json({
+      success: false,
+      message: "User ID is required",
+    });
+  }
+
+  try {
+    const check = await checkExist("users", "id", null, user_id);
+
+    if (!check) {
+      return res.status(409).json({
+        success: false,
+        message: "User not exist",
+      });
+    }
+
+    const updateUserResult = await updateUser(user_id || null, email || null);
+
+    if (updateUserResult.rowCount === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No fields were updated in the users table.",
+      });
+    }
+
+    const updateStudentResult = await updateStudent(
+      user_id || null,
+      identification_number || null,
+      name || null,
+      lastname || null,
+      nationality || null,
+      email || null
+    );
+
+    if (updateStudentResult.rowCount === 0) {
+      return res
+        .status(404)
+        .json({ message: `Error to create User with Id ${user_id}` });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Student updated successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
     });
   }
 };
