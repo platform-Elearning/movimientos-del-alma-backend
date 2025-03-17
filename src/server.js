@@ -37,7 +37,7 @@ app.use("/test", routerTest);
 app.use("/courses", routerCourses);
 app.use("/enrollments", routerEnrollments);
 app.use(
-  "/reportProblem",
+  "/report-problem",
   routerReport
 )(async () => {
   try {
