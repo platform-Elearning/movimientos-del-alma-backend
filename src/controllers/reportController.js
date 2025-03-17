@@ -1,5 +1,5 @@
-import { createReport } from "../crud/crudReport";
-import { checkExist } from "../utils/utils";
+import { createReport } from "../crud/crudReport.js";
+import { checkExist } from "../utils/utils.js";
 
 export const createReportController = async (req, res) => {
   const { user_id, description } = req.body;

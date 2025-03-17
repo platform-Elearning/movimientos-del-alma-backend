@@ -7,7 +7,6 @@ export const createReport = async (user_id, description) => {
     const query = `
         INSERT INTO reportProblem (user_id, description)
         VALUES ($1, $2)
-        RETURNING *;  -- Devuelve el reporte creado
       `;
 
     const resultdb = await pool.query(query, [user_id, description]);
