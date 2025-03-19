@@ -29,7 +29,7 @@ routerCourses
 
 routerCourses.route("/createCourse").post(createCourseController);
 
-routerCourses.route("/deleteCourse").post(deleteCourseController);
+routerCourses.route("/deleteCourse").delete(deleteCourseController);
 
 routerCourses
   .route("/getCoursesByStudentId")
@@ -39,7 +39,9 @@ routerCourses
   .route("/getAllCoursesWithModulesAndLessons")
   .get(getAllCoursesWithModulesAndLessonsController);
 
-routerCourses.route("/getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId").get(getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController);
+routerCourses
+  .route("/getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId")
+  .get(getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController);
 
 /// MODULES ///
 
@@ -61,6 +63,8 @@ routerCourses.route("/getLessons").get(getAllLessonsController);
 
 routerCourses.route("/deleteLesson/:id").delete(deleteLessonController);
 
-routerCourses.route("/getLessonsByModuleIdAndCourseId").get(getLessonsByModuleIdAndCourseIdController);
+routerCourses
+  .route("/getLessonsByModuleIdAndCourseId")
+  .get(getLessonsByModuleIdAndCourseIdController);
 
 export default routerCourses;

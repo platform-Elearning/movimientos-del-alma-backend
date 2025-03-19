@@ -8,6 +8,7 @@ import { createTablesDbPostgres } from "./db/tables/tables.js";
 import routerCourses from "./routes/routesCourses.js";
 import routerEnrollments from "./routes/routesEnrollments.js";
 import logger from "./utils/logger.js";
+import routerReport from "./routes/routesReport.js";
 
 const app = express();
 const port = settings.server.serverPort;
@@ -35,6 +36,10 @@ app.use("/users", routerUsers);
 app.use("/test", routerTest);
 app.use("/courses", routerCourses);
 app.use("/enrollments", routerEnrollments);
+app.use(
+  "/report-problem",
+  routerReport
+);
 
 (async () => {
   try {
