@@ -323,6 +323,46 @@ const createLessonsTable = async () => {
   }
 };
 
+const createReportProblemTable = async () => {
+  const checkQuery = `
+    SELECT EXISTS (
+      SELECT FROM information_schema.tables 
+      WHERE table_schema = 'public' 
+      AND table_name = 'reportProblem'
+    );
+  `;
+
+  const createQuery = `
+    CREATE TABLE "reportProblem" (
+      "id" SERIAL PRIMARY KEY,
+      "user_id" INTEGER NOT NULL,
+      "description" TEXT NOT NULL,
+      "status" BOOLEAN NOT NULL,
+      "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE
+    );
+  `;
+
+  try {
+    const checkResult = await pool.query(checkQuery);
+    const tableExists = checkResult.rows[0].exists;
+
+    if (!tableExists) {
+      await pool.query(createQuery);
+      console.log("Table 'reportProblem' created.");
+    } else {
+      console.warn("Table 'reportProblem' already exists.");
+    }
+  } catch (error) {
+    console.error(
+      `Error creating table 'reportProblem': ERROR: ${error.message}`,
+      {
+        stack: error.stack,
+      }
+    );
+  }
+};
+
 export const createTablesDbPostgres = async () => {
   try {
     await pool.query("BEGIN");
@@ -335,6 +375,7 @@ export const createTablesDbPostgres = async () => {
     await createTeacherCoursesTable();
     await createCourseModulesTable();
     await createLessonsTable();
+    await createReportProblemTable();
 
     await pool.query("COMMIT");
 
