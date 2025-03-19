@@ -39,7 +39,9 @@ app.use("/enrollments", routerEnrollments);
 app.use(
   "/report-problem",
   routerReport
-)(async () => {
+);
+
+(async () => {
   try {
     await createTablesDbPostgres();
   } catch (error) {
