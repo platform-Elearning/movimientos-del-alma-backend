@@ -335,9 +335,8 @@ const createReportProblemTable = async () => {
   const createQuery = `
     CREATE TABLE "reportProblem" (
       "id" SERIAL PRIMARY KEY,
-      "user_id" INTEGER NOT NULL,
+      "user_id" VARCHAR NOT NULL, -- Cambiado a VARCHAR para coincidir con la columna 'id' de 'users'
       "description" TEXT NOT NULL,
-      "status" BOOLEAN NOT NULL,
       "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE
     );
