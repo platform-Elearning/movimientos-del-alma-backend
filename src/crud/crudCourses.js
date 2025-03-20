@@ -220,6 +220,7 @@ export const getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId =
       courses.id AS course_id,
       courses.name AS course_name,
       course_modules.id AS module_id,
+      course_modules.module_number AS module_number,
       course_modules.name AS module_name,
       lessons.id AS lesson_id,
       lessons.lesson_number AS lesson_number,
@@ -233,19 +234,28 @@ export const getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId =
     LEFT JOIN
       lessons ON course_modules.id = lessons.module_id
     WHERE
-    courses.id = $1;
+      courses.id = $1
+    ORDER BY
+      course_modules.module_number ASC, lessons.lesson_number ASC;
   `;
 
     try {
+      // Obtener la cantidad de módulos cubiertos por el estudiante
       const modulesCoveredResult = await pool.query(queryCovered, [
         student_id,
         course_id,
       ]);
 
-      if (modulesCoveredResult.rows[0].modules_covered.length === 0) {
+      if (
+        !modulesCoveredResult.rows.length ||
+        modulesCoveredResult.rows[0].modules_covered === 0
+      ) {
         throw new Error("No enrollment found for this student in this course");
       }
 
+      const modulesCovered = modulesCoveredResult.rows[0].modules_covered;
+
+      // Obtener todos los módulos y lecciones del curso
       const result = await pool.query(query, [course_id]);
       const coursesMap = {};
 
@@ -259,28 +269,31 @@ export const getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId =
         }
 
         if (row.module_id) {
+          // Verificar si el módulo ya está en el mapa
           const moduleIndex = coursesMap[row.course_id].courseModules.findIndex(
             (m) => m.moduleId === row.module_id
           );
 
           if (moduleIndex === -1) {
+            // Agregar el módulo solo si está dentro del rango de módulos cubiertos
             if (
-              coursesMap[row.course_id].courseModules.length <
-              modulesCoveredResult.rows[0].modules_covered
+              coursesMap[row.course_id].courseModules.length < modulesCovered
             ) {
               coursesMap[row.course_id].courseModules.push({
                 moduleId: row.module_id,
+                moduleNumber: row.module_number,
                 moduleName: row.module_name,
                 moduleLessons: [],
               });
             }
           }
 
+          // Agregar lecciones al módulo correspondiente
           const module = coursesMap[row.course_id].courseModules.find(
             (m) => m.moduleId === row.module_id
           );
 
-          if (row.lesson_id) {
+          if (module && row.lesson_id) {
             module.moduleLessons.push({
               lessonId: row.lesson_id,
               lessonNumber: row.lesson_number,
@@ -297,7 +310,7 @@ export const getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId =
       logger.warn(
         "Error in function getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId."
       );
-      throw new Error(error);
+      throw new Error(error.message);
     }
   };
 
