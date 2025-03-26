@@ -297,16 +297,23 @@ export const createTeacherController = async (req, res) => {
   }
 };
 
-export const getTeacherController = async (req, res) => {
-  const { id } = req.body;
-
+export const getAllTeachersController = async (req, res) => {
   try {
-    const response = await getTeacher(id);
+    const response = await getAllTeachers();
+
+    if (!response || response.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No teachers found",
+      });
+    }
+
     return res.status(200).json({
-      response,
+      success: true,
+      data: response,
     });
   } catch (error) {
-    logger.error(`Error in getTeacherController. ERROR: ${error.message}`, {
+    logger.error(`Error in getAllTeachersController. ERROR: ${error.message}`, {
       stack: error.stack,
     });
     return res.status(500).json({

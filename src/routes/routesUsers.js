@@ -8,7 +8,7 @@ import {
   deleteUserController,
   getAllStudentsController,
   getAllUsersWithCoursesController,
-  getTeacherController,
+  getAllTeachersController,
   getUserController,
   updateUserController,
 } from "../controllers/userController.js";
@@ -37,7 +37,7 @@ routerUsers.route("/updateStudent").put(updateUserController);
 
 routerUsers.route("/createCompleteTeacher").post(createTeacherController);
 
-routerUsers.route("/getTeacher").get(getTeacherController);
+routerUsers.route("/getAllTeachers").get(getAllTeachersController);
 
 routerUsers.route("/deleteTeacher/:id").delete(deleteTeacherController);
 

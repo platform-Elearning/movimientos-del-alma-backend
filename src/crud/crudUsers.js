@@ -166,20 +166,24 @@ export const createTeacher = async (
   }
 };
 
-export const getTeacher = async (id) => {
+export const getAllTeachers = async () => {
   try {
-    const query = `SELECT * FROM teacher WHERE id = $1`;
-
-    const responsedb = await pool.query(query, [id]);
-
-    if (responsedb.rows.length === 0) {
-      throw new Error(`No teacher found with id: ${id}`);
-    }
-
-    return responsedb.rows[0];
+    const query = `
+      SELECT 
+        t.id, 
+        t.name, 
+        t.lastname, 
+        t.identification_number, 
+        t.email 
+      FROM teacher t
+      INNER JOIN users u ON t.id = u.id
+      WHERE u.role = 'teacher';
+    `;
+    const result = await pool.query(query);
+    return result.rows;
   } catch (error) {
-    logger.warn("Error in function getTeacher.");
-    throw new Error(error.message);
+    console.error("Error in getAllTeachers:", error.message);
+    throw error;
   }
 };
 
