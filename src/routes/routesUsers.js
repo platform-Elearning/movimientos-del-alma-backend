@@ -28,7 +28,7 @@ routerUsers.route("/getAllStudents").get(getAllStudentsController);
 routerUsers
   .route("/getStudentsWithCourses")
   .get(getAllUsersWithCoursesController);
-
+a
 routerUsers.route("/deleteStudent/:id").delete(deleteStudentController);
 
 routerUsers.route("/updateStudent").put(updateUserController);
