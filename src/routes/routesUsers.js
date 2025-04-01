@@ -44,8 +44,6 @@ routerUsers.route("/deleteTeacher/:id").delete(deleteTeacherController);
 
 routerUsers.route("/updateTeacher").put(updateTeacherController);
 
-
-
 // ROUTE FOR LOGIN
 routerUsers.route("/login").post(loginController);
 

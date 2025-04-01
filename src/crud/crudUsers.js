@@ -218,7 +218,8 @@ export const updateTeacher = async (
   identification_number,
   name,
   lastname,
-  email
+  email,
+  course_id // Agregado para manejar el curso asignado
 ) => {
   if (!id) {
     throw new Error("ID is required");
@@ -250,6 +251,12 @@ export const updateTeacher = async (
     if (email) {
       updates.push(`email = $${paramIndex}`);
       values.push(email);
+      paramIndex++;
+    }
+
+    if (course_id) {
+      updates.push(`course_id = $${paramIndex}`);
+      values.push(course_id);
       paramIndex++;
     }
 
