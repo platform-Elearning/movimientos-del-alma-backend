@@ -372,10 +372,9 @@ export const deleteTeacherController = async (req, res) => {
 
 
 export const updateTeacherController = async (req, res) => {
-  const { id, identification_number, name, lastname, email } =
+  const { id, identification_number, name, lastname, email, course_id } =
     req.body;
 
-  // Validar que el ID esté presente
   if (!id) {
     return res.status(400).json({
       success: false,
@@ -384,7 +383,6 @@ export const updateTeacherController = async (req, res) => {
   }
 
   try {
-    // Verificar si el profesor existe
     const teacherExists = await checkExist("teacher", "id", null, id);
 
     if (!teacherExists) {
@@ -394,13 +392,13 @@ export const updateTeacherController = async (req, res) => {
       });
     }
 
-    // Actualizar los datos del profesor
     const updateResult = await updateTeacher(
       id,
       identification_number || null,
       name || null,
       lastname || null,
-      email || null
+      email || null,
+      course_id || null // Pasar el curso asignado
     );
 
     if (updateResult === 0) {
