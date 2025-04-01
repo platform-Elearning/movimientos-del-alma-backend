@@ -180,7 +180,6 @@ export const getAllTeachers = async () => {
         t.lastname, 
         t.identification_number, 
         t.email,
-        t.nationality,
         c.id AS course_id, -- Agregado para incluir el ID del curso
         c.name AS course_name, -- Agregado para incluir el nombre del curso
         c.description AS course_description -- Agregado para incluir la descripción del curso
@@ -219,7 +218,6 @@ export const updateTeacher = async (
   identification_number,
   name,
   lastname,
-  nationality,
   email
 ) => {
   if (!id) {

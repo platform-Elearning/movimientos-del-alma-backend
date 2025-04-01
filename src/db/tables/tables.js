@@ -106,17 +106,29 @@ const createTeacherTable = async () => {
       "name" VARCHAR,
       "lastname" VARCHAR,
       "email" VARCHAR,
-      "nationality" VARCHAR,
-      "course_id" INTEGER, -- Agregado para asignar un curso
+      "course_id" INTEGER,
       FOREIGN KEY ("course_id") REFERENCES "courses" ("id") ON DELETE SET NULL
     );
   `;
 
-  const alterQuery = `
+  const alterColumnQuery = `
     ALTER TABLE "teacher"
-    ADD COLUMN IF NOT EXISTS "course_id" INTEGER,
-    ADD CONSTRAINT fk_course
-    FOREIGN KEY ("course_id") REFERENCES "courses" ("id") ON DELETE SET NULL;
+    ADD COLUMN IF NOT EXISTS "course_id" INTEGER;
+  `;
+
+  const alterConstraintQuery = `
+    DO $$
+    BEGIN
+      IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.table_constraints
+        WHERE constraint_name = 'fk_course' AND table_name = 'teacher'
+      ) THEN
+        ALTER TABLE "teacher"
+        ADD CONSTRAINT fk_course
+        FOREIGN KEY ("course_id") REFERENCES "courses" ("id") ON DELETE SET NULL;
+      END IF;
+    END $$;
   `;
 
   try {
@@ -127,9 +139,10 @@ const createTeacherTable = async () => {
       await pool.query(createQuery);
       logger.info("Table 'teacher' created.");
     } else {
-      await pool.query(alterQuery);
+      await pool.query(alterColumnQuery); // Asegurar que la columna 'course_id' exista
+      await pool.query(alterConstraintQuery); // Asegurar que la restricción 'fk_course' exista
       logger.warn(
-        "Table 'teacher' already exists. Column 'course_id' ensured."
+        "Table 'teacher' already exists. Column 'course_id' and constraint 'fk_course' ensured."
       );
     }
   } catch (error) {
