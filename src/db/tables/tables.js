@@ -105,8 +105,18 @@ const createTeacherTable = async () => {
       "identification_number" VARCHAR,
       "name" VARCHAR,
       "lastname" VARCHAR,
-      "email" VARCHAR
+      "email" VARCHAR,
+      "nationality" VARCHAR,
+      "course_id" INTEGER, -- Agregado para asignar un curso
+      FOREIGN KEY ("course_id") REFERENCES "courses" ("id") ON DELETE SET NULL
     );
+  `;
+
+  const alterQuery = `
+    ALTER TABLE "teacher"
+    ADD COLUMN IF NOT EXISTS "course_id" INTEGER,
+    ADD CONSTRAINT fk_course
+    FOREIGN KEY ("course_id") REFERENCES "courses" ("id") ON DELETE SET NULL;
   `;
 
   try {
@@ -117,7 +127,10 @@ const createTeacherTable = async () => {
       await pool.query(createQuery);
       logger.info("Table 'teacher' created.");
     } else {
-      logger.warn("Table 'teacher' already exists.");
+      await pool.query(alterQuery);
+      logger.warn(
+        "Table 'teacher' already exists. Column 'course_id' ensured."
+      );
     }
   } catch (error) {
     logger.error(`Error creating table 'teacher': ERROR: ${error.message}`, {
