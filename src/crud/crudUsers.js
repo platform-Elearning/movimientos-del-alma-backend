@@ -247,12 +247,6 @@ export const updateTeacher = async (
       paramIndex++;
     }
 
-    if (nationality) {
-      updates.push(`nationality = $${paramIndex}`);
-      values.push(nationality);
-      paramIndex++;
-    }
-
     if (email) {
       updates.push(`email = $${paramIndex}`);
       values.push(email);
