@@ -31,7 +31,7 @@ app.use(
     },
   })
 );
-
+/* Rutas */
 app.use("/users", routerUsers);
 app.use("/test", routerTest);
 app.use("/courses", routerCourses);
