@@ -307,7 +307,6 @@ export const getAllTeachersController = async (req, res) => {
         lastname: teacher.lastname,
         identification_number: teacher.identification_number,
         email: teacher.email,
-        nationality: teacher.nationality,
         course: {
           id: teacher.course_id,
           name: teacher.course_name,
@@ -373,7 +372,7 @@ export const deleteTeacherController = async (req, res) => {
 
 
 export const updateTeacherController = async (req, res) => {
-  const { id, identification_number, name, lastname, nationality, email } =
+  const { id, identification_number, name, lastname, email } =
     req.body;
 
   // Validar que el ID esté presente
@@ -401,7 +400,6 @@ export const updateTeacherController = async (req, res) => {
       identification_number || null,
       name || null,
       lastname || null,
-      nationality || null,
       email || null
     );
 
