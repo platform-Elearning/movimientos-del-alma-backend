@@ -142,14 +142,18 @@ export const createTeacher = async (
   name,
   lastname,
   identification_number,
-  email
+  email,
+  course_id // Agregado para asignar un curso
 ) => {
   try {
     if (!id || !name || !lastname || !identification_number || !email) {
       throw new Error("All fields are required");
     }
 
-    const query = `INSERT INTO teacher (id, name, lastname, identification_number, email) VALUES ($1,$2,$3,$4,$5)`;
+    const query = `
+      INSERT INTO teacher (id, name, lastname, identification_number, email, course_id)
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `;
 
     const resultdb = await pool.query(query, [
       id,
@@ -157,12 +161,13 @@ export const createTeacher = async (
       lastname,
       identification_number,
       email,
+      course_id || null, // Permitir que sea opcional
     ]);
 
     return resultdb.rowCount;
   } catch (error) {
     logger.warn("Error in function createTeacher.");
-    throw new Error(error.detail);
+    throw new Error(error.detail || error);
   }
 };
 
@@ -174,16 +179,21 @@ export const getAllTeachers = async () => {
         t.name, 
         t.lastname, 
         t.identification_number, 
-        t.email 
+        t.email,
+        t.nationality,
+        c.id AS course_id, -- Agregado para incluir el ID del curso
+        c.name AS course_name, -- Agregado para incluir el nombre del curso
+        c.description AS course_description -- Agregado para incluir la descripción del curso
       FROM teacher t
+      LEFT JOIN courses c ON t.course_id = c.id
       INNER JOIN users u ON t.id = u.id
       WHERE u.role = 'teacher';
     `;
     const result = await pool.query(query);
     return result.rows;
   } catch (error) {
-    console.error("Error in getAllTeachers:", error.message);
-    throw error;
+    logger.warn("Error in function getAllTeachers.");
+    throw new Error(error.message);
   }
 };
 
@@ -203,6 +213,73 @@ export const deleteTeacher = async (id) => {
     throw new Error(error.message);
   }
 };
+
+export const updateTeacher = async (
+  id,
+  identification_number,
+  name,
+  lastname,
+  nationality,
+  email
+) => {
+  if (!id) {
+    throw new Error("ID is required");
+  }
+
+  try {
+    const updates = [];
+    const values = [];
+    let paramIndex = 1;
+
+    if (identification_number) {
+      updates.push(`identification_number = $${paramIndex}`);
+      values.push(identification_number);
+      paramIndex++;
+    }
+
+    if (name) {
+      updates.push(`name = $${paramIndex}`);
+      values.push(name);
+      paramIndex++;
+    }
+
+    if (lastname) {
+      updates.push(`lastname = $${paramIndex}`);
+      values.push(lastname);
+      paramIndex++;
+    }
+
+    if (nationality) {
+      updates.push(`nationality = $${paramIndex}`);
+      values.push(nationality);
+      paramIndex++;
+    }
+
+    if (email) {
+      updates.push(`email = $${paramIndex}`);
+      values.push(email);
+      paramIndex++;
+    }
+
+    if (updates.length === 0) {
+      throw new Error("No fields to update");
+    }
+
+    values.push(id);
+
+    const query = `
+      UPDATE teacher SET ${updates.join(", ")} WHERE id = $${paramIndex}
+    `;
+
+    const resultdb = await pool.query(query, values);
+
+    return resultdb.rowCount;
+  } catch (error) {
+    logger.warn("Error in function updateTeacher.");
+    throw new Error(error.detail || error);
+  }
+};
+
 
 // CRUD FOR STUDENTS
 

@@ -11,6 +11,7 @@ import {
   getAllTeachersController,
   getUserController,
   updateUserController,
+  updateTeacherController,
 } from "../controllers/userController.js";
 import {
   loginController,
@@ -28,7 +29,7 @@ routerUsers.route("/getAllStudents").get(getAllStudentsController);
 routerUsers
   .route("/getStudentsWithCourses")
   .get(getAllUsersWithCoursesController);
-a
+
 routerUsers.route("/deleteStudent/:id").delete(deleteStudentController);
 
 routerUsers.route("/updateStudent").put(updateUserController);
@@ -40,6 +41,10 @@ routerUsers.route("/createCompleteTeacher").post(createTeacherController);
 routerUsers.route("/getAllTeachers").get(getAllTeachersController);
 
 routerUsers.route("/deleteTeacher/:id").delete(deleteTeacherController);
+
+routerUsers.route("/updateTeacher").put(updateTeacherController);
+
+
 
 // ROUTE FOR LOGIN
 routerUsers.route("/login").post(loginController);
