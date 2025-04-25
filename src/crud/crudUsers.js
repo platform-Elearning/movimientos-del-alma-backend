@@ -142,8 +142,7 @@ export const createTeacher = async (
   name,
   lastname,
   identification_number,
-  email,
-  course_id // Agregado para asignar un curso
+  email
 ) => {
   try {
     if (!id || !name || !lastname || !identification_number || !email) {
@@ -151,8 +150,8 @@ export const createTeacher = async (
     }
 
     const query = `
-      INSERT INTO teacher (id, name, lastname, identification_number, email, course_id)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO teacher (id, name, lastname, identification_number, email)
+      VALUES ($1, $2, $3, $4, $5)
     `;
 
     const resultdb = await pool.query(query, [
@@ -161,7 +160,6 @@ export const createTeacher = async (
       lastname,
       identification_number,
       email,
-      course_id || null, // Permitir que sea opcional
     ]);
 
     return resultdb.rowCount;
@@ -179,12 +177,8 @@ export const getAllTeachers = async () => {
         t.name, 
         t.lastname, 
         t.identification_number, 
-        t.email,
-        c.id AS course_id, -- Agregado para incluir el ID del curso
-        c.name AS course_name, -- Agregado para incluir el nombre del curso
-        c.description AS course_description -- Agregado para incluir la descripción del curso
+        t.email
       FROM teacher t
-      LEFT JOIN courses c ON t.course_id = c.id
       INNER JOIN users u ON t.id = u.id
       WHERE u.role = 'teacher';
     `;
@@ -218,8 +212,7 @@ export const updateTeacher = async (
   identification_number,
   name,
   lastname,
-  email,
-  course_id // Agregado para manejar el curso asignado
+  email
 ) => {
   if (!id) {
     throw new Error("ID is required");
@@ -254,12 +247,6 @@ export const updateTeacher = async (
       paramIndex++;
     }
 
-    if (course_id) {
-      updates.push(`course_id = $${paramIndex}`);
-      values.push(course_id);
-      paramIndex++;
-    }
-
     if (updates.length === 0) {
       throw new Error("No fields to update");
     }
@@ -278,7 +265,6 @@ export const updateTeacher = async (
     throw new Error(error.detail || error);
   }
 };
-
 
 // CRUD FOR STUDENTS
 

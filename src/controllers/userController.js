@@ -234,7 +234,7 @@ export const updateUserController = async (req, res) => {
 // TEACHER
 
 export const createTeacherController = async (req, res) => {
-  const { identification_number, name, lastname, email, course_id } = req.body;
+  const { identification_number, name, lastname, email } = req.body;
 
   if (!identification_number || !name || !lastname || !email) {
     return res.status(400).json({
@@ -299,11 +299,6 @@ export const getAllTeachersController = async (req, res) => {
         lastname: teacher.lastname,
         identification_number: teacher.identification_number,
         email: teacher.email,
-        course: {
-          id: teacher.course_id,
-          name: teacher.course_name,
-          description: teacher.course_description,
-        },
       })),
     });
   } catch (error) {
@@ -363,8 +358,7 @@ export const deleteTeacherController = async (req, res) => {
 };
 
 export const updateTeacherController = async (req, res) => {
-  const { id, identification_number, name, lastname, email, course_id } =
-    req.body;
+  const { id, identification_number, name, lastname, email } = req.body;
 
   if (!id) {
     return res.status(400).json({
@@ -388,8 +382,7 @@ export const updateTeacherController = async (req, res) => {
       identification_number || null,
       name || null,
       lastname || null,
-      email || null,
-      course_id || null // Pasar el curso asignado
+      email || null
     );
 
     if (updateResult === 0) {
