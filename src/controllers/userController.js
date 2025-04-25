@@ -23,7 +23,6 @@ import {
 } from "../utils/utils.js";
 import logger from "../utils/logger.js";
 
-
 // USERS
 export const test = async () => {};
 
@@ -261,14 +260,7 @@ export const createTeacherController = async (req, res) => {
     await createUser(id, email, randomPassword(), role);
 
     // Crear profesor en la tabla 'teacher'
-    await createTeacher(
-      id,
-      name,
-      lastname,
-      identification_number,
-      email,
-      course_id
-    );
+    await createTeacher(id, name, lastname, identification_number, email);
 
     logger.info(`Teacher created successfully with ID: ${id}`);
     return res.status(201).json({
@@ -369,7 +361,6 @@ export const deleteTeacherController = async (req, res) => {
     });
   }
 };
-
 
 export const updateTeacherController = async (req, res) => {
   const { id, identification_number, name, lastname, email, course_id } =

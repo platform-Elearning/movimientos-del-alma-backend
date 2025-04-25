@@ -105,8 +105,7 @@ const createTeacherTable = async () => {
       "identification_number" VARCHAR,
       "name" VARCHAR,
       "lastname" VARCHAR,
-      "email" VARCHAR,
-      "course_id" INTEGER,
+      "email" VARCHAR
       FOREIGN KEY ("course_id") REFERENCES "courses" ("id") ON DELETE SET NULL
     );
   `;
@@ -361,7 +360,7 @@ const createReportProblemTable = async () => {
   const createQuery = `
     CREATE TABLE "reportProblem" (
       "id" SERIAL PRIMARY KEY,
-      "user_id" VARCHAR NOT NULL, -- Cambiado a VARCHAR para coincidir con la columna 'id' de 'users'
+      "user_id" VARCHAR NOT NULL,
       "description" TEXT NOT NULL,
       "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE
