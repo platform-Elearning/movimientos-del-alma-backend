@@ -106,28 +106,7 @@ const createTeacherTable = async () => {
       "name" VARCHAR,
       "lastname" VARCHAR,
       "email" VARCHAR
-      FOREIGN KEY ("course_id") REFERENCES "courses" ("id") ON DELETE SET NULL
     );
-  `;
-
-  const alterColumnQuery = `
-    ALTER TABLE "teacher"
-    ADD COLUMN IF NOT EXISTS "course_id" INTEGER;
-  `;
-
-  const alterConstraintQuery = `
-    DO $$
-    BEGIN
-      IF NOT EXISTS (
-        SELECT 1
-        FROM information_schema.table_constraints
-        WHERE constraint_name = 'fk_course' AND table_name = 'teacher'
-      ) THEN
-        ALTER TABLE "teacher"
-        ADD CONSTRAINT fk_course
-        FOREIGN KEY ("course_id") REFERENCES "courses" ("id") ON DELETE SET NULL;
-      END IF;
-    END $$;
   `;
 
   try {
@@ -138,11 +117,7 @@ const createTeacherTable = async () => {
       await pool.query(createQuery);
       logger.info("Table 'teacher' created.");
     } else {
-      await pool.query(alterColumnQuery); // Asegurar que la columna 'course_id' exista
-      await pool.query(alterConstraintQuery); // Asegurar que la restricción 'fk_course' exista
-      logger.warn(
-        "Table 'teacher' already exists. Column 'course_id' and constraint 'fk_course' ensured."
-      );
+      logger.warn("Table 'teacher' already exists.");
     }
   } catch (error) {
     logger.error(`Error creating table 'teacher': ERROR: ${error.message}`, {
@@ -373,12 +348,12 @@ const createReportProblemTable = async () => {
 
     if (!tableExists) {
       await pool.query(createQuery);
-      console.log("Table 'reportProblem' created.");
+      logger.info("Table 'reportProblem' created.");
     } else {
-      console.warn("Table 'reportProblem' already exists.");
+      logger.warn("Table 'reportProblem' already exists.");
     }
   } catch (error) {
-    console.error(
+    logger.error(
       `Error creating table 'reportProblem': ERROR: ${error.message}`,
       {
         stack: error.stack,
