@@ -17,6 +17,7 @@ const corsOptions = {
   origin: settings.cors.origin,
   credentials: true,
 };
+
 app.use(cors(corsOptions));
 app.use(json());
 app.use(urlencoded({ extended: true }));
@@ -36,10 +37,7 @@ app.use("/users", routerUsers);
 app.use("/test", routerTest);
 app.use("/courses", routerCourses);
 app.use("/enrollments", routerEnrollments);
-app.use(
-  "/report-problem",
-  routerReport
-);
+app.use("/report-problem", routerReport);
 
 (async () => {
   try {

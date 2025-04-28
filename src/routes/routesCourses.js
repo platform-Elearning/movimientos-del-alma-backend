@@ -17,12 +17,15 @@ import {
   getLessonsByModuleIdAndCourseIdController,
   assignCourseToTeacherController,
 } from "../controllers/courseController.js";
+import { authenticateToken } from "../auth/auth.js";
 
 const routerCourses = Router();
 
 /// COURSES ///
 
-routerCourses.route("/getAllCourses").get(getAllCoursesController);
+routerCourses
+  .route("/getAllCourses")
+  .get(authenticateToken, getAllCoursesController);
 
 routerCourses
   .route("/getAllCoursesWithModules")
