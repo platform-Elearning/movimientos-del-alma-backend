@@ -15,6 +15,7 @@ import {
   deleteModuleController,
   getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController,
   getLessonsByModuleIdAndCourseIdController,
+  assignCourseToTeacherController,
 } from "../controllers/courseController.js";
 
 const routerCourses = Router();
@@ -42,6 +43,10 @@ routerCourses
 routerCourses
   .route("/getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId")
   .get(getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController);
+
+routerCourses
+  .route("/assignCourseToTeacher")
+  .post(assignCourseToTeacherController);
 
 /// MODULES ///
 

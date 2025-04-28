@@ -62,6 +62,42 @@ export const deleteCourse = async (id) => {
   }
 };
 
+export const assignCourseToTeacher = async (course_id, teacher_id) => {
+  if (!course_id || !teacher_id) {
+    throw new Error("Both course_id and teacher_id are required");
+  }
+
+  try {
+    const checkQuery = `
+      SELECT 1 FROM teacher_courses 
+      WHERE teacher_id = $1 AND course_id = $2
+      LIMIT 1;
+    `;
+    const exists = await pool.query(checkQuery, [teacher_id, course_id]);
+
+    if (exists.rows.length > 0) {
+      throw new Error("This teacher is already assigned to this course");
+    }
+
+    const insertQuery = `
+      INSERT INTO teacher_courses (teacher_id, course_id) 
+      VALUES ($1, $2) RETURNING *;
+    `;
+
+    const result = await pool.query(insertQuery, [teacher_id, course_id]);
+    return result.rows[0];
+  } catch (error) {
+    if (error.code === "23505") {
+      logger.warn(
+        `Duplicate assignment attempted: teacher ${teacher_id} to course ${course_id}`
+      );
+      throw new Error("This teacher is already assigned to this course");
+    }
+    logger.error(`Error in assignCourseToTeacher: ${error.message}`);
+    throw error;
+  }
+};
+
 /*
 export const getCoursesWithModules = async () => {
   try {

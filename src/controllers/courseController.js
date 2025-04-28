@@ -13,6 +13,7 @@ import {
   deleteModule,
   getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId,
   getLessonsByModuleIdAndCourseId,
+  assignCourseToTeacher,
 } from "../crud/crudCourses.js";
 import { getAllEnrollmentsByStudentId } from "../crud/crudEnrollments.js";
 import logger from "../utils/logger.js";
@@ -242,6 +243,67 @@ export const deleteCourseController = async (req, res) => {
       success: false,
       errorMessage: "Internal server error",
       error: error.message,
+    });
+  }
+};
+
+export const assignCourseToTeacherController = async (req, res) => {
+  const { course_id, teacher_id } = req.body;
+
+  if (!course_id || !teacher_id) {
+    return res.status(400).json({
+      success: false,
+      error: "Both course_id and teacher_id are required",
+    });
+  }
+
+  try {
+    const [checkCourse, checkTeacher] = await Promise.all([
+      checkExist("courses", "id", null, course_id),
+      checkExist("teacher", "id", null, teacher_id),
+    ]);
+
+    if (!checkCourse) {
+      return res.status(404).json({
+        success: false,
+        error: "Course not found",
+      });
+    }
+
+    if (!checkTeacher) {
+      return res.status(404).json({
+        success: false,
+        error: "Teacher not found",
+      });
+    }
+
+    await assignCourseToTeacher(teacher_id, course_id);
+
+    logger.info(
+      `Course ${course_id} successfully assigned to teacher ${teacher_id}`
+    );
+    return res.status(201).json({
+      success: true,
+      message: `Course successfully assigned to teacher`,
+      data: { course_id, teacher_id },
+    });
+  } catch (error) {
+    logger.error(`Error assigning course to teacher: ${error.message}`, {
+      stack: error.stack,
+      details: { course_id, teacher_id },
+    });
+
+    if (error.message.includes("already assigned")) {
+      return res.status(409).json({
+        success: false,
+        error: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
+      details: error.message,
     });
   }
 };

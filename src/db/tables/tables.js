@@ -215,11 +215,12 @@ const createTeacherCoursesTable = async () => {
 
   const createQuery = `
     CREATE TABLE "teacher_courses" (
-      "id" INTEGER PRIMARY KEY,
-      "teacher_id" VARCHAR,
-      "course_id" INTEGER,
+      "id" SERIAL PRIMARY KEY,
+      "teacher_id" VARCHAR NOT NULL,
+      "course_id" INTEGER NOT NULL,
       FOREIGN KEY ("teacher_id") REFERENCES "teacher" ("id"),
-      FOREIGN KEY ("course_id") REFERENCES "courses" ("id")
+      FOREIGN KEY ("course_id") REFERENCES "courses" ("id"),
+      UNIQUE ("teacher_id", "course_id")
     );
   `;
 
