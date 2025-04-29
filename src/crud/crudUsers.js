@@ -387,6 +387,27 @@ export const getStudentWithDni = async (identification_number) => {
   }
 };
 
+export const getStudentsByCourseId = async (courseId) => {
+  try {
+    const query = `
+      SELECT s.* 
+      FROM student s
+      JOIN enrollments e ON s.id = e.student_id
+      WHERE e.course_id = $1
+    `;
+    const { rows } = await pool.query(query, [courseId]);
+
+    if (rows.length === 0) {
+      throw new Error(`No students found for course with ID: ${courseId}`);
+    }
+
+    return rows;
+  } catch (error) {
+    logger.warn("Error in function getStudentsByCourseId.");
+    throw new Error(error.message || error.detail);
+  }
+};
+
 export const updateStudent = async (
   id,
   identification_number,

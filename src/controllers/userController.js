@@ -13,6 +13,7 @@ import {
   updateStudent,
   updateUser,
   updateTeacher,
+  getStudentsByCourseId,
 } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
 import { authFunc } from "../passwordStrategy/passwordStrategy.js";
@@ -540,6 +541,48 @@ export const deleteStudentController = async (req, res) => {
     logger.error(`Error in deleteStudentController. ERROR: ${error.message}`, {
       stack: error.stack,
     });
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+export const getStudentsByCourseIdController = async (req, res) => {
+  try {
+    const { courseId } = req.query;
+
+    console.log(courseId);
+
+    if (!courseId) {
+      return res.status(400).json({
+        success: false,
+        errorMessage: "Course ID is required",
+      });
+    }
+
+    const students = await getStudentsByCourseId(courseId);
+
+    return res.status(200).json({
+      success: true,
+      data: students,
+    });
+  } catch (error) {
+    logger.error(
+      `Error in getStudentsByCourseIdController. ERROR: ${error.message}`,
+      {
+        stack: error.stack,
+      }
+    );
+
+    if (error.message.includes("No students found")) {
+      return res.status(404).json({
+        success: false,
+        errorMessage: error.message,
+      });
+    }
+
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",

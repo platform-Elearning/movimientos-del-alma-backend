@@ -12,6 +12,7 @@ import {
   getUserController,
   updateUserController,
   updateTeacherController,
+  getStudentsByCourseIdController,
 } from "../controllers/userController.js";
 import {
   loginController,
@@ -33,6 +34,10 @@ routerUsers
 routerUsers.route("/deleteStudent/:id").delete(deleteStudentController);
 
 routerUsers.route("/updateStudent").put(updateUserController);
+
+routerUsers
+  .route("/getStudentsByCourseId")
+  .get(getStudentsByCourseIdController);
 
 // ROUTER TEACHERS //
 
