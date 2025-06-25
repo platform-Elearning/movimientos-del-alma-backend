@@ -47,3 +47,24 @@ export const authenticateToken = (req, res, next) => {
     next();
   });
 };
+
+export const checkAnyRole = (allowedRoles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    if (!allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({
+        error: "Forbidden",
+        details: `Requires one of these roles: ${allowedRoles.join(", ")}`,
+      });
+    }
+
+    next();
+  };
+};
+
+export const isAdmin = checkAnyRole(["admin"]);
+export const isTeacher = checkAnyRole(["teacher", "admin"]);
+export const isStudent = checkAnyRole(["student"]);

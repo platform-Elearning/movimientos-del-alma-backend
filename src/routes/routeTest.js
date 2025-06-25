@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { authenticateToken } from "../auth/auth.js";
-import { getStudentWithDni } from "../crud/crudUsers.js";
+import { authenticateToken, isAdmin } from "../auth/auth.js";
 import { getCoursesWithModules } from "../crud/crudCourses.js";
 
 const routerTest = Router();
@@ -18,19 +17,17 @@ routerTest
   });
 
 // TEST PROTECTED ROUTE
-routerTest.route("/protected").get(authenticateToken, async (res) => {
-  console.log("Route protected ok");
-  res.send("PROTECTED ROUTE IS OK");
-  return true;
-});
+routerTest
+  .route("/protected")
+  .get(authenticateToken, isAdmin, async (req, res) => {
+    console.log("Route protected ok");
+    res.status(200).send("Acceso permitido");
+  });
 
 routerTest.route("/test").get(async (req, res) => {
-  
-
   try {
-
     const response = await getCoursesWithModules();
-    console.log(response)
+    console.log(response);
 
     return res.status(200).json("LLEGO EL GET");
   } catch (error) {
