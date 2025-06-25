@@ -18,6 +18,12 @@ import {
   loginController,
   changePasswordController,
 } from "../controllers/authController.js";
+import {
+  authenticateToken,
+  isAdmin,
+  isTeacher,
+  isStudent,
+} from "../auth/auth.js";
 
 const routerUsers = Router();
 // ROUTER STUDENTS //
