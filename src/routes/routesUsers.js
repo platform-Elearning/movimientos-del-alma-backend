@@ -18,53 +18,70 @@ import {
   loginController,
   changePasswordController,
 } from "../controllers/authController.js";
-import {
-  authenticateToken,
-  isAdmin,
-  isTeacher,
-  isStudent,
-} from "../auth/auth.js";
+import { authenticateToken, isAdmin, isTeacher } from "../auth/auth.js";
 
 const routerUsers = Router();
 // ROUTER STUDENTS //
-routerUsers.route("/createCompleteStudent").post(createStudentController);
+routerUsers
+  .route("/createCompleteStudent")
+  .post(authenticateToken, isAdmin, createStudentController);
 
-routerUsers.route("/getStudentById").get(getUserController);
+routerUsers
+  .route("/getStudentById")
+  .get(authenticateToken, isAdmin, getUserController);
 
-routerUsers.route("/getAllStudents").get(getAllStudentsController);
+routerUsers
+  .route("/getAllStudents")
+  .get(authenticateToken, isAdmin, getAllStudentsController);
 
 routerUsers
   .route("/getStudentsWithCourses")
-  .get(getAllUsersWithCoursesController);
+  .get(authenticateToken, isAdmin, getAllUsersWithCoursesController);
 
-routerUsers.route("/deleteStudent/:id").delete(deleteStudentController);
+routerUsers
+  .route("/deleteStudent/:id")
+  .delete(authenticateToken, isAdmin, deleteStudentController);
 
-routerUsers.route("/updateStudent").put(updateUserController);
+routerUsers
+  .route("/updateStudent")
+  .put(authenticateToken, isAdmin, updateUserController);
 
 routerUsers
   .route("/getStudentsByCourseId")
-  .get(getStudentsByCourseIdController);
+  .get(authenticateToken, isTeacher, getStudentsByCourseIdController);
 
 // ROUTER TEACHERS //
 
-routerUsers.route("/createCompleteTeacher").post(createTeacherController);
+routerUsers
+  .route("/createCompleteTeacher")
+  .post(authenticateToken, isAdmin, createTeacherController);
 
-routerUsers.route("/getAllTeachers").get(getAllTeachersController);
+routerUsers
+  .route("/getAllTeachers")
+  .get(authenticateToken, isAdmin, getAllTeachersController);
 
-routerUsers.route("/deleteTeacher/:id").delete(deleteTeacherController);
+routerUsers
+  .route("/deleteTeacher/:id")
+  .delete(authenticateToken, isAdmin, deleteTeacherController);
 
-routerUsers.route("/updateTeacher").put(updateTeacherController);
+routerUsers
+  .route("/updateTeacher")
+  .put(authenticateToken, isAdmin, updateTeacherController);
 
 // ROUTE FOR LOGIN
 routerUsers.route("/login").post(loginController);
 
 // ROUTE FOR CHANGE PASSWORD
-routerUsers.route("/changePassword").post(changePasswordController);
+routerUsers
+  .route("/changePassword")
+  .post(authenticateToken, changePasswordController);
 
 // ROUTE FOR CREATE ADMIN
-routerUsers.route("/createAdmin").post(createAdminController);
+//routerUsers.route("/createAdmin").post(createAdminController);
 
 // ROUTE FOR DELETE USER
-routerUsers.route("/deleteUser/:id").delete(deleteUserController);
+routerUsers
+  .route("/deleteUser/:id")
+  .delete(authenticateToken, isAdmin, deleteUserController);
 
 export default routerUsers;

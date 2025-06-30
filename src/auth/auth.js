@@ -67,4 +67,4 @@ export const checkAnyRole = (allowedRoles) => {
 
 export const isAdmin = checkAnyRole(["admin"]);
 export const isTeacher = checkAnyRole(["teacher", "admin"]);
-export const isStudent = checkAnyRole(["student"]);
+export const isStudent = checkAnyRole(["student", "teacher", "admin"]);
