@@ -58,6 +58,7 @@ export const checkAnyRole = (allowedRoles) => {
       return res.status(403).json({
         error: "Forbidden",
         details: `Requires one of these roles: ${allowedRoles.join(", ")}`,
+        yourRole: req.user.role,
       });
     }
 
