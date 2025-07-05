@@ -15,3 +15,26 @@ export const createReport = async (user_id, description) => {
     throw new Error("Failed to create report");
   }
 };
+
+export const getReports = async () => {
+  try {
+    const query = `
+      SELECT 
+        u.email,
+        r.description,
+        r.created_at
+      FROM 
+        "reportProblem" r
+      JOIN 
+        "users" u ON r.user_id = u.id
+      ORDER BY 
+        r.created_at DESC
+    `;
+
+    const result = await pool.query(query);
+    return result.rows;
+  } catch (error) {
+    console.error("Error in getReports:", error.message, error.stack);
+    throw new Error("Failed to retrieve reports");
+  }
+};
