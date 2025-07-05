@@ -392,3 +392,17 @@ export const createTablesDbPostgres = async () => {
     throw new Error("Failed to initialize tables.");
   }
 };
+
+if (process.argv[1] === new URL(import.meta.url).pathname) {
+  // Esto solo se ejecuta si lo corres como script: node src/db/tables/tables.js
+  (async () => {
+    try {
+      await createTablesDbPostgres();
+      console.log("✅ ¡Tablas creadas exitosamente!");
+      process.exit(0);
+    } catch (error) {
+      console.error("❌ Error al crear tablas:", error);
+      process.exit(1);
+    }
+  })();
+}
