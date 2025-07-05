@@ -156,7 +156,7 @@ npm test
 
 ## Usuario
 
-### Crear Usuario
+### Crear Usuario 
 - **URL**: `/users/createAdmin`
 - **Método**: `Post` 
 - **Descripción**: crear nuevo usuario.
