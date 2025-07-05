@@ -5,6 +5,7 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
+    "init-db": "node scripts/init-db.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "start": "node src/server.js",
     "start-dev": "cp .dev .env && node src/server.js",
