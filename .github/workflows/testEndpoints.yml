@@ -46,7 +46,10 @@ jobs:
           done
 
       - name: set env vars
-        run: echo "SECRET_KEY_ADMIN=${{ secrets.SECRET_KEY_ADMIN }}" >> .env
+        run: |
+          echo "SECRET_KEY_ADMIN=${{ secrets.SECRET_KEY_ADMIN }}" >> .env
+          echo "PG_USER=admin" >> .env
+          echo "PG_PASSWORD=123456" >> .env
 
       - name: Crear tablas en base de datos
         run: npm run init-db
