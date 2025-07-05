@@ -34,5 +34,6 @@ coverage/
 # environment files
 .prod
 .dev
+.env
 
 .qodo

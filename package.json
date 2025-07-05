@@ -7,10 +7,10 @@
   "scripts": {
     "init-db": "node src/db/tables/tables.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "start": "node src/server.js",
-    "start-dev": "cp .dev .env && node src/server.js",
-    "start-prod": "cp .prod .env && node src/server.js",
-    "start-local": "cp .local .env && nodemon src/server.js"
+    "start": "node src/index.js",
+    "start-dev": "cp .dev .env && node src/index.js",
+    "start-prod": "cp .prod .env && node src/index.js",
+    "start-local": "cp .local .env && nodemon src/index.js"
   },
   "keywords": [
     "nodejs"
