@@ -45,6 +45,9 @@ jobs:
             sleep 3
           done
 
+      - name: set env vars
+        run: echo "SECRET_KEY_ADMIN=${{ secrets.SECRET_KEY_ADMIN }}" >> .env
+
       - name: Crear tablas en base de datos
         run: npm run init-db
 
