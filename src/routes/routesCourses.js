@@ -15,56 +15,88 @@ import {
   deleteModuleController,
   getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController,
   getLessonsByModuleIdAndCourseIdController,
+  assignCourseToTeacherController,
 } from "../controllers/courseController.js";
+import { authenticateToken, isAdmin, isTeacher, isStudent } from "../auth/auth.js";
 
 const routerCourses = Router();
 
 /// COURSES ///
 
-routerCourses.route("/getAllCourses").get(getAllCoursesController);
+routerCourses
+  .route("/getAllCourses")
+  .get(authenticateToken, authenticateToken, isAdmin, getAllCoursesController);
 
 routerCourses
   .route("/getAllCoursesWithModules")
-  .get(getAllCoursesWithModulesController);
+  .get(authenticateToken, isAdmin, getAllCoursesWithModulesController);
 
-routerCourses.route("/createCourse").post(createCourseController);
+routerCourses
+  .route("/createCourse")
+  .post(authenticateToken, isAdmin, createCourseController);
 
-routerCourses.route("/deleteCourse").delete(deleteCourseController);
+routerCourses
+  .route("/deleteCourse")
+  .delete(authenticateToken, isAdmin, deleteCourseController);
 
 routerCourses
   .route("/getCoursesByStudentId")
-  .get(getCoursesWithStudentIdController);
+  .get(authenticateToken, getCoursesWithStudentIdController);
 
 routerCourses
   .route("/getAllCoursesWithModulesAndLessons")
-  .get(getAllCoursesWithModulesAndLessonsController);
+  .get(
+    authenticateToken,
+    isAdmin,
+    getAllCoursesWithModulesAndLessonsController
+  );
 
 routerCourses
   .route("/getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId")
-  .get(getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController);
+  .get(
+    authenticateToken,
+    isStudent,
+    getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController
+  );
+
+routerCourses
+  .route("/assignCourseToTeacher")
+  .post(authenticateToken, isAdmin, assignCourseToTeacherController);
 
 /// MODULES ///
 
-routerCourses.route("/createCourseModule").post(createCourseModuleController);
+routerCourses
+  .route("/createCourseModule")
+  .post(authenticateToken, isTeacher, createCourseModuleController);
 
-routerCourses.route("/getModulesOfStudent").get(getModulesOfStudentController);
+routerCourses
+  .route("/getModulesOfStudent")
+  .get(authenticateToken, getModulesOfStudentController);
 
 routerCourses
   .route("/getModulesByCourseId/:id")
-  .get(getModuleByCourseIdController);
+  .get(authenticateToken, getModuleByCourseIdController);
 
-routerCourses.route("/deleteModule/:id").delete(deleteModuleController);
+routerCourses
+  .route("/deleteModule/:id")
+  .delete(authenticateToken, isTeacher, deleteModuleController);
 
 /// LESSONS ///
 
-routerCourses.route("/createLesson").post(createLessonController);
+routerCourses
+  .route("/createLesson")
+  .post(authenticateToken, isTeacher, createLessonController);
 
-routerCourses.route("/getLessons").get(getAllLessonsController);
+routerCourses
+  .route("/getLessons")
+  .get(authenticateToken, getAllLessonsController);
 
-routerCourses.route("/deleteLesson/:id").delete(deleteLessonController);
+routerCourses
+  .route("/deleteLesson/:id")
+  .delete(authenticateToken, isTeacher, deleteLessonController);
 
 routerCourses
   .route("/getLessonsByModuleIdAndCourseId")
-  .get(getLessonsByModuleIdAndCourseIdController);
+  .get(authenticateToken, getLessonsByModuleIdAndCourseIdController);
 
 export default routerCourses;

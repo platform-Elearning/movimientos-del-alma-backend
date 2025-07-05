@@ -215,11 +215,12 @@ const createTeacherCoursesTable = async () => {
 
   const createQuery = `
     CREATE TABLE "teacher_courses" (
-      "id" INTEGER PRIMARY KEY,
-      "teacher_id" VARCHAR,
-      "course_id" INTEGER,
+      "id" SERIAL PRIMARY KEY,
+      "teacher_id" VARCHAR NOT NULL,
+      "course_id" INTEGER NOT NULL,
       FOREIGN KEY ("teacher_id") REFERENCES "teacher" ("id"),
-      FOREIGN KEY ("course_id") REFERENCES "courses" ("id")
+      FOREIGN KEY ("course_id") REFERENCES "courses" ("id"),
+      UNIQUE ("teacher_id", "course_id")
     );
   `;
 
@@ -335,9 +336,8 @@ const createReportProblemTable = async () => {
   const createQuery = `
     CREATE TABLE "reportProblem" (
       "id" SERIAL PRIMARY KEY,
-      "user_id" INTEGER NOT NULL,
+      "user_id" VARCHAR NOT NULL,
       "description" TEXT NOT NULL,
-      "status" BOOLEAN NOT NULL,
       "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE
     );
@@ -349,12 +349,12 @@ const createReportProblemTable = async () => {
 
     if (!tableExists) {
       await pool.query(createQuery);
-      console.log("Table 'reportProblem' created.");
+      logger.info("Table 'reportProblem' created.");
     } else {
-      console.warn("Table 'reportProblem' already exists.");
+      logger.warn("Table 'reportProblem' already exists.");
     }
   } catch (error) {
-    console.error(
+    logger.error(
       `Error creating table 'reportProblem': ERROR: ${error.message}`,
       {
         stack: error.stack,
