@@ -1,3 +1,4 @@
+import { createTablesDbPostgres } from "../db/tables/tables.js"; 
 import bcrypt from "bcrypt";
 import logger from "../utils/logger.js";
 
