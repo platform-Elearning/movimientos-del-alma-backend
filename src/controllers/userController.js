@@ -9,9 +9,11 @@ import {
   getAllStudents,
   getStudentData,
   getStudentsWithCourses,
-  getTeacher,
+  getAllTeachers,
   updateStudent,
   updateUser,
+  updateTeacher,
+  getStudentsByCourseId,
 } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
 import { authFunc } from "../passwordStrategy/passwordStrategy.js";
@@ -21,6 +23,7 @@ import {
   randomPassword,
 } from "../utils/utils.js";
 import logger from "../utils/logger.js";
+
 // USERS
 export const test = async () => {};
 
@@ -232,81 +235,75 @@ export const updateUserController = async (req, res) => {
 // TEACHER
 
 export const createTeacherController = async (req, res) => {
-  const id = generateRandomId();
-  const randomPW = randomPassword();
-  const role = "teacher";
-  const hashedPassword = authFunc.hashPassword(randomPW);
+  const { identification_number, name, lastname, email } = req.body;
 
-  const { name, lastname, identification_number, email } = req.body;
-
-  if (!name || !lastname || !identification_number || !email) {
-    return res
-      .status(400)
-      .json({ success: false, error: "Mandatory data missing" });
+  if (!identification_number || !name || !lastname || !email) {
+    return res.status(400).json({
+      success: false,
+      message: "Mandatory data missing",
+    });
   }
 
-  try {
-    const check = await checkExist("users", "email", null, email);
+  const id = generateRandomId();
+  const role = "teacher";
 
-    if (check) {
+  try {
+    // Verificar si el correo ya existe
+    const emailExists = await checkExist("users", "email", null, email);
+    if (emailExists) {
       return res.status(409).json({
         success: false,
-        message: "User already exists",
+        message: "Email already exists",
       });
     }
 
-    await pool.query("BEGIN");
+    // Crear usuario en la tabla 'users'
+    await createUser(id, email, randomPassword(), role);
 
-    const userCreated = await createUser(id, email, hashedPassword, role);
+    // Crear profesor en la tabla 'teacher'
+    await createTeacher(id, name, lastname, identification_number, email);
 
-    if (!userCreated) {
-      throw new Error("Failed to create user");
-    }
-
-    const teacherCreated = await createTeacher(
-      id,
-      name,
-      lastname,
-      identification_number,
-      email
-    );
-
-    if (!teacherCreated) {
-      throw new Error("Failed to create teacher");
-    }
-
-    await pool.query("COMMIT");
-
-    logger.info(`Teacher create with success, ID: ${id}`);
-
+    logger.info(`Teacher created successfully with ID: ${id}`);
     return res.status(201).json({
       success: true,
-      message: "Teacher and user created successfully",
+      message: "Teacher created successfully",
       userId: id,
     });
   } catch (error) {
-    await pool.query("ROLLBACK");
-    logger.error(`Error in teacherCreateController. ERROR: ${error.message}`, {
+    logger.error(`Error in createTeacherController. ERROR: ${error.message}`, {
       stack: error.stack,
     });
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",
-      error: error,
+      error: error.message,
     });
   }
 };
 
-export const getTeacherController = async (req, res) => {
-  const { id } = req.body;
-
+export const getAllTeachersController = async (req, res) => {
   try {
-    const response = await getTeacher(id);
+    const response = await getAllTeachers();
+
+    if (!response || response.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No teachers found",
+      });
+    }
+
     return res.status(200).json({
-      response,
+      success: true,
+      data: response.map((teacher) => ({
+        id: teacher.id,
+        name: teacher.name,
+        lastname: teacher.lastname,
+        identification_number: teacher.identification_number,
+        email: teacher.email,
+      })),
     });
   } catch (error) {
-    logger.error(`Error in getTeacherController. ERROR: ${error.message}`, {
+    logger.error(`Error in getAllTeachersController. ERROR: ${error.message}`, {
       stack: error.stack,
     });
     return res.status(500).json({
@@ -351,6 +348,58 @@ export const deleteTeacherController = async (req, res) => {
     });
   } catch (error) {
     logger.error(`Error in deleteTeacherController. ERROR: ${error.message}`, {
+      stack: error.stack,
+    });
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+export const updateTeacherController = async (req, res) => {
+  const { id, identification_number, name, lastname, email } = req.body;
+
+  if (!id) {
+    return res.status(400).json({
+      success: false,
+      message: "Teacher ID is required",
+    });
+  }
+
+  try {
+    const teacherExists = await checkExist("teacher", "id", null, id);
+
+    if (!teacherExists) {
+      return res.status(404).json({
+        success: false,
+        message: `Teacher with ID ${id} does not exist`,
+      });
+    }
+
+    const updateResult = await updateTeacher(
+      id,
+      identification_number || null,
+      name || null,
+      lastname || null,
+      email || null
+    );
+
+    if (updateResult === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No fields were updated",
+      });
+    }
+
+    logger.info(`Teacher with ID ${id} updated successfully`);
+    return res.status(200).json({
+      success: true,
+      message: "Teacher updated successfully",
+    });
+  } catch (error) {
+    logger.error(`Error in updateTeacherController. ERROR: ${error.message}`, {
       stack: error.stack,
     });
     return res.status(500).json({
@@ -492,6 +541,48 @@ export const deleteStudentController = async (req, res) => {
     logger.error(`Error in deleteStudentController. ERROR: ${error.message}`, {
       stack: error.stack,
     });
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+export const getStudentsByCourseIdController = async (req, res) => {
+  try {
+    const { courseId } = req.query;
+
+    console.log(courseId);
+
+    if (!courseId) {
+      return res.status(400).json({
+        success: false,
+        errorMessage: "Course ID is required",
+      });
+    }
+
+    const students = await getStudentsByCourseId(courseId);
+
+    return res.status(200).json({
+      success: true,
+      data: students,
+    });
+  } catch (error) {
+    logger.error(
+      `Error in getStudentsByCourseIdController. ERROR: ${error.message}`,
+      {
+        stack: error.stack,
+      }
+    );
+
+    if (error.message.includes("No students found")) {
+      return res.status(404).json({
+        success: false,
+        errorMessage: error.message,
+      });
+    }
+
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error",

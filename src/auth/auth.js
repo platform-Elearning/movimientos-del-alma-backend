@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import logger from "../utils/logger.js";
 
 const secretKey = process.env.SECRET_KEY;
 
@@ -11,20 +12,61 @@ if (!secretKey) {
 
 export const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
-  const token = authHeader?.split(" ")[1] || req.cookies?.token;
 
-  if (!token) {
-    return res.status(401).json({ error: "Token not found" });
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      error: "Authentication required",
+      details: "Token must be provided in Authorization header (Bearer token)",
+    });
   }
 
-  jwt.verify(token, secretKey, (error, user) => {
+  const token = authHeader.split(" ")[1];
+
+  jwt.verify(token, secretKey, (error, decoded) => {
     if (error) {
-      logger.error(`Token verification failed. ERROR: ${error.message}`, {
-        stack: error.stack,
+      logger.error(`JWT Error: ${error.name}`, {
+        path: req.path,
+        ip: req.ip,
       });
-      return res.status(403).json({ error: "Token validation failed" });
+
+      const message =
+        error instanceof jwt.TokenExpiredError
+          ? "Token expired. Please log in again"
+          : "Invalid token";
+
+      return res.status(403).json({
+        error: "Forbidden",
+        details: message,
+      });
     }
-    req.user = user;
+
+    req.user = {
+      id: decoded.id,
+      role: decoded.role,
+    };
+
     next();
   });
 };
+
+export const checkAnyRole = (allowedRoles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    if (!allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({
+        error: "Forbidden",
+        details: `Requires one of these roles: ${allowedRoles.join(", ")}`,
+        yourRole: req.user.role,
+      });
+    }
+
+    next();
+  };
+};
+
+export const isAdmin = checkAnyRole(["admin"]);
+export const isTeacher = checkAnyRole(["teacher", "admin"]);
+export const isStudent = checkAnyRole(["student", "teacher", "admin"]);

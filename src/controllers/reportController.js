@@ -16,7 +16,7 @@ export const createReportController = async (req, res) => {
 
     if (!userExists) {
       return res.status(404).json({
-         message: "User not found",
+        message: "User not found",
       });
     }
 
@@ -28,7 +28,6 @@ export const createReportController = async (req, res) => {
 
     console.log(`Report created by user ${user_id} correctly`);
     return res.status(201).json({
-      
       message: "Report created correctly",
       data: reportCreated,
     });

@@ -149,7 +149,10 @@ export const createTeacher = async (
       throw new Error("All fields are required");
     }
 
-    const query = `INSERT INTO teacher (id, name, lastname, identification_number, email) VALUES ($1,$2,$3,$4,$5)`;
+    const query = `
+      INSERT INTO teacher (id, name, lastname, identification_number, email)
+      VALUES ($1, $2, $3, $4, $5)
+    `;
 
     const resultdb = await pool.query(query, [
       id,
@@ -162,23 +165,27 @@ export const createTeacher = async (
     return resultdb.rowCount;
   } catch (error) {
     logger.warn("Error in function createTeacher.");
-    throw new Error(error.detail);
+    throw new Error(error.detail || error);
   }
 };
 
-export const getTeacher = async (id) => {
+export const getAllTeachers = async () => {
   try {
-    const query = `SELECT * FROM teacher WHERE id = $1`;
-
-    const responsedb = await pool.query(query, [id]);
-
-    if (responsedb.rows.length === 0) {
-      throw new Error(`No teacher found with id: ${id}`);
-    }
-
-    return responsedb.rows[0];
+    const query = `
+      SELECT 
+        t.id, 
+        t.name, 
+        t.lastname, 
+        t.identification_number, 
+        t.email
+      FROM teacher t
+      INNER JOIN users u ON t.id = u.id
+      WHERE u.role = 'teacher';
+    `;
+    const result = await pool.query(query);
+    return result.rows;
   } catch (error) {
-    logger.warn("Error in function getTeacher.");
+    logger.warn("Error in function getAllTeachers.");
     throw new Error(error.message);
   }
 };
@@ -197,6 +204,65 @@ export const deleteTeacher = async (id) => {
   } catch (error) {
     logger.warn("Error in function deleteTeacher.");
     throw new Error(error.message);
+  }
+};
+
+export const updateTeacher = async (
+  id,
+  identification_number,
+  name,
+  lastname,
+  email
+) => {
+  if (!id) {
+    throw new Error("ID is required");
+  }
+
+  try {
+    const updates = [];
+    const values = [];
+    let paramIndex = 1;
+
+    if (identification_number) {
+      updates.push(`identification_number = $${paramIndex}`);
+      values.push(identification_number);
+      paramIndex++;
+    }
+
+    if (name) {
+      updates.push(`name = $${paramIndex}`);
+      values.push(name);
+      paramIndex++;
+    }
+
+    if (lastname) {
+      updates.push(`lastname = $${paramIndex}`);
+      values.push(lastname);
+      paramIndex++;
+    }
+
+    if (email) {
+      updates.push(`email = $${paramIndex}`);
+      values.push(email);
+      paramIndex++;
+    }
+
+    if (updates.length === 0) {
+      throw new Error("No fields to update");
+    }
+
+    values.push(id);
+
+    const query = `
+      UPDATE teacher SET ${updates.join(", ")} WHERE id = $${paramIndex}
+    `;
+
+    const resultdb = await pool.query(query, values);
+
+    return resultdb.rowCount;
+  } catch (error) {
+    logger.warn("Error in function updateTeacher.");
+    throw new Error(error.detail || error);
   }
 };
 
@@ -318,6 +384,27 @@ export const getStudentWithDni = async (identification_number) => {
   } catch (error) {
     logger.warn("Error in function getStudentWithDni.");
     throw new Error(error.detail);
+  }
+};
+
+export const getStudentsByCourseId = async (courseId) => {
+  try {
+    const query = `
+      SELECT s.* 
+      FROM student s
+      JOIN enrollments e ON s.id = e.student_id
+      WHERE e.course_id = $1
+    `;
+    const { rows } = await pool.query(query, [courseId]);
+
+    if (rows.length === 0) {
+      throw new Error(`No students found for course with ID: ${courseId}`);
+    }
+
+    return rows;
+  } catch (error) {
+    logger.warn("Error in function getStudentsByCourseId.");
+    throw new Error(error.message || error.detail);
   }
 };
 
