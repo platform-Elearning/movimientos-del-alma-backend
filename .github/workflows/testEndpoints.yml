@@ -1,7 +1,6 @@
 name: Run tests on PR to develop
 
 on:
-  workflow_dispatch:
   pull_request:
     branches:
       - develop
@@ -10,6 +9,21 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: 123456
+          POSTGRES_DB: movimientosdelalma_database
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U admin -d movimientosdelalma_database"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -17,10 +31,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'  
+          node-version: '20'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Wait for Postgres to be healthy
+        run: |
+          for i in {1..10}; do
+            nc -z localhost 5432 && echo "Postgres is up" && break
+            echo "Waiting for Postgres..."
+            sleep 3
+          done
 
       - name: Run tests
         run: npm test
