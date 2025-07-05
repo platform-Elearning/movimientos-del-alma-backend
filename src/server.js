@@ -4,10 +4,8 @@ import routerTest from "./routes/routeTest.js";
 import session from "express-session";
 import cors from "cors";
 import { settings } from "./settings/settings.js";
-import { createTablesDbPostgres } from "./db/tables/tables.js";
 import routerCourses from "./routes/routesCourses.js";
 import routerEnrollments from "./routes/routesEnrollments.js";
-import logger from "./utils/logger.js";
 import routerReport from "./routes/routesReport.js";
 
 const app = express();
@@ -38,15 +36,5 @@ app.use("/test", routerTest);
 app.use("/courses", routerCourses);
 app.use("/enrollments", routerEnrollments);
 app.use("/report-problem", routerReport);
-
-(async () => {
-  try {
-    await createTablesDbPostgres();
-  } catch (error) {
-    logger.warn(
-      "The server will start, but some features may not work without the database."
-    );
-  }
-})();
 
 export default app;
