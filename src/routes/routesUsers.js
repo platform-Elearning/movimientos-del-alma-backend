@@ -18,7 +18,12 @@ import {
   loginController,
   changePasswordController,
 } from "../controllers/authController.js";
-import { authenticateToken, isAdmin, isTeacher } from "../auth/auth.js";
+import {
+  adminAuthMiddleware,
+  authenticateToken,
+  isAdmin,
+  isTeacher,
+} from "../auth/auth.js";
 
 const routerUsers = Router();
 // ROUTER STUDENTS //
@@ -77,7 +82,9 @@ routerUsers
   .post(authenticateToken, changePasswordController);
 
 // ROUTE FOR CREATE ADMIN
-routerUsers.route("/createAdmin").post(createAdminController);
+routerUsers
+  .route("/createAdmin")
+  .post(adminAuthMiddleware, createAdminController);
 
 // ROUTE FOR DELETE USER
 routerUsers

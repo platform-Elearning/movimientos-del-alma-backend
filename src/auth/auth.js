@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import logger from "../utils/logger.js";
+import crypto from "crypto";
 
 const secretKey = process.env.SECRET_KEY;
 
@@ -47,6 +48,39 @@ export const authenticateToken = (req, res, next) => {
 
     next();
   });
+};
+
+export const adminAuthMiddleware = (req, res, next) => {
+  const validAdminKey = process.env.SECRET_KEY_ADMIN;
+
+  if (!validAdminKey) {
+    console.error(
+      "SECRET_KEY_ADMIN no está configurada en las variables de entorno"
+    );
+    return res
+      .status(500)
+      .json({ error: "Configuración del servidor incompleta" });
+  }
+
+  const clientAdminKey =
+    req.headers["x-admin-key"] || req.query.admin_key || req.body.admin_key;
+
+  if (!clientAdminKey) {
+    return res
+      .status(401)
+      .json({ error: "Se requiere clave de administrador" });
+  }
+
+  const isValid = crypto.timingSafeEqual(
+    Buffer.from(clientAdminKey),
+    Buffer.from(validAdminKey)
+  );
+
+  if (!isValid) {
+    return res.status(403).json({ error: "Clave de administrador inválida" });
+  }
+
+  next();
 };
 
 export const checkAnyRole = (allowedRoles) => {

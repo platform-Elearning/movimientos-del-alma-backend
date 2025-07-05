@@ -1,12 +1,14 @@
 import request from "supertest";
 import app from "../server.js"; // ¡con extensión .js!
+import 'dotenv/config';
 
 describe("POST /users/createAdmin", () => {
   it("debería crear un usuario y devolver el objeto esperado", async () => {
     const newAdmin = {
       id: `id-${Date.now()}`,
       email: `admin${Date.now()}@example.com`,
-      password: "adminpass2word"
+      password: "adminpass2word",
+      admin_key: process.env.SECRET_KEY_ADMIN 
     };
 
     const res = await request(app)
@@ -28,3 +30,4 @@ describe("POST /users/createAdmin", () => {
     );
   });
 });
+

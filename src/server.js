@@ -49,8 +49,4 @@ app.use("/report-problem", routerReport);
   }
 })();
 
-app.listen(port, () => {
-  logger.info(`Server is running on port ${port}`);
-});
-
 export default app;
