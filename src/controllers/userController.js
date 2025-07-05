@@ -246,6 +246,7 @@ export const createTeacherController = async (req, res) => {
 
   const id = generateRandomId();
   const role = "teacher";
+  const passwordTeacher = authFunc.hashPassword(email);
 
   try {
     // Verificar si el correo ya existe
