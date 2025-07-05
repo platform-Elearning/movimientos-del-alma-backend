@@ -45,5 +45,19 @@ jobs:
             sleep 3
           done
 
+      - name: Wait for users table to be created
+        run: |
+          for i in {1..10}; do
+            echo "Checking if 'users' table exists..."
+            docker exec postgres_container_movimientosdelalma \
+              psql -U admin -d movimientosdelalma_database \
+              -c "\dt" | grep users && echo "Table exists!" && exit 0
+            echo "Table does not exist yet, retrying in 3 seconds..."
+            sleep 3
+          done
+          echo "Timeout: Table 'users' was not created in time."
+          exit 1
+
+
       - name: Run tests
         run: npm test
