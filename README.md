@@ -151,14 +151,14 @@ Para ejecutar las pruebas:
 ```bash
 npm test
 ```
-
+ 
 ## API Endpoints
 
 ## Usuario
 
-### Crear Usuario
+### Crear Usuario 
 - **URL**: `/users/createAdmin`
-- **Método**: `Post`
+- **Método**: `Post` 
 - **Descripción**: crear nuevo usuario.
 - **Cuerpo de la Solicitud**:
 ```json

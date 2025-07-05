@@ -246,7 +246,7 @@ export const createTeacherController = async (req, res) => {
 
   const id = generateRandomId();
   const role = "teacher";
-  const passwordTeacher = authFunc.hashPassword(email);
+  const passwordTeacher = authFunc.hashPassword(identification_number);
 
   try {
     // Verificar si el correo ya existe
@@ -259,7 +259,7 @@ export const createTeacherController = async (req, res) => {
     }
 
     // Crear usuario en la tabla 'users'
-    await createUser(id, email, randomPassword(), role);
+    await createUser(id, email, passwordTeacher, role);
 
     // Crear profesor en la tabla 'teacher'
     await createTeacher(id, name, lastname, identification_number, email);
