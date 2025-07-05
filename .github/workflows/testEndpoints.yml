@@ -1,6 +1,7 @@
 name: Run tests on PR to develop
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - develop
