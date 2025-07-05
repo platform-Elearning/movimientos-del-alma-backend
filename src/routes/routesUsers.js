@@ -77,7 +77,7 @@ routerUsers
   .post(authenticateToken, changePasswordController);
 
 // ROUTE FOR CREATE ADMIN
-//routerUsers.route("/createAdmin").post(createAdminController);
+routerUsers.route("/createAdmin").post(createAdminController);
 
 // ROUTE FOR DELETE USER
 routerUsers

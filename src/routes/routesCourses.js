@@ -17,7 +17,7 @@ import {
   getLessonsByModuleIdAndCourseIdController,
   assignCourseToTeacherController,
 } from "../controllers/courseController.js";
-import { authenticateToken, isAdmin, isTeacher } from "../auth/auth.js";
+import { authenticateToken, isAdmin, isTeacher, isStudent } from "../auth/auth.js";
 
 const routerCourses = Router();
 
@@ -55,7 +55,7 @@ routerCourses
   .route("/getCoursesWithModulesAndLessonsFilteredByCourseAndStudentId")
   .get(
     authenticateToken,
-    isAdmin,
+    isStudent,
     getCoursesWithModulesAndLessonsFilteredByCourseAndStudentIdController
   );
 
