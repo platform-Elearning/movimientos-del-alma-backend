@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS users;
 #ver tabla
 \d users
 
-#################################################################
+################### Eliminar tablas ##############################################
 
 -- Deshabilitar temporalmente las restricciones de clave foránea
 SET session_replication_role = 'replica';
@@ -31,3 +31,8 @@ SET session_replication_role = 'origin';
 -- Eliminar el tipo ENUM 'user_role'
 DROP TYPE IF EXISTS user_role;
 
+###################### Restaurar backup #############################################
+
+PGPASSWORD="pass" psql -h url.db -U postgres -d railway -p 1234 -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+
+PGPASSWORD="pass" pg_restore --no-owner --no-privileges -h url.db -U postgres -d railway -p 1234 /ruta/al/backup.dump

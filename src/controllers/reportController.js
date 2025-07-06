@@ -51,6 +51,7 @@ export const getReportsController = async (req, res) => {
       throw new Error("Failed to retrieve reports");
     }
 
+    console.log(dataReports);
     console.log(`Reports retrieved successfully`);
     return res.status(200).json({
       message: "Reports retrieved successfully",
