@@ -1,5 +1,8 @@
 import { registerToCourse } from "../crud/crudCourses.js";
-import { getEnrollment } from "../crud/crudEnrollments.js";
+import {
+  getAllEnrollmentsByCourseId,
+  getEnrollment,
+} from "../crud/crudEnrollments.js";
 import { getStudentWithDni } from "../crud/crudUsers.js";
 import { pool } from "../db/configPG.js";
 import logger from "../utils/logger.js";
@@ -94,6 +97,45 @@ export const createEnrollmentToCourseController = async (req, res) => {
       }
     );
 
+    return res.status(500).json({
+      success: false,
+      errorMessage: "Internal server error.",
+      error: error.message || error,
+    });
+  }
+};
+
+export const getAllEnrollmentsByCourseIdController = async (req, res) => {
+  const { course_id } = req.params;
+
+  console.log("Recibo el course_id:", course_id);
+
+  if (!course_id) {
+    return res.status(400).json({
+      success: false,
+      errorMessage: "Course ID is required.",
+    });
+  }
+
+  try {
+    const enrollments = await getAllEnrollmentsByCourseId(course_id);
+    if (enrollments.length === 0) {
+      return res.status(404).json({
+        success: false,
+        errorMessage: "No enrollments found for this course.",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      enrollments,
+    });
+  } catch (error) {
+    logger.error(
+      `Error in getAllEnrollmentsByCourseIdController. ERROR: ${error.message}`,
+      {
+        stack: error.stack,
+      }
+    );
     return res.status(500).json({
       success: false,
       errorMessage: "Internal server error.",

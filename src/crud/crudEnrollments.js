@@ -49,3 +49,37 @@ export const getAllEnrollmentsByStudentId = async (student_id) => {
     throw new Error(error.detail);
   }
 };
+
+export const getAllEnrollmentsByCourseId = async (course_id) => {
+  try {
+    console.log("Aca tambien llega", course_id);
+    const query = `
+      SELECT 
+        s.name,
+        s.lastname,
+        s.identification_number AS dni,
+        s.email
+      FROM 
+        student s
+      JOIN 
+        enrollments e ON s.id = e.student_id
+      WHERE 
+        e.course_id = $1
+      ORDER BY 
+        s.lastname, s.name;
+    `;
+
+    const result = await pool.query(query, [course_id]);
+
+    console.log(result);
+
+    if (result.rows.length === 0) {
+      return [];
+    }
+
+    return result.rows;
+  } catch (error) {
+    logger.warn("Error in function getAllEnrollmentsByCourseId.");
+    throw new Error(error.detail);
+  }
+};
