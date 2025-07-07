@@ -1,6 +1,9 @@
 import { Router } from "express";
-import { createEnrollmentToCourseController } from "../controllers/enrollmentController.js";
-import { authenticateToken, isAdmin } from "../auth/auth.js";
+import {
+  createEnrollmentToCourseController,
+  getAllEnrollmentsByCourseIdController,
+} from "../controllers/enrollmentController.js";
+import { authenticateToken, isAdmin, isTeacher } from "../auth/auth.js";
 
 const routerEnrollments = Router();
 
@@ -8,5 +11,9 @@ const routerEnrollments = Router();
 routerEnrollments
   .route("/registerToCourse")
   .post(authenticateToken, isAdmin, createEnrollmentToCourseController);
+
+routerEnrollments
+  .route("/getAllEnrollmentsByCourseId/:course_id")
+  .get(authenticateToken, isTeacher, getAllEnrollmentsByCourseIdController);
 
 export default routerEnrollments;
